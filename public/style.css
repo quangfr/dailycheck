@@ -819,6 +819,29 @@ button,
   font-size: 13px;
   color: #5c5c5c;
 }
+.score-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.score-goal-btn {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  cursor: pointer;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.score-goal-btn:hover {
+  border-color: var(--text);
+}
 .score-value {
   font-size: 38px;
   font-weight: 700;
@@ -827,6 +850,9 @@ button,
   font-size: 12px;
   font-weight: 600;
   color: #2a7a57;
+}
+.score-diff.negative {
+  color: #c02e2e;
 }
 .score-bar {
   height: 8px;
@@ -843,11 +869,24 @@ button,
   font-size: 12px;
   color: #5c5c5c;
 }
+.score-slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.score-slider span {
+  font-size: 24px;
+  font-weight: 600;
+  min-width: 32px;
+  text-align: center;
+}
+.score-slider input[type="range"] {
+  flex: 1;
+  cursor: pointer;
+}
 .needs-panel {
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 16px;
-  background: var(--card);
+  padding: 4px;
 }
 .needs-title {
   font-size: 14px;
@@ -862,8 +901,8 @@ button,
   flex: 1;
   border: 1px solid rgba(30, 31, 26, 0.15);
   border-radius: var(--r);
-  padding: 8px;
-  background: #fff;
+  padding: 4px;
+  background: var(--card);
   text-align: center;
 }
 .need-percentage {
@@ -1728,7 +1767,7 @@ textarea#habitDesc {
 .habit-actions--modal .habit-actions__pref {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   flex-wrap: wrap;
 }
 
@@ -1765,8 +1804,14 @@ textarea#habitDesc {
 .habit-actions__add {
   white-space: nowrap;
 }
+.habit-actions__add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
 
 .habit-actions.footer-sticky {
+  display: none;
   position: sticky;
   bottom: 0;
   left: 0;
@@ -1779,6 +1824,9 @@ textarea#habitDesc {
   z-index: 2;
   justify-content: space-between;
 }
+.habit-actions.footer-sticky.is-visible {
+  display: flex;
+}
 
 .habit-actions__info {
   flex: 1;
@@ -1787,8 +1835,9 @@ textarea#habitDesc {
   color: #5f5f5f;
   align-self: center;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 .opt {

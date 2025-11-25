@@ -2,7 +2,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 1,
     "emoji": "🌱",
-    "titles": ["Inspirer en ouvrant Habitube"],
+    "title": "Ouvrir l'application Habitube",
     "needs": [
       "organization",
       "joy"
@@ -16,7 +16,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 2,
     "emoji": "🥣",
-    "titles": ["Préparer un petit-déjeuner commun"],
+    "title": "Préparer un petit-déjeuner commun",
     "needs": [
       "nutrition",
       "joy"
@@ -31,7 +31,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 3,
     "emoji": "🥪",
-    "titles": ["Préparer une collation saine"],
+    "title": "Préparer une collation saine",
     "needs": [
       "nutrition",
       "joy"
@@ -46,7 +46,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 4,
     "emoji": "🍵",
-    "titles": ["Préparer une boisson chaude"],
+    "title": "Préparer une boisson chaude",
     "needs": [
       "comfort",
       "slowness"
@@ -61,7 +61,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 5,
     "emoji": "🛒",
-    "titles": ["Préparer sa liste de course"],
+    "title": "Préparer sa liste de course",
     "needs": [
       "organization",
       "nutrition"
@@ -76,7 +76,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 6,
     "emoji": "🍎",
-    "titles": ["Manger plus de fruits"],
+    "title": "Manger plus de fruits",
     "needs": [
       "nutrition",
       "comfort"
@@ -90,7 +90,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 7,
     "emoji": "💧",
-    "titles": ["Remplir sa gourde d’eau"],
+    "title": "Remplir sa gourde d’eau",
     "needs": [
       "nutrition",
       "safety"
@@ -104,7 +104,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 8,
     "emoji": "💊",
-    "titles": ["Prendre son traitement"],
+    "title": "Prendre son traitement",
     "needs": [
       "comfort",
       "safety"
@@ -118,7 +118,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 9,
     "emoji": "🚭",
-    "titles": ["Ne pas fumer aujourd’hui"],
+    "title": "Ne pas fumer aujourd’hui",
     "needs": [
       "safety",
       "calm"
@@ -132,7 +132,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 10,
     "emoji": "🛁",
-    "titles": ["Nettoyer la salle de bains"],
+    "title": "Nettoyer la salle de bains",
     "needs": [
       "cleanliness",
       "hygiene"
@@ -146,7 +146,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 11,
     "emoji": "🧴",
-    "titles": ["Faire son soin du jour"],
+    "title": "Faire son soin du jour",
     "needs": [
       "hygiene",
       "comfort"
@@ -160,7 +160,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 12,
     "emoji": "🛀",
-    "titles": ["Prendre un bain chaud"],
+    "title": "Prendre un bain chaud",
     "needs": [
       "comfort",
       "hygiene"
@@ -174,7 +174,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 13,
     "emoji": "🦷",
-    "titles": ["Bien brosser ses dents"],
+    "title": "Bien brosser ses dents",
     "needs": [
       "hygiene",
       "safety"
@@ -188,7 +188,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 14,
     "emoji": "🛌",
-    "titles": ["Changer son linge de lit"],
+    "title": "Changer son linge de lit",
     "needs": [
       "cleanliness",
       "comfort"
@@ -202,7 +202,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 15,
     "emoji": "🧹",
-    "titles": ["Nettoyer couloir et entrée"],
+    "title": "Nettoyer couloir et entrée",
     "needs": [
       "cleanliness",
       "safety"
@@ -216,7 +216,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 16,
     "emoji": "🍽️",
-    "titles": ["Remettre la cuisine en ordre"],
+    "title": "Remettre la cuisine en ordre",
     "needs": [
       "cleanliness",
       "cooperation"
@@ -230,7 +230,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 17,
     "emoji": "🛋️",
-    "titles": ["Ranger le salon"],
+    "title": "Ranger le salon",
     "needs": [
       "cleanliness",
       "comfort"
@@ -244,7 +244,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 18,
     "emoji": "🚽",
-    "titles": ["Nettoyer les toilettes"],
+    "title": "Nettoyer les toilettes",
     "needs": [
       "cleanliness",
       "hygiene"
@@ -258,7 +258,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 19,
     "emoji": "🧻",
-    "titles": ["Vérifier les produits ménages"],
+    "title": "Vérifier les produits ménages",
     "needs": [
       "equipment",
       "cleanliness"
@@ -272,7 +272,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 20,
     "emoji": "🛏️",
-    "titles": ["Aérer et ranger la chambre"],
+    "title": "Aérer et ranger la chambre",
     "needs": [
       "cleanliness",
       "equipment"
@@ -286,7 +286,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 21,
     "emoji": "🪥",
-    "titles": ["Ranger ses affaires de toilette"],
+    "title": "Ranger ses affaires de toilette",
     "needs": [
       "privacy",
       "hygiene"
@@ -300,7 +300,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 22,
     "emoji": "🗄️",
-    "titles": ["Ranger son bureau"],
+    "title": "Ranger son bureau",
     "needs": [
       "organization",
       "equipment"
@@ -315,7 +315,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 23,
     "emoji": "🏢",
-    "titles": ["Ranger la salle de réunion"],
+    "title": "Ranger la salle de réunion",
     "needs": [
       "cleanliness",
       "organization"
@@ -329,7 +329,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 24,
     "emoji": "💻",
-    "titles": ["Trier ses outils numériques"],
+    "title": "Trier ses outils numériques",
     "needs": [
       "organization",
       "calm"
@@ -343,7 +343,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 25,
     "emoji": "🖋️",
-    "titles": ["Vérifier les fournitures de bureau"],
+    "title": "Vérifier les fournitures de bureau",
     "needs": [
       "equipment",
       "organization"
@@ -358,7 +358,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 26,
     "emoji": "🗑️",
-    "titles": ["Sortir les poubelles"],
+    "title": "Sortir les poubelles",
     "needs": [
       "cleanliness",
       "cooperation"
@@ -372,7 +372,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 27,
     "emoji": "♻️",
-    "titles": ["Ramasser et trier les déchets"],
+    "title": "Ramasser et trier les déchets",
     "needs": [
       "cleanliness",
       "equipment"
@@ -387,7 +387,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 28,
     "emoji": "🗃️",
-    "titles": ["Ranger ses étagères"],
+    "title": "Ranger ses étagères",
     "needs": [
       "organization",
       "privacy"
@@ -402,7 +402,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 29,
     "emoji": "🚌",
-    "titles": ["Préparer son départ"],
+    "title": "Préparer son départ",
     "needs": [
       "organization",
       "calm"
@@ -419,7 +419,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 30,
     "emoji": "🛣️",
-    "titles": ["Choisir un trajet différent"],
+    "title": "Choisir un trajet différent",
     "needs": [
       "meaning",
       "calm"
@@ -433,7 +433,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 31,
     "emoji": "🧰",
-    "titles": ["Réparer un petit souci"],
+    "title": "Réparer un petit souci",
     "needs": [
       "equipment",
       "safety"
@@ -447,7 +447,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 32,
     "emoji": "🧭",
-    "titles": ["Revoir l’agenda"],
+    "title": "Revoir l’agenda",
     "needs": [
       "organization",
       "privacy"
@@ -459,7 +459,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 33,
     "emoji": "🗂️",
-    "titles": ["Trier ses documents"],
+    "title": "Trier ses documents",
     "needs": [
       "organization",
       "privacy"
@@ -471,7 +471,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 34,
     "emoji": "📌",
-    "titles": ["Noter ses rappels"],
+    "title": "Noter ses rappels",
     "needs": [
       "organization",
       "communication"
@@ -485,7 +485,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 35,
     "emoji": "💗",
-    "titles": ["Partager une envie"],
+    "title": "Partager une envie",
     "needs": [
       "expression",
       "joy"
@@ -500,7 +500,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 36,
     "emoji": "💶",
-    "titles": ["Vérifier ses dépenses"],
+    "title": "Vérifier ses dépenses",
     "needs": [
       "organization",
       "safety"
@@ -514,7 +514,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 37,
     "emoji": "👚",
-    "titles": ["Trier ses vêtements"],
+    "title": "Trier ses vêtements",
     "needs": [
       "comfort",
       "privacy"
@@ -528,7 +528,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 38,
     "emoji": "🧺",
-    "titles": ["Lancer une machine"],
+    "title": "Lancer une machine",
     "needs": [
       "organization",
       "slowness"
@@ -542,7 +542,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 39,
     "emoji": "🌦️",
-    "titles": ["Partager son humeur"],
+    "title": "Partager son humeur",
     "needs": [
       "expression",
       "communication"
@@ -556,7 +556,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 40,
     "emoji": "👌",
-    "titles": ["Avoir un élan bienveillant"],
+    "title": "Avoir un élan bienveillant",
     "needs": [
       "cooperation",
       "joy"
@@ -571,7 +571,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 41,
     "emoji": "🗣️",
-    "titles": ["Partager une astuce productive"],
+    "title": "Partager une astuce productive",
     "needs": [
       "communication",
       "entertainment"
@@ -587,7 +587,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 42,
     "emoji": "📞",
-    "titles": ["Contacter un proche"],
+    "title": "Contacter un proche",
     "needs": [
       "communication",
       "slowness"
@@ -601,7 +601,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 43,
     "emoji": "🤝",
-    "titles": ["Manger avec sa famille"],
+    "title": "Manger avec sa famille",
     "needs": [
       "joy",
       "inclusion"
@@ -615,7 +615,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 44,
     "emoji": "🧡",
-    "titles": ["Remonter le moral à un ami"],
+    "title": "Remonter le moral à un ami",
     "needs": [
       "communication",
       "inclusion"
@@ -629,7 +629,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 45,
     "emoji": "😊",
-    "titles": ["Sourire à un inconnu"],
+    "title": "Sourire à un inconnu",
     "needs": [
       "joy",
       "inclusion"
@@ -641,7 +641,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 46,
     "emoji": "🤗",
-    "titles": ["Faire un câlin"],
+    "title": "Faire un câlin",
     "needs": [
       "comfort",
       "inclusion"
@@ -655,7 +655,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 47,
     "emoji": "💞",
-    "titles": ["Dire un merci précis"],
+    "title": "Dire un merci précis",
     "needs": [
       "expression",
       "participation"
@@ -669,7 +669,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 48,
     "emoji": "💌",
-    "titles": ["Laisser un mot doux"],
+    "title": "Laisser un mot doux",
     "needs": [
       "expression",
       "privacy"
@@ -683,7 +683,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 49,
     "emoji": "👏",
-    "titles": ["Encourager quelqu’un"],
+    "title": "Encourager quelqu’un",
     "needs": [
       "participation",
       "joy"
@@ -700,7 +700,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 50,
     "emoji": "🙌",
-    "titles": ["Valoriser une bonne idée"],
+    "title": "Valoriser une bonne idée",
     "needs": [
       "communication",
       "participation"
@@ -716,7 +716,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 51,
     "emoji": "🎁",
-    "titles": ["Offrir un petit cadeau"],
+    "title": "Offrir un petit cadeau",
     "needs": [
       "cooperation",
       "expression"
@@ -732,7 +732,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 52,
     "emoji": "🧶",
-    "titles": ["Inclure une personne isolée"],
+    "title": "Inclure une personne isolée",
     "needs": [
       "inclusion",
       "cooperation"
@@ -747,7 +747,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 53,
     "emoji": "💡",
-    "titles": ["Proposer son aide"],
+    "title": "Proposer son aide",
     "needs": [
       "cooperation",
       "participation"
@@ -763,7 +763,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 54,
     "emoji": "💆‍♀️",
-    "titles": ["Offrir un massage court"],
+    "title": "Offrir un massage court",
     "needs": [
       "comfort",
       "expression"
@@ -778,7 +778,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 55,
     "emoji": "🤐",
-    "titles": ["Éviter un gros mot"],
+    "title": "Éviter un gros mot",
     "needs": [
       "communication",
       "calm"
@@ -793,7 +793,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 56,
     "emoji": "🌼",
-    "titles": ["Penser à un bon moment"],
+    "title": "Penser à un bon moment",
     "needs": [
       "joy",
       "privacy"
@@ -805,7 +805,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 57,
     "emoji": "🧠",
-    "titles": ["Se rappeler un souvenir doux"],
+    "title": "Se rappeler un souvenir doux",
     "needs": [
       "joy",
       "privacy"
@@ -817,7 +817,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 58,
     "emoji": "🧘",
-    "titles": ["Créer une soirée détente"],
+    "title": "Créer une soirée détente",
     "needs": [
       "calm",
       "slowness"
@@ -832,7 +832,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 59,
     "emoji": "🌙",
-    "titles": ["Se coucher avant 23h"],
+    "title": "Se coucher avant 23h",
     "needs": [
       "rest",
       "calm"
@@ -846,7 +846,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 60,
     "emoji": "📵",
-    "titles": ["Couper les écrans après 21h"],
+    "title": "Couper les écrans après 21h",
     "needs": [
       "slowness",
       "rest"
@@ -860,7 +860,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 61,
     "emoji": "🕯️",
-    "titles": ["Créer une ambiance douce"],
+    "title": "Créer une ambiance douce",
     "needs": [
       "nature",
       "slowness"
@@ -874,7 +874,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 62,
     "emoji": "😴",
-    "titles": ["Faire une sieste courte"],
+    "title": "Faire une sieste courte",
     "needs": [
       "rest",
       "calm"
@@ -888,7 +888,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 63,
     "emoji": "🌬️",
-    "titles": ["Respirer lentement 2 min"],
+    "title": "Respirer lentement 2 min",
     "needs": [
       "slowness",
       "rest"
@@ -904,7 +904,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 64,
     "emoji": "🧘",
-    "titles": ["S’asseoir 2 min en silence"],
+    "title": "S’asseoir 2 min en silence",
     "needs": [
       "calm",
       "slowness"
@@ -919,7 +919,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 65,
     "emoji": "👀",
-    "titles": ["Admirer le paysage 30 sec"],
+    "title": "Admirer le paysage 30 sec",
     "needs": [
       "nature",
       "rest"
@@ -933,7 +933,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 66,
     "emoji": "🌿",
-    "titles": ["Prendre l’air 5 min"],
+    "title": "Prendre l’air 5 min",
     "needs": [
       "nature",
       "movement"
@@ -948,7 +948,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 67,
     "emoji": "🌳",
-    "titles": ["Se balader dans la nature"],
+    "title": "Se balader dans la nature",
     "needs": [
       "nature",
       "rest"
@@ -963,7 +963,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 68,
     "emoji": "🕊️",
-    "titles": ["Apaiser l’ambiance du groupe"],
+    "title": "Apaiser l’ambiance du groupe",
     "needs": [
       "calm",
       "participation"
@@ -979,7 +979,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 69,
     "emoji": "🫂",
-    "titles": ["Veiller au besoin du groupe"],
+    "title": "Veiller au besoin du groupe",
     "needs": [
       "inclusion",
       "cooperation"
@@ -995,7 +995,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 70,
     "emoji": "🤸",
-    "titles": ["Faire un réveil corporel"],
+    "title": "Faire un réveil corporel",
     "needs": [
       "movement",
       "comfort"
@@ -1007,7 +1007,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 71,
     "emoji": "💪",
-    "titles": ["Faire 30 min d’exercice"],
+    "title": "Faire 30 min d’exercice",
     "needs": [
       "movement",
       "comfort"
@@ -1021,7 +1021,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 72,
     "emoji": "🤸‍♂️",
-    "titles": ["Faire des étirements"],
+    "title": "Faire des étirements",
     "needs": [
       "movement",
       "comfort"
@@ -1035,7 +1035,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 73,
     "emoji": "👏",
-    "titles": ["Applaudir une réussite"],
+    "title": "Applaudir une réussite",
     "needs": [
       "joy",
       "participation"
@@ -1052,7 +1052,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 74,
     "emoji": "📸",
-    "titles": ["Photographier un beau détail"],
+    "title": "Photographier un beau détail",
     "needs": [
       "nature",
       "expression"
@@ -1067,7 +1067,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 75,
     "emoji": "🎧",
-    "titles": ["Mettre une musique calme"],
+    "title": "Mettre une musique calme",
     "needs": [
       "nature",
       "calm"
@@ -1081,7 +1081,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 76,
     "emoji": "🎶",
-    "titles": ["Fredonner une chanson"],
+    "title": "Fredonner une chanson",
     "needs": [
       "expression",
       "entertainment"
@@ -1095,7 +1095,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 77,
     "emoji": "🎮",
-    "titles": ["Regarder une comédie"],
+    "title": "Regarder une comédie",
     "needs": [
       "joy",
       "entertainment"
@@ -1107,7 +1107,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 78,
     "emoji": "🎲",
-    "titles": ["Lancer un jeu collectif"],
+    "title": "Lancer un jeu collectif",
     "needs": [
       "entertainment",
       "participation"
@@ -1124,7 +1124,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 79,
     "emoji": "🧩",
-    "titles": ["Résoudre une énigme"],
+    "title": "Résoudre une énigme",
     "needs": [
       "meaning",
       "entertainment"
@@ -1136,7 +1136,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 80,
     "emoji": "🖼️",
-    "titles": ["Faire une sortie culturelle"],
+    "title": "Faire une sortie culturelle",
     "needs": [
       "joy",
       "meaning"
@@ -1151,7 +1151,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 81,
     "emoji": "✍️",
-    "titles": ["Écrire 3 lignes"],
+    "title": "Écrire 3 lignes",
     "needs": [
       "privacy",
       "expression"
@@ -1163,7 +1163,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 82,
     "emoji": "🖼️",
-    "titles": ["Ajouter une touche déco"],
+    "title": "Ajouter une touche déco",
     "needs": [
       "comfort",
       "joy"
@@ -1179,7 +1179,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 83,
     "emoji": "🪜",
-    "titles": ["Prendre les escaliers"],
+    "title": "Prendre les escaliers",
     "needs": [
       "movement",
       "comfort"
@@ -1195,7 +1195,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 84,
     "emoji": "📘",
-    "titles": ["Lire 10 pages"],
+    "title": "Lire 10 pages",
     "needs": [
       "rest",
       "meaning"
@@ -1210,7 +1210,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 85,
     "emoji": "🔧",
-    "titles": ["Faire du bricolage"],
+    "title": "Faire du bricolage",
     "needs": [
       "equipment",
       "joy"
@@ -1225,7 +1225,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 86,
     "emoji": "🕺",
-    "titles": ["Danser 30 secondes"],
+    "title": "Danser 30 secondes",
     "needs": [
       "movement",
       "joy"
@@ -1241,7 +1241,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 87,
     "emoji": "📻",
-    "titles": ["Écouter un podcast"],
+    "title": "Écouter un podcast",
     "needs": [
       "rest",
       "meaning"
@@ -1253,7 +1253,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 88,
     "emoji": "🤣",
-    "titles": ["Apporter une touche d’humour"],
+    "title": "Apporter une touche d’humour",
     "needs": [
       "communication",
       "entertainment"
@@ -1268,7 +1268,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 89,
     "emoji": "🌸",
-    "titles": ["Sentir un parfum agréable"],
+    "title": "Sentir un parfum agréable",
     "needs": [
       "calm",
       "meaning"
@@ -1283,7 +1283,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 90,
     "emoji": "🍳",
-    "titles": ["Préparer un repas sain"],
+    "title": "Préparer un repas sain",
     "needs": [
       "nutrition",
       "safety"
@@ -1295,6 +1295,99 @@ const LIBRARY_JSON_DATA = [
     "frequency": 1,
     "target": "individual"
   }
+];
+
+const HABIT_LINKS = [
+  { "id": 1, "related": [22, 23, 35] },
+  { "id": 2, "related": [3, 5, 10] },
+  { "id": 3, "related": [5, 6, 14] },
+  { "id": 4, "related": [8, 9, 1] },
+  { "id": 5, "related": [6, 7, 15] },
+  { "id": 6, "related": [7, 43, 16] },
+  { "id": 7, "related": [43, 90, 17] },
+  { "id": 8, "related": [9, 11, 22] },
+  { "id": 9, "related": [11, 12, 23] },
+  { "id": 10, "related": [14, 15, 4] },
+  { "id": 11, "related": [12, 13, 8] },
+  { "id": 12, "related": [13, 4, 9] },
+  { "id": 13, "related": [4, 8, 11] },
+  { "id": 14, "related": [15, 16, 2] },
+  { "id": 15, "related": [16, 17, 3] },
+  { "id": 16, "related": [17, 18, 5] },
+  { "id": 17, "related": [18, 19, 6] },
+  { "id": 18, "related": [19, 20, 10] },
+  { "id": 19, "related": [20, 21, 14] },
+  { "id": 20, "related": [21, 26, 19] },
+  { "id": 21, "related": [26, 27, 31] },
+  { "id": 22, "related": [23, 24, 36] },
+  { "id": 23, "related": [24, 25, 1] },
+  { "id": 24, "related": [25, 29, 4] },
+  { "id": 25, "related": [29, 32, 8] },
+  { "id": 26, "related": [27, 28, 37] },
+  { "id": 27, "related": [28, 31, 38] },
+  { "id": 28, "related": [31, 37, 85] },
+  { "id": 29, "related": [32, 33, 65] },
+  { "id": 30, "related": [65, 66, 70] },
+  { "id": 31, "related": [37, 38, 20] },
+  { "id": 32, "related": [33, 34, 24] },
+  { "id": 33, "related": [34, 36, 25] },
+  { "id": 34, "related": [36, 1, 29] },
+  { "id": 35, "related": [39, 40, 2] },
+  { "id": 36, "related": [1, 22, 32] },
+  { "id": 37, "related": [38, 85, 21] },
+  { "id": 38, "related": [85, 10, 27] },
+  { "id": 39, "related": [40, 41, 42] },
+  { "id": 40, "related": [41, 42, 44] },
+  { "id": 41, "related": [44, 45, 76] },
+  { "id": 42, "related": [44, 45, 3] },
+  { "id": 43, "related": [90, 2, 6] },
+  { "id": 44, "related": [45, 46, 79] },
+  { "id": 45, "related": [46, 47, 77] },
+  { "id": 46, "related": [47, 48, 39] },
+  { "id": 47, "related": [48, 49, 40] },
+  { "id": 48, "related": [49, 50, 41] },
+  { "id": 49, "related": [50, 51, 52] },
+  { "id": 50, "related": [51, 52, 53] },
+  { "id": 51, "related": [52, 53, 68] },
+  { "id": 52, "related": [53, 54, 69] },
+  { "id": 53, "related": [54, 55, 73] },
+  { "id": 54, "related": [55, 35, 78] },
+  { "id": 55, "related": [35, 39, 88] },
+  { "id": 56, "related": [57, 68, 80] },
+  { "id": 57, "related": [68, 69, 81] },
+  { "id": 58, "related": [59, 60, 11] },
+  { "id": 59, "related": [60, 61, 12] },
+  { "id": 60, "related": [61, 62, 13] },
+  { "id": 61, "related": [62, 63, 30] },
+  { "id": 62, "related": [63, 64, 56] },
+  { "id": 63, "related": [64, 4, 57] },
+  { "id": 64, "related": [4, 8, 58] },
+  { "id": 65, "related": [66, 67, 70] },
+  { "id": 66, "related": [67, 70, 71] },
+  { "id": 67, "related": [70, 71, 72] },
+  { "id": 68, "related": [69, 73, 52] },
+  { "id": 69, "related": [73, 78, 53] },
+  { "id": 70, "related": [71, 72, 72] },
+  { "id": 71, "related": [72, 83, 74] },
+  { "id": 72, "related": [83, 86, 83] },
+  { "id": 73, "related": [78, 82, 54] },
+  { "id": 74, "related": [83, 86, 61] },
+  { "id": 75, "related": [89, 58, 62] },
+  { "id": 76, "related": [77, 79, 87] },
+  { "id": 77, "related": [79, 80, 76] },
+  { "id": 78, "related": [82, 88, 79] },
+  { "id": 79, "related": [80, 81, 80] },
+  { "id": 80, "related": [81, 84, 81] },
+  { "id": 81, "related": [84, 87, 84] },
+  { "id": 82, "related": [88, 35, 65] },
+  { "id": 83, "related": [86, 30, 66] },
+  { "id": 84, "related": [87, 76, 67] },
+  { "id": 85, "related": [10, 14, 37] },
+  { "id": 86, "related": [30, 65, 71] },
+  { "id": 87, "related": [76, 77, 75] },
+  { "id": 88, "related": [39, 40, 87] },
+  { "id": 89, "related": [75, 58, 59] },
+  { "id": 90, "related": [2, 3, 7] }
 ];
 
 if (typeof module !== "undefined" && module.exports) {
