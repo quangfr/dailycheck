@@ -660,7 +660,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.26.3';
+    const APP_VERSION = '0.11.26.4';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1400,7 +1400,7 @@
     const INSTALL_PROMPT_SUPPRESSION_MS = 15 * 24 * 60 * 60 * 1000;
     const INSTALL_PROMPT_FIRST_HABIT_KEY = 'habitu-install-first-habit';
     const STORAGE_LAST_MEMBER_NAME = 'habitu-last-member-name';
-    const STORAGE_SPACE_ACTIVITIES_KEY = 'habitu-space-activities';
+    const STORAGE_ACTIVITY_STORE_KEY = 'habitu-space-activities';
     let deferredInstallPrompt = null;
     let installPromptAutoShown = false;
     let installPromptAwaitingModalClose = false;
@@ -1435,31 +1435,86 @@
       safeStorageSet(STORAGE_GUEST_ID_KEY, nextId);
       return nextId;
     }
-    function readSpaceActivitiesFromStorage() {
+    function readOwnerActivityStore() {
       try {
-        const raw = safeStorageGet(STORAGE_SPACE_ACTIVITIES_KEY);
+        const raw = safeStorageGet(STORAGE_ACTIVITY_STORE_KEY);
         if (!raw) return {};
         const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== 'object') return {};
-        const normalized = {};
-        Object.keys(parsed).forEach(spaceId => {
-          const value = parsed[spaceId];
-          if (Array.isArray(value)) {
-            normalized[spaceId] = value;
-          }
-        });
-        return normalized;
+        if (parsed && typeof parsed === 'object') return parsed;
       } catch (err) {
-        console.warn('readSpaceActivitiesFromStorage', err);
-        return {};
+        console.warn('readOwnerActivityStore', err);
+      }
+      return {};
+    }
+    function persistOwnerActivityStore() {
+      try {
+        safeStorageSet(STORAGE_ACTIVITY_STORE_KEY, JSON.stringify(ownerActivityStore));
+      } catch (err) {
+        console.warn('persistOwnerActivityStore', err);
       }
     }
-    function persistSpaceActivitiesToStorage() {
-      try {
-        safeStorageSet(STORAGE_SPACE_ACTIVITIES_KEY, JSON.stringify(SPACE_ACTIVITIES));
-      } catch (err) {
-        console.warn('persistSpaceActivitiesToStorage', err);
+    function activityRecordKey(ownerId, spaceId, habitId, dayKey) {
+      if (!ownerId || !spaceId || !habitId || !dayKey) return '';
+      return `${ownerId}:${spaceId}:${habitId}:${dayKey}`;
+    }
+    function upsertOwnerActivityRecord({ ownerId, ownerLabel, spaceId, habitId, dayKey, state, recordedAt, userEmail, userId }) {
+      const key = activityRecordKey(ownerId, spaceId, habitId, dayKey);
+      if (!key) return null;
+      const timestamp = recordedAt ? timestampToDate(recordedAt) : new Date();
+      const entry = {
+        ownerId,
+        ownerLabel: ownerLabel || getCurrentOwnerLabel(),
+        spaceId,
+        habitId,
+        dayKey,
+        state: Number.isFinite(Number(state)) ? Number(state) : 0,
+        recordedAt: timestamp.toISOString(),
+        updatedAt: Date.now()
+      };
+      if (userEmail) {
+        entry.userEmail = normalizeEmail(userEmail);
       }
+      if (userId) {
+        entry.userId = normalizeMemberKey(userId);
+      }
+      ownerActivityStore[key] = entry;
+      persistOwnerActivityStore();
+      return entry;
+    }
+    function getOwnerActivityRecord(ownerId, spaceId, habitId, dayKey) {
+      const key = activityRecordKey(ownerId, spaceId, habitId, dayKey);
+      if (!key) return null;
+      const record = ownerActivityStore[key];
+      if (!record) return null;
+      return { ...record, recordedAt: timestampToDate(record.recordedAt) || new Date(0) };
+    }
+    function getOwnerActivityRecords(filters = {}) {
+      const { spaceId, ownerId, since, habitId, dayKey } = filters;
+      return Object.values(ownerActivityStore).filter(record => {
+        if (spaceId && record.spaceId !== spaceId) return false;
+        if (ownerId && record.ownerId !== ownerId) return false;
+        if (habitId && record.habitId !== habitId) return false;
+        if (dayKey && record.dayKey !== dayKey) return false;
+        if (since) {
+          const recorded = timestampToDate(record.recordedAt);
+          if (!recorded || recorded < since) return false;
+        }
+        return true;
+      }).map(record => ({ ...record, owner: record.ownerLabel || '', recordedAt: timestampToDate(record.recordedAt) || new Date(0) }));
+    }
+    function removeOwnerActivityRecords(filterFn) {
+      let removed = false;
+      Object.keys(ownerActivityStore).forEach(key => {
+        const record = ownerActivityStore[key];
+        if (record && filterFn(record)) {
+          delete ownerActivityStore[key];
+          removed = true;
+        }
+      });
+      if (removed) {
+        persistOwnerActivityStore();
+      }
+      return removed;
     }
     function readWeeklyScoreTargets() {
       try {
@@ -1837,7 +1892,7 @@
 
     /* Spaces */
     const SPACES = {};
-    const SPACE_ACTIVITIES = readSpaceActivitiesFromStorage();
+    let ownerActivityStore = readOwnerActivityStore();
     const INVITE_CACHE = {};
     const STORAGE_USER_PROFILE = 'habitu-user-profile';
     const STORAGE_GUEST_SPACES = 'habitu-guest-spaces';
@@ -2043,12 +2098,12 @@
       clearObject(HAS_DESC);
       DELETED_HABITS.clear();
       allowedSpaces = [];
-      Object.keys(SPACE_ACTIVITIES).forEach(k => delete SPACE_ACTIVITIES[k]);
+      ownerActivityStore = {};
+      persistOwnerActivityStore();
       Object.keys(INVITE_CACHE).forEach(k => delete INVITE_CACHE[k]);
       Object.keys(SPACES).forEach(k => delete SPACES[k]);
       spaceId = null;
       spacesInitialized = false;
-      persistSpaceActivitiesToStorage();
     }
     function normalizeEmail(email) {
       return String(email || '').trim().toLowerCase();
@@ -2187,8 +2242,8 @@
       if (sp?.memberIdByEmail?.[normalized]) {
         return sp.memberIdByEmail[normalized];
       }
-      const activities = SPACE_ACTIVITIES[spaceIdArg] || [];
-      for (const activity of activities) {
+      const records = getOwnerActivityRecords({ spaceId: spaceIdArg });
+      for (const activity of records) {
         if (normalizeEmail(activity.userEmail || '') === normalized && activity.userId) {
           return activity.userId;
         }
@@ -2315,13 +2370,6 @@
       }
       return normalizeOwnerLabel(activeProfileName);
     }
-    function buildActivityKey(event) {
-      if (!event || !event.habitId) return '';
-      const ownerKey = getRecordOwnerKey(event) || 'anon';
-      const dayKey = getEventDayKey(event);
-      if (!dayKey) return '';
-      return `${ownerKey}:${event.habitId}:${dayKey}`;
-    }
     function isCurrentUserLabel(label) {
       const normalized = normalizeOwnerLabel(label);
       if (!normalized) return false;
@@ -2355,29 +2403,23 @@
     }
     function upsertLocalHabitActivity(event) {
       if (!event || !event.spaceId || !event.habitId) return;
-      const owner = event.owner || getOwnerNameFromEvent(event);
-      if (!owner) return;
+      const canonicalOwnerKey = getProfileCanonicalId() || getCurrentOwnerKey();
+      const ownerId = normalizeMemberKey(event.ownerId || event.userId || canonicalOwnerKey);
+      if (!ownerId) return;
+      const ownerLabel = event.owner || getOwnerNameFromEvent(event) || getCurrentOwnerLabel();
       const recordedAt = timestampToDate(event.recordedAt) || new Date();
       const dayKey = event.activityDate || dayKeyFromDate(recordedAt);
-      const key = `${owner}:${event.habitId}:${dayKey}`;
-      const bucket = SPACE_ACTIVITIES[event.spaceId] || [];
-      const idx = bucket.findIndex(ev => {
-        const existingOwner = ev.owner || getOwnerNameFromEvent(ev);
-        if (!existingOwner) return false;
-        const existingDayKey = ev.activityDate || dayKeyFromDate(timestampToDate(ev.recordedAt) || new Date(0));
-        return `${existingOwner}:${ev.habitId}:${existingDayKey}` === key;
+      upsertOwnerActivityRecord({
+        ownerId,
+        ownerLabel,
+        spaceId: event.spaceId,
+        habitId: event.habitId,
+        dayKey,
+        state: event.state,
+        recordedAt,
+        userEmail: event.userEmail,
+        userId: event.userId
       });
-      const stored = { ...event, recordedAt };
-      if (idx === -1) {
-        bucket.push(stored);
-      } else {
-        const prev = timestampToDate(bucket[idx].recordedAt) || new Date(0);
-        if (recordedAt >= prev) {
-          bucket[idx] = stored;
-        }
-      }
-      SPACE_ACTIVITIES[event.spaceId] = bucket;
-      persistSpaceActivitiesToStorage();
     }
     function computeActorCountsForEvent(event) {
       if (!event || !event.spaceId || !event.habitId) {
@@ -2748,31 +2790,10 @@
         return (SPACES[spaceId]?.ch || []).filter(habit => habit && !habit.deleted);
       }
     }
-    async function loadActivitiesForSpace(spaceId, days = 120) {
-      if (!HABITU_FIREBASE_DB || !spaceId) return [];
-      const since = new Date();
-      since.setDate(since.getDate() - days);
-      try {
-        const snapshot = await HABITU_FIREBASE_DB.collection('activities')
-          .where('spaceId', '==', spaceId)
-          .where('recordedAt', '>=', since)
-          .orderBy('recordedAt', 'desc')
-          .get();
-        snapshot.docs.forEach(doc => {
-          const data = { id: doc.id, ...doc.data() };
-          const normalized = {
-            ...data,
-            recordedAt: timestampToDate(data.recordedAt) || new Date()
-          };
-          upsertLocalHabitActivity(normalized);
-        });
-        return SPACE_ACTIVITIES[spaceId] || [];
-      } catch (err) {
-        console.warn('loadActivitiesForSpace', err);
-        SPACE_ACTIVITIES[spaceId] = SPACE_ACTIVITIES[spaceId] || [];
-        persistSpaceActivitiesToStorage();
-        return SPACE_ACTIVITIES[spaceId];
-      }
+    async function loadActivitiesForSpace(spaceId, days = DEFAULT_GARDENER_WINDOW_DAYS) {
+      if (!spaceId) return [];
+      const since = days ? addDays(curDate(), -days) : null;
+      return getOwnerActivityRecords({ spaceId, since });
     }
     function getAllPersonalSpaceIds() {
       return Object.values(SPACES)
@@ -3300,55 +3321,27 @@
     }
     function getSpaceEvents(spaceId, since = null) {
       if (!spaceId) return [];
-      const normalizedSpaceId = String(spaceId);
-      return (SPACE_ACTIVITIES[spaceId] || []).map(evt => {
-        if (!evt) return null;
-        if (evt.spaceId && String(evt.spaceId) !== normalizedSpaceId) return null;
-        const recordedAt = timestampToDate(evt.recordedAt);
-        if (!recordedAt) return null;
-        return { ...evt, recordedAt };
-      }).filter(evt => !!evt && (!since || evt.recordedAt >= since));
+      return getOwnerActivityRecords({ spaceId, since });
     }
     function getHabitRecords(spaceId, habitId, since = null, ownerFilter = '__all__') {
-      if (!habitId) return [];
-      const events = getSpaceEvents(spaceId, since).filter(ev => ev.type === 'realization' && ev.habitId === habitId);
-      const map = new Map();
-      events.forEach(event => {
-        const ownerLabel = getOwnerNameFromEvent(event);
-        if (ownerFilter !== '__all__' && ownerLabel !== ownerFilter) return;
-        const key = buildActivityKey(event);
-        if (!key) return;
-        const prev = map.get(key);
-        if (!prev || event.recordedAt > prev.recordedAt) {
-          map.set(key, { ...event, owner: ownerLabel });
-        }
-      });
-      return Array.from(map.values());
+      if (!spaceId || !habitId) return [];
+      const records = getOwnerActivityRecords({ spaceId, habitId, since });
+      return records.filter(rec => ownerFilter === '__all__' || (rec.ownerLabel || '').trim() === ownerFilter);
     }
     function getMergedPersonalSpaceRecords(days = DEFAULT_GARDENER_WINDOW_DAYS) {
       const since = days ? addDays(curDate(), -days) : null;
       const ids = getAllPersonalSpaceIds();
-      const dedup = new Map();
+      const all = [];
       ids.forEach(spaceId => {
-        const events = getSpaceEvents(spaceId, since);
-        events.forEach(event => {
-          const ownerLabel = getOwnerNameFromEvent(event);
-          if (!ownerLabel) return;
-          const key = buildActivityKey(event);
-          if (!key) return;
-          const prev = dedup.get(key);
-          if (!prev || event.recordedAt > prev.recordedAt) {
-            dedup.set(key, { ...event, owner: ownerLabel });
-          }
-        });
+        const records = getOwnerActivityRecords({ spaceId, since });
+        all.push(...records);
       });
-      const merged = Array.from(dedup.values());
-      merged.sort((a, b) => {
+      all.sort((a, b) => {
         const aTime = timestampToDate(a.recordedAt)?.getTime() || 0;
         const bTime = timestampToDate(b.recordedAt)?.getTime() || 0;
         return bTime - aTime;
       });
-      return merged;
+      return all;
     }
     function getPersonalActivityRecords(days = DEFAULT_GARDENER_WINDOW_DAYS) {
       if (PERSONAL_ACTIVITY_CACHE_DAYS === days && PERSONAL_ACTIVITY_CACHE.length) {
@@ -3387,18 +3380,7 @@
         });
     }
     function getSpaceRecords(spaceId, since = null) {
-      const events = getSpaceEvents(spaceId, since).filter(ev => ev.type === 'realization');
-      const map = new Map();
-      events.forEach(event => {
-        const ownerLabel = getOwnerNameFromEvent(event);
-        const key = buildActivityKey(event);
-        if (!key) return;
-        const prev = map.get(key);
-        if (!prev || event.recordedAt > prev.recordedAt) {
-          map.set(key, { ...event, owner: ownerLabel });
-        }
-      });
-      return Array.from(map.values());
+      return getOwnerActivityRecords({ spaceId, since });
     }
     /* Emojis & bouton */
     function currentBigEmoji(btn, tot) { return btn.dataset.override || (tot <= 7 ? '🌱' : tot <= 14 ? '🍀' : tot <= 21 ? '🌼' : tot <= 28 ? '🌻' : tot <= 35 ? '🌷' : tot <= 42 ? '🌹' : tot <= 49 ? '🪻' : tot <= 56 ? '💐' : tot <= 64 ? '🎋' : '🎋'); }
@@ -4806,10 +4788,7 @@
     async function deleteMemberActivities(spaceIdArg, email) {
       if (!spaceIdArg || !email) return;
       const normalized = normalizeEmail(email);
-      if (SPACE_ACTIVITIES[spaceIdArg]) {
-        SPACE_ACTIVITIES[spaceIdArg] = (SPACE_ACTIVITIES[spaceIdArg] || []).filter(ev => normalizeEmail(ev.userEmail || '') !== normalized);
-        persistSpaceActivitiesToStorage();
-      }
+      removeOwnerActivityRecords(record => record.spaceId === spaceIdArg && normalizeEmail(record.userEmail || '') === normalized);
       if (!HABITU_FIREBASE_DB) return;
       try {
         const snapshot = await HABITU_FIREBASE_DB.collection('activities')
@@ -4865,8 +4844,7 @@
         console.warn('deleteSpace', err);
       }
       delete SPACES[target];
-      delete SPACE_ACTIVITIES[target];
-      persistSpaceActivitiesToStorage();
+      removeOwnerActivityRecords(record => record.spaceId === target);
       allowedSpaces = allowedSpaces.filter(id => id !== target);
       const nextSpace = allowedSpaces[0] || null;
       spaceId = nextSpace;
