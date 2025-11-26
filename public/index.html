@@ -1418,6 +1418,23 @@
         localStorage.setItem(key, value);
       } catch (e) { }
     }
+    function generateGuestId() {
+      if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+      }
+      const timestamp = Date.now().toString(36);
+      const randomPart = Math.random().toString(36).slice(2, 10);
+      return `guest-${timestamp}-${randomPart}`;
+    }
+    function getOrCreateGuestId() {
+      let stored = safeStorageGet(STORAGE_GUEST_ID_KEY);
+      if (stored) {
+        return stored;
+      }
+      const nextId = generateGuestId();
+      safeStorageSet(STORAGE_GUEST_ID_KEY, nextId);
+      return nextId;
+    }
     function readSpaceActivitiesFromStorage() {
       try {
         const raw = safeStorageGet(STORAGE_SPACE_ACTIVITIES_KEY);
@@ -1825,6 +1842,7 @@
     const STORAGE_USER_PROFILE = 'habitu-user-profile';
     const STORAGE_GUEST_SPACES = 'habitu-guest-spaces';
     const STORAGE_PROFILE_SETUP_KEY = 'habitu-profile-setup-done';
+    const STORAGE_GUEST_ID_KEY = 'habitu-guest-id';
     const GARDEN_TYPES = [
       { emoji: '🏠', label: '🏠 Colocation', type: 'group', desc: 'Petites routines partagées à la maison.' },
       { emoji: '🌞', label: '🌞 Famille', type: 'group', desc: 'Rituels doux pour toute la famille.' },
@@ -1834,6 +1852,11 @@
     ];
     let allowedSpaces = [];
     let currentProfile = loadStoredProfile();
+    if (currentProfile?.guest && !currentProfile?.guestId) {
+      const guestId = getOrCreateGuestId();
+      currentProfile = { ...currentProfile, guestId };
+      persistProfile({ guestId });
+    }
     let guestSpaces = loadGuestSpaces();
     let pendingInviteToken = new URLSearchParams(window.location.search).get('invite');
     let pendingInviteInfo = null;
@@ -1994,6 +2017,9 @@
         return;
       }
       const nextProfile = { ...(currentProfile || {}), ...profile };
+      if (nextProfile.guest && !nextProfile.guestId) {
+        nextProfile.guestId = getOrCreateGuestId();
+      }
       if (!PROFILE_MODE_INFO[nextProfile.profileMode]) {
         nextProfile.profileMode = DEFAULT_PROFILE_MODE;
       }
@@ -2226,6 +2252,65 @@
     }
     function normalizeOwnerLabel(label) {
       return ((label || '').trim() || '').toLowerCase();
+    }
+    function getEventOwnerId(event) {
+      if (!event) return '';
+      return normalizeMemberKey(event.ownerId || event.userId || '');
+    }
+    function getEventOwnerLabel(event) {
+      if (!event) return '';
+      return (event.owner || event.ownerName || event.actorName || '').trim();
+    }
+    function getRecordOwnerKey(record) {
+      if (!record) return '';
+      const ownerId = getEventOwnerId(record);
+      if (ownerId) return ownerId;
+      const label = getEventOwnerLabel(record);
+      return label ? normalizeOwnerLabel(label) : '';
+    }
+    function getCurrentOwnerKey() {
+      if (currentProfile?.uid) {
+        return normalizeMemberKey(currentProfile.uid);
+      }
+      if (currentProfile?.guest && currentProfile?.guestId) {
+        return normalizeMemberKey(currentProfile.guestId);
+      }
+      return normalizeOwnerLabel(getCurrentOwnerLabel());
+    }
+    function doesRecordMatchOwnerKey(record, key) {
+      if (!record || !key) return false;
+      if (getRecordOwnerKey(record) === key) return true;
+      const label = normalizeOwnerLabel(record.owner || getEventOwnerLabel(record));
+      if (label && label === key) return true;
+      return false;
+    }
+    function isCurrentRecordOwner(record) {
+      if (!record) return false;
+      const ownerKey = getRecordOwnerKey(record);
+      const currentKey = getCurrentOwnerKey();
+      if (ownerKey && currentKey && ownerKey === currentKey) return true;
+      const recordEmail = normalizeEmail(record.userEmail);
+      const currentEmail = normalizeEmail(currentProfile?.email);
+      if (recordEmail && currentEmail && recordEmail === currentEmail) return true;
+      return isCurrentUserLabel(record.owner);
+    }
+    function resolveActiveProfileOwnerKey() {
+      if (!activeProfileName) return '';
+      const isSelfProfile = normalizeOwnerLabel(activeProfileName) === normalizeOwnerLabel(getCurrentOwnerLabel());
+      if (isSelfProfile) {
+        return getCurrentOwnerKey();
+      }
+      if (activeProfileEmail) {
+        return normalizeEmail(activeProfileEmail);
+      }
+      return normalizeOwnerLabel(activeProfileName);
+    }
+    function buildActivityKey(event) {
+      if (!event || !event.habitId) return '';
+      const ownerKey = getRecordOwnerKey(event) || 'anon';
+      const dayKey = getEventDayKey(event);
+      if (!dayKey) return '';
+      return `${ownerKey}:${event.habitId}:${dayKey}`;
     }
     function isCurrentUserLabel(label) {
       const normalized = normalizeOwnerLabel(label);
@@ -2485,6 +2570,7 @@
       }
       const actorName = currentProfile?.name || 'Moi';
       const ownerLabel = (payload.owner || getOwnerNameFromEvent(payload) || getCurrentOwnerLabel()).trim();
+      const ownerId = normalizeMemberKey(payload.ownerId || currentProfile?.uid || currentProfile?.guestId || '');
       const currentSpaceType = getSpace()?.type || null;
       const targetRecordedAt = payload.recordedAt ? timestampToDate(payload.recordedAt) : null;
       const localRecordedAt = targetRecordedAt || new Date();
@@ -2495,6 +2581,7 @@
         ...payload,
         habitId,
         spaceId,
+        ownerId: ownerId || null,
         spaceType: currentSpaceType,
         userEmail: currentProfile?.email || null,
         userId: currentProfile?.uid || null,
@@ -3208,13 +3295,13 @@
       const events = getSpaceEvents(spaceId, since).filter(ev => ev.type === 'realization' && ev.habitId === habitId);
       const map = new Map();
       events.forEach(event => {
-        const owner = getOwnerNameFromEvent(event);
-        if (ownerFilter !== '__all__' && owner !== ownerFilter) return;
-        const dayKey = getEventDayKey(event);
-        const key = `${owner}:${event.habitId}:${dayKey}`;
+        const ownerLabel = getOwnerNameFromEvent(event);
+        if (ownerFilter !== '__all__' && ownerLabel !== ownerFilter) return;
+        const key = buildActivityKey(event);
+        if (!key) return;
         const prev = map.get(key);
         if (!prev || event.recordedAt > prev.recordedAt) {
-          map.set(key, { ...event, owner });
+          map.set(key, { ...event, owner: ownerLabel });
         }
       });
       return Array.from(map.values());
@@ -3226,14 +3313,13 @@
       ids.forEach(spaceId => {
         const events = getSpaceEvents(spaceId, since);
         events.forEach(event => {
-          const owner = getOwnerNameFromEvent(event);
-          if (!owner) return;
-          const dayKey = getEventDayKey(event);
-          if (!dayKey) return;
-          const key = `${owner}:${event.habitId}:${dayKey}`;
+          const ownerLabel = getOwnerNameFromEvent(event);
+          if (!ownerLabel) return;
+          const key = buildActivityKey(event);
+          if (!key) return;
           const prev = dedup.get(key);
           if (!prev || event.recordedAt > prev.recordedAt) {
-            dedup.set(key, { ...event, owner });
+            dedup.set(key, { ...event, owner: ownerLabel });
           }
         });
       });
@@ -3285,12 +3371,12 @@
       const events = getSpaceEvents(spaceId, since).filter(ev => ev.type === 'realization');
       const map = new Map();
       events.forEach(event => {
-        const owner = getOwnerNameFromEvent(event);
-        const dayKey = getEventDayKey(event);
-        const key = `${owner}:${event.habitId}:${dayKey}`;
+        const ownerLabel = getOwnerNameFromEvent(event);
+        const key = buildActivityKey(event);
+        if (!key) return;
         const prev = map.get(key);
         if (!prev || event.recordedAt > prev.recordedAt) {
-          map.set(key, { ...event, owner });
+          map.set(key, { ...event, owner: ownerLabel });
         }
       });
       return Array.from(map.values());
@@ -3426,7 +3512,7 @@
           windowStart.setHours(0, 0, 0, 0);
           const records = getHabitRecords(spaceId, it.id, windowStart);
           const viewRecordedAt = new Date(today);
-          let userRecord = records.find(r => isCurrentUserLabel(r.owner)) || null;
+          let userRecord = records.find(isCurrentRecordOwner) || null;
           const doneRecord = records.find(r => (r.state || 0) >= 1) || null;
           let ownerRecord = null;
           if (mode.type === 'commun') {
@@ -3469,6 +3555,7 @@
           const baseMin = BASE_MINUTES[it.id] || 15;
           const ownerState = ownerRecord?.state ?? 0;
           const owner = ownerState > 0 ? canonicalOwnerLabel(ownerRecord?.owner || '') : '';
+          const ownerIdValue = ownerState > 0 ? (ownerRecord?.ownerId || ownerRecord?.userId || '') : '';
           const userState = userRecord?.state ?? 0;
           const storedCount = Number(userRecord?.count ?? 0) || 0;
           const computedCount = storedCount || (userState === 2 ? freqWeekly + 1 : 0);
@@ -3489,6 +3576,7 @@
           }
           btn.dataset.state = String(state);
           btn.dataset.owner = owner;
+          btn.dataset.ownerId = ownerIdValue || '';
           btn.dataset.count = '0';
           btn.dataset.baseMin = String(baseMin);
           btn.dataset.recur = String(freqWeekly);
@@ -3536,10 +3624,12 @@
             const previousOwner = (btn.dataset.owner || '').trim();
             if (!keepOwner && nst === 0) {
               btn.dataset.owner = '';
+              btn.dataset.ownerId = '';
               btn.dataset.count = '0';
             }
             if (nst >= 1 && !btn.dataset.owner) {
               btn.dataset.owner = getCurrentOwnerLabel();
+              btn.dataset.ownerId = normalizeMemberKey(currentProfile?.uid || '');
             }
             syncOwnerListFromState(previousOwner);
             drawBtn(btn);
@@ -3550,6 +3640,7 @@
               type: 'realization',
               state: nst,
               owner: btn.dataset.owner,
+              ownerId: btn.dataset.ownerId,
               count: +btn.dataset.count || 0,
               frequency: freqWeekly,
               modeType: mode.type,
@@ -4086,13 +4177,14 @@
       let prevWeekRecords = [];
       let scoreValue = 0;
       let diff = 0;
-      const normalizedProfile = activeProfileName ? normalizeOwnerLabel(activeProfileName) : '';
-      if (spaceId && normalizedProfile) {
+      const profileOwnerKey = resolveActiveProfileOwnerKey();
+      const hasProfileKey = Boolean(profileOwnerKey);
+      if (spaceId && hasProfileKey) {
         const snapshot = getSpaceRecords(spaceId, prevRange.since);
         lastWeekRecords = snapshot.filter(rec => rec.recordedAt <= currentRange.until);
         prevWeekRecords = snapshot.filter(rec => rec.recordedAt >= prevRange.since && rec.recordedAt <= prevRange.until);
-        const profileCurrent = lastWeekRecords.filter(rec => normalizeOwnerLabel(rec.owner) === normalizedProfile);
-        const profilePrevious = prevWeekRecords.filter(rec => normalizeOwnerLabel(rec.owner) === normalizedProfile);
+        const profileCurrent = lastWeekRecords.filter(rec => doesRecordMatchOwnerKey(rec, profileOwnerKey));
+        const profilePrevious = prevWeekRecords.filter(rec => doesRecordMatchOwnerKey(rec, profileOwnerKey));
         scoreValue = profileCurrent.length;
         diff = scoreValue - profilePrevious.length;
         renderNeedsOverview(space, currentRange, lastWeekRecords);
@@ -4103,14 +4195,14 @@
         score: scoreValue,
         diff,
         target: scoreTarget,
-        placeholder: spaceId && normalizedProfile ? null : '—'
+        placeholder: spaceId && hasProfileKey ? null : '—'
       });
       const goalRange = $("#scoreGoalRange");
       if (goalRange) {
         goalRange.value = String(scoreTarget);
         updateScoreGoalPreview(scoreTarget);
       }
-      if (!spaceId || !normalizedProfile) {
+      if (!spaceId || !hasProfileKey) {
         if (empty) empty.classList.remove('hide');
         return;
       }
@@ -4119,7 +4211,7 @@
       if (range.until) {
         records = records.filter(rec => rec.recordedAt <= range.until);
       }
-      records = records.filter(rec => normalizeOwnerLabel(rec.owner) === normalizedProfile);
+      records = records.filter(rec => doesRecordMatchOwnerKey(rec, profileOwnerKey));
       const minutesPerHabit = new Map();
       records.forEach(rec => {
         if ((rec.state || 0) >= 1) {
@@ -4795,7 +4887,9 @@
       if (!keys.size) keys.add('__current__');
       const names = [];
       keys.forEach(key => {
-        const label = getSpaceMemberLabel(sp, key) || ((key === '__current__' || isCurrentMemberKey(key)) ? 'Moi' : '');
+        const isCurrentKey = key === '__current__' || isCurrentMemberKey(key);
+        const currentLabel = currentProfile ? (currentProfile.pseudo || currentProfile.name || 'Moi') : 'Moi';
+        const label = getSpaceMemberLabel(sp, key) || (isCurrentKey ? currentLabel : '');
         if (label) names.push(label);
       });
       if (!names.length) names.push('Moi');
@@ -4837,20 +4931,29 @@
         return;
       }
       const totals = new Map();
-      const participantLabels = new Set();
+      const labelsByKey = new Map();
       filtered.forEach(rec => {
-        const owner = canonicalOwnerLabel(rec.owner);
-        if (!owner) return;
-        totals.set(owner, (totals.get(owner) || 0) + 1);
-        participantLabels.add(owner);
+        const ownerKey = getRecordOwnerKey(rec);
+        if (!ownerKey) return;
+        totals.set(ownerKey, (totals.get(ownerKey) || 0) + 1);
+        if (!labelsByKey.has(ownerKey)) {
+          const label = canonicalOwnerLabel(rec.owner || getEventOwnerLabel(rec)) || getCurrentOwnerLabel();
+          labelsByKey.set(ownerKey, label);
+        }
       });
-      participantLabels.add(getCurrentOwnerLabel());
-      const rows = Array.from(participantLabels)
-        .map(label => ({
-          n: label,
-          me: isCurrentUserLabel(label),
-          totalCount: totals.get(label) || 0,
-          txt: String(totals.get(label) || 0)
+      const currentKey = getCurrentOwnerKey();
+      if (!totals.has(currentKey)) {
+        totals.set(currentKey, 0);
+      }
+      if (!labelsByKey.has(currentKey)) {
+        labelsByKey.set(currentKey, getCurrentOwnerLabel());
+      }
+      const rows = Array.from(totals.keys())
+        .map(key => ({
+          n: labelsByKey.get(key) || getCurrentOwnerLabel(),
+          me: key === currentKey,
+          totalCount: totals.get(key) || 0,
+          txt: String(totals.get(key) || 0)
         }))
         .filter(row => row.n)
         .sort((a, b) => b.totalCount - a.totalCount);
