@@ -1852,11 +1852,6 @@
     ];
     let allowedSpaces = [];
     let currentProfile = loadStoredProfile();
-    if (currentProfile?.guest && !currentProfile?.guestId) {
-      const guestId = getOrCreateGuestId();
-      currentProfile = { ...currentProfile, guestId };
-      persistProfile({ guestId });
-    }
     let guestSpaces = loadGuestSpaces();
     let pendingInviteToken = new URLSearchParams(window.location.search).get('invite');
     let pendingInviteInfo = null;
@@ -2018,7 +2013,7 @@
       }
       const nextProfile = { ...(currentProfile || {}), ...profile };
       if (nextProfile.guest && !nextProfile.guestId) {
-        nextProfile.guestId = getOrCreateGuestId();
+        nextProfile.guestId = nextProfile.uuid || getOrCreateGuestId();
       }
       if (!PROFILE_MODE_INFO[nextProfile.profileMode]) {
         nextProfile.profileMode = DEFAULT_PROFILE_MODE;
@@ -2027,6 +2022,12 @@
       currentProfile = nextProfile;
       setSessionCookie();
       updateAddModalOptions();
+    }
+
+    if (currentProfile?.guest && !currentProfile?.guestId) {
+      const fallbackId = currentProfile.uuid || currentProfile.id || currentProfile.uid || getOrCreateGuestId();
+      currentProfile = { ...currentProfile, guestId: fallbackId };
+      persistProfile({ guestId: fallbackId });
     }
 
     function clearObject(obj) { Object.keys(obj).forEach(k => delete obj[k]); }
@@ -2253,6 +2254,13 @@
     function normalizeOwnerLabel(label) {
       return ((label || '').trim() || '').toLowerCase();
     }
+    function getProfileCanonicalId(profile = currentProfile) {
+      if (!profile) return '';
+      if (profile.uuid) return normalizeMemberKey(profile.uuid);
+      if (profile.uid) return normalizeMemberKey(profile.uid);
+      if (profile.guestId) return normalizeMemberKey(profile.guestId);
+      return '';
+    }
     function getEventOwnerId(event) {
       if (!event) return '';
       return normalizeMemberKey(event.ownerId || event.userId || '');
@@ -2266,15 +2274,17 @@
       const ownerId = getEventOwnerId(record);
       if (ownerId) return ownerId;
       const label = getEventOwnerLabel(record);
-      return label ? normalizeOwnerLabel(label) : '';
+      if (!label) return '';
+      const normalizedLabel = normalizeOwnerLabel(label);
+      if (normalizedLabel === 'moi') {
+        const currentKey = getCurrentOwnerKey();
+        if (currentKey) return currentKey;
+      }
+      return normalizedLabel;
     }
     function getCurrentOwnerKey() {
-      if (currentProfile?.uid) {
-        return normalizeMemberKey(currentProfile.uid);
-      }
-      if (currentProfile?.guest && currentProfile?.guestId) {
-        return normalizeMemberKey(currentProfile.guestId);
-      }
+      const canonical = getProfileCanonicalId();
+      if (canonical) return canonical;
       return normalizeOwnerLabel(getCurrentOwnerLabel());
     }
     function doesRecordMatchOwnerKey(record, key) {
@@ -2570,7 +2580,7 @@
       }
       const actorName = currentProfile?.name || 'Moi';
       const ownerLabel = (payload.owner || getOwnerNameFromEvent(payload) || getCurrentOwnerLabel()).trim();
-      const ownerId = normalizeMemberKey(payload.ownerId || currentProfile?.uid || currentProfile?.guestId || '');
+      const ownerId = normalizeMemberKey(payload.ownerId || getProfileCanonicalId() || '');
       const currentSpaceType = getSpace()?.type || null;
       const targetRecordedAt = payload.recordedAt ? timestampToDate(payload.recordedAt) : null;
       const localRecordedAt = targetRecordedAt || new Date();
@@ -2590,6 +2600,15 @@
         actorPseudo,
         activityDate
       };
+      if (payload.state === 2) {
+        console.log('Habit realization logged', {
+          habitId,
+          owner: ownerLabel,
+          ownerId: ownerId || null,
+          spaceId,
+          recordedAt: localRecordedAt.toISOString()
+        });
+      }
       const serverRecordedAt = targetRecordedAt
         ? firebase.firestore.Timestamp.fromDate(targetRecordedAt)
         : firebase.firestore.FieldValue.serverTimestamp();
@@ -3512,7 +3531,8 @@
           windowStart.setHours(0, 0, 0, 0);
           const records = getHabitRecords(spaceId, it.id, windowStart);
           const viewRecordedAt = new Date(today);
-          let userRecord = records.find(isCurrentRecordOwner) || null;
+          const todayKey = dayKeyFromDate(today);
+          let userRecord = records.find(r => isCurrentRecordOwner(r) && getEventDayKey(r) === todayKey) || null;
           const doneRecord = records.find(r => (r.state || 0) >= 1) || null;
           let ownerRecord = null;
           if (mode.type === 'commun') {
