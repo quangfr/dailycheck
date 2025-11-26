@@ -2221,7 +2221,7 @@
       return candidate.includes('@') ? candidate.split('@')[0] : candidate;
     }
     function getCurrentOwnerLabel() {
-      const candidate = (userName || '').trim();
+      const candidate = (currentProfile?.pseudo || currentProfile?.name || userName || '').trim();
       return candidate || 'Moi';
     }
     function normalizeOwnerLabel(label) {
@@ -2232,6 +2232,14 @@
       if (!normalized) return false;
       const canonical = normalizeOwnerLabel(getCurrentOwnerLabel());
       return normalized === canonical || normalized === 'moi';
+    }
+    function canonicalOwnerLabel(label) {
+      const trimmed = (label || '').trim();
+      if (!trimmed) return '';
+      if (isCurrentUserLabel(trimmed)) {
+        return getCurrentOwnerLabel();
+      }
+      return trimmed;
     }
     function timestampToDate(value) {
       if (!value) return null;
@@ -3430,20 +3438,21 @@
           const freqWeekly = recurrenceConfig?.interval ?? 1;
           const ownerFreq = Math.max(1, Number(ownerRecord?.frequency ?? freqWeekly));
           const ownerModeType = ownerRecord?.modeType || mode.type;
-          const resetProgress = ownerRecord && ownerModeType !== mode.type;
+          const normalizedOwnerMode = ownerModeType === 'commun' && mode.type === 'libre' ? 'libre' : ownerModeType;
+          const resetProgress = ownerRecord && normalizedOwnerMode !== mode.type;
           if (resetProgress) {
             ownerRecord = null;
             userRecord = null;
           }
           const ownerNames = Array.from(new Set(records
             .filter(r => (r.state || 0) >= 1)
-            .map(r => (r.owner || '').trim())
+            .map(r => canonicalOwnerLabel(r.owner))
             .filter(Boolean)
           ));
           const habitRecords = personalRecords.filter(rec => String(rec.habitId) === String(it.id));
           const state2Records = habitRecords.filter(rec => (rec.state || 0) === 2);
           const windowGardeners = new Set(state2Records
-            .map(rec => (rec.owner || '').trim())
+            .map(rec => canonicalOwnerLabel(rec.owner))
             .filter(Boolean)
           );
           const windowGardenersCount = windowGardeners.size;
@@ -3459,7 +3468,7 @@
           btn.dataset.ownerList = JSON.stringify(ownerNames);
           const baseMin = BASE_MINUTES[it.id] || 15;
           const ownerState = ownerRecord?.state ?? 0;
-          const owner = ownerState > 0 ? (ownerRecord?.owner || '') : '';
+          const owner = ownerState > 0 ? canonicalOwnerLabel(ownerRecord?.owner || '') : '';
           const userState = userRecord?.state ?? 0;
           const storedCount = Number(userRecord?.count ?? 0) || 0;
           const computedCount = storedCount || (userState === 2 ? freqWeekly + 1 : 0);
@@ -4830,7 +4839,7 @@
       const totals = new Map();
       const participantLabels = new Set();
       filtered.forEach(rec => {
-        const owner = (rec.owner || '').trim();
+        const owner = canonicalOwnerLabel(rec.owner);
         if (!owner) return;
         totals.set(owner, (totals.get(owner) || 0) + 1);
         participantLabels.add(owner);
