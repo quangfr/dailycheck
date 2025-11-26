@@ -3288,7 +3288,7 @@
       return Array.from(map.values());
     }
     /* Emojis & bouton */
-    function currentBigEmoji(btn, tot) { return btn.dataset.override || lvlEmoji(Math.max(0, Number.isFinite(Number(tot)) ? tot : 0)); }
+    function currentBigEmoji(btn, tot) { return btn.dataset.override || (tot <= 7 ? '🌱' : tot <= 14 ? '🍀' : tot <= 21 ? '🌼' : tot <= 28 ? '🌻' : tot <= 35 ? '🌷' : tot <= 42 ? '🌹' : tot <= 49 ? '🪻' : tot <= 56 ? '💐' : tot <= 64 ? '🎋' : '🎋'); }
     function drawBtn(btn) {
       const p = +btn.dataset.plants || 0;
       const tot = p;
