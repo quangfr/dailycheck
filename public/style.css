@@ -814,6 +814,7 @@ button,
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
 }
 .score-title {
   font-size: 13px;
@@ -838,6 +839,10 @@ button,
   align-items: center;
   justify-content: center;
   transition: border-color 0.2s, background 0.2s;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  margin: 0;
 }
 .score-goal-btn:hover {
   border-color: var(--text);

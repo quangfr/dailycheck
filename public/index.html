@@ -280,8 +280,7 @@
               </div>
               <div class="subtitle">Ton pseudo est visible dans ton espace individuel.</div>
             </div>
-            <div class="field"><label><b>Prénom affiché</b></label><input id="paramName" type="text"
-                placeholder="Moi" />
+            <div class="field"><label><b>Prénom affiché</b></label><input id="paramName" type="text" placeholder="" />
             </div>
             <div class="field" id="spaceLabelField"><label><b>Nom du jardin</b></label><input id="paramSpaceLabel"
                 type="text" /></div>
@@ -553,7 +552,7 @@
           </div>
           <div class="field hide" id="profileNameField">
             <label><b>Nom affiché</b></label>
-            <input id="profileNameInput" type="text" placeholder="Moi" />
+            <input id="profileNameInput" type="text" placeholder="" />
           </div>
           <div class="detail-actions">
             <button class="btn primary" id="profileSetupContinue">Commencer</button>
@@ -1401,8 +1400,10 @@
     const INSTALL_PROMPT_SUPPRESSION_MS = 15 * 24 * 60 * 60 * 1000;
     const INSTALL_PROMPT_FIRST_HABIT_KEY = 'habitu-install-first-habit';
     const STORAGE_LAST_MEMBER_NAME = 'habitu-last-member-name';
+    const STORAGE_SPACE_ACTIVITIES_KEY = 'habitu-space-activities';
     let deferredInstallPrompt = null;
     let installPromptAutoShown = false;
+    let installPromptAwaitingModalClose = false;
     let toastContainerEl = null;
 
     function safeStorageGet(key) {
@@ -1416,6 +1417,32 @@
       try {
         localStorage.setItem(key, value);
       } catch (e) { }
+    }
+    function readSpaceActivitiesFromStorage() {
+      try {
+        const raw = safeStorageGet(STORAGE_SPACE_ACTIVITIES_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return {};
+        const normalized = {};
+        Object.keys(parsed).forEach(spaceId => {
+          const value = parsed[spaceId];
+          if (Array.isArray(value)) {
+            normalized[spaceId] = value;
+          }
+        });
+        return normalized;
+      } catch (err) {
+        console.warn('readSpaceActivitiesFromStorage', err);
+        return {};
+      }
+    }
+    function persistSpaceActivitiesToStorage() {
+      try {
+        safeStorageSet(STORAGE_SPACE_ACTIVITIES_KEY, JSON.stringify(SPACE_ACTIVITIES));
+      } catch (err) {
+        console.warn('persistSpaceActivitiesToStorage', err);
+      }
     }
     function readWeeklyScoreTargets() {
       try {
@@ -1494,7 +1521,7 @@
     function markFirstHabitCreated() {
       if (hasCreatedInitialHabits()) return;
       safeStorageSet(INSTALL_PROMPT_FIRST_HABIT_KEY, '1');
-      maybeShowInstallPrompt(false);
+      installPromptAwaitingModalClose = true;
     }
     function getInstallPromptTimestamp() {
       const value = safeStorageGet(INSTALL_PROMPT_STORAGE_KEY);
@@ -1793,7 +1820,7 @@
 
     /* Spaces */
     const SPACES = {};
-    const SPACE_ACTIVITIES = {};
+    const SPACE_ACTIVITIES = readSpaceActivitiesFromStorage();
     const INVITE_CACHE = {};
     const STORAGE_USER_PROFILE = 'habitu-user-profile';
     const STORAGE_GUEST_SPACES = 'habitu-guest-spaces';
@@ -1994,6 +2021,7 @@
       Object.keys(SPACES).forEach(k => delete SPACES[k]);
       spaceId = null;
       spacesInitialized = false;
+      persistSpaceActivitiesToStorage();
     }
     function normalizeEmail(email) {
       return String(email || '').trim().toLowerCase();
@@ -2246,6 +2274,7 @@
         }
       }
       SPACE_ACTIVITIES[event.spaceId] = bucket;
+      persistSpaceActivitiesToStorage();
     }
     function computeActorCountsForEvent(event) {
       if (!event || !event.spaceId || !event.habitId) {
@@ -2615,12 +2644,19 @@
           .where('recordedAt', '>=', since)
           .orderBy('recordedAt', 'desc')
           .get();
-        const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        SPACE_ACTIVITIES[spaceId] = events;
-        return events;
+        snapshot.docs.forEach(doc => {
+          const data = { id: doc.id, ...doc.data() };
+          const normalized = {
+            ...data,
+            recordedAt: timestampToDate(data.recordedAt) || new Date()
+          };
+          upsertLocalHabitActivity(normalized);
+        });
+        return SPACE_ACTIVITIES[spaceId] || [];
       } catch (err) {
         console.warn('loadActivitiesForSpace', err);
         SPACE_ACTIVITIES[spaceId] = SPACE_ACTIVITIES[spaceId] || [];
+        persistSpaceActivitiesToStorage();
         return SPACE_ACTIVITIES[spaceId];
       }
     }
@@ -3252,7 +3288,7 @@
       return Array.from(map.values());
     }
     /* Emojis & bouton */
-    function currentBigEmoji(btn, tot) { return btn.dataset.override || (tot <= 7 ? '🌱' : tot <= 14 ? '🍀' : tot <= 21 ? '🌼' : tot <= 28 ? '🌻' : tot <= 35 ? '🌷' : tot <= 42 ? '🌹' : tot <= 49 ? '🪻' : tot <= 56 ? '💐' : tot <= 64 ? '🎋' : '🎋'); }
+    function currentBigEmoji(btn, tot) { return btn.dataset.override || lvlEmoji(Math.max(0, Number.isFinite(Number(tot)) ? tot : 0)); }
     function drawBtn(btn) {
       const p = +btn.dataset.plants || 0;
       const tot = p;
@@ -4651,6 +4687,7 @@
       const normalized = normalizeEmail(email);
       if (SPACE_ACTIVITIES[spaceIdArg]) {
         SPACE_ACTIVITIES[spaceIdArg] = (SPACE_ACTIVITIES[spaceIdArg] || []).filter(ev => normalizeEmail(ev.userEmail || '') !== normalized);
+        persistSpaceActivitiesToStorage();
       }
       if (!HABITU_FIREBASE_DB) return;
       try {
@@ -4708,6 +4745,7 @@
       }
       delete SPACES[target];
       delete SPACE_ACTIVITIES[target];
+      persistSpaceActivitiesToStorage();
       allowedSpaces = allowedSpaces.filter(id => id !== target);
       const nextSpace = allowedSpaces[0] || null;
       spaceId = nextSpace;
@@ -4765,12 +4803,12 @@
           const placeholder = document.createElement('div');
           placeholder.className = 'miniInfo';
           placeholder.textContent = 'Les classements sont désactivés pour ce profil.';
-        root.appendChild(placeholder);
+          root.appendChild(placeholder);
+        }
+        renderProfileStats();
+        renderSpaceStats();
+        return;
       }
-      renderProfileStats();
-      renderSpaceStats();
-      return;
-    }
       const range = resolvePeriodRange(sPeriod);
       const records = getPersonalActivityRecords(DEFAULT_GARDENER_WINDOW_DAYS);
       const filtered = records.filter(rec => {
@@ -5058,7 +5096,13 @@
     const profileModeSetupHint = $("#profileModeSetupHint");
     const profileSetupContinue = $("#profileSetupContinue");
     let habitModalContext = 'menu';
-    const open = m => m.classList.add('on'), close = m => m.classList.remove('on');
+    const open = m => m.classList.add('on'), close = m => {
+      if (m === mHabit && installPromptAwaitingModalClose) {
+        installPromptAwaitingModalClose = false;
+        maybeShowInstallPrompt(false);
+      }
+      m.classList.remove('on');
+    };
     let spacesInitialized = false;
     let habitWizardStep = 1;
     let pendingGardenPseudo = '';
@@ -5925,10 +5969,9 @@
     function matchesHabitSelection(habit, contextTags, needTags) {
       const hasContext = !!(contextTags && contextTags.length);
       const hasNeed = !!(needTags && needTags.length);
-      if (!hasContext && !hasNeed) return true;
-      if (hasContext && matchesHabitContext(habit, contextTags)) return true;
-      if (hasNeed && matchesHabitNeeds(habit, needTags)) return true;
-      return false;
+      if (hasContext && !matchesHabitContext(habit, contextTags)) return false;
+      if (hasNeed && !matchesHabitNeeds(habit, needTags)) return false;
+      return true;
     }
     function matchesHabitMode(habit, modeKey) {
       if (!modeKey) return true;
