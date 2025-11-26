@@ -1516,6 +1516,20 @@
       }
       return removed;
     }
+    function findOwnerKeyByNameOrEmail(name, email) {
+      const normalizedName = normalizeOwnerLabel(name);
+      const normalizedEmail = normalizeEmail(email);
+      const records = getOwnerActivityRecords({});
+      for (const record of records) {
+        if (normalizedEmail && record.userEmail === normalizedEmail && record.ownerId) {
+          return record.ownerId;
+        }
+        if (normalizedName && normalizeOwnerLabel(record.ownerLabel) === normalizedName && record.ownerId) {
+          return record.ownerId;
+        }
+      }
+      return '';
+    }
     function readWeeklyScoreTargets() {
       try {
         const raw = safeStorageGet(WEEKLY_SCORE_STORAGE_KEY);
@@ -2360,14 +2374,20 @@
       return isCurrentUserLabel(record.owner);
     }
     function resolveActiveProfileOwnerKey() {
-      if (!activeProfileName) return '';
+      if (!activeProfileName) {
+        return getCurrentOwnerKey();
+      }
       const isSelfProfile = normalizeOwnerLabel(activeProfileName) === normalizeOwnerLabel(getCurrentOwnerLabel());
       if (isSelfProfile) {
         return getCurrentOwnerKey();
       }
       if (activeProfileEmail) {
+        const ownerKey = findOwnerKeyByNameOrEmail(activeProfileName, activeProfileEmail);
+        if (ownerKey) return ownerKey;
         return normalizeEmail(activeProfileEmail);
       }
+      const ownerKey = findOwnerKeyByNameOrEmail(activeProfileName);
+      if (ownerKey) return ownerKey;
       return normalizeOwnerLabel(activeProfileName);
     }
     function isCurrentUserLabel(label) {
@@ -4166,7 +4186,37 @@
       valueEl.textContent = displayValue;
     }
     function showDetailView() { hideAll(); $("#detail").classList.add('active'); $("#daysWrap").classList.add('hide') }
+    function getStreakForHabit(spaceIdValue, habit, ownerKey) {
+      if (!spaceIdValue || !habit || !ownerKey) return 0;
+      const records = getOwnerActivityRecords({ spaceId: spaceIdValue, habitId: String(habit.id), ownerId: ownerKey });
+      const days = new Set(records.filter(rec => (rec.state || 0) >= 2).map(rec => rec.dayKey));
+      const today = curDate();
+      let streak = 0;
+      for (let offset = 0; offset < 365; offset++) {
+        const cursor = new Date(today);
+        cursor.setDate(cursor.getDate() - offset);
+        if (!shouldOccurOnDate(habit, cursor)) continue;
+        const key = dayKeyFromDate(cursor);
+        if (days.has(key)) {
+          streak += 1;
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function collectProfileRecords(spaceIdValue, ownerKey, range) {
+      if (!spaceIdValue || !ownerKey) return [];
+      let records = getOwnerActivityRecords({ spaceId: spaceIdValue, ownerId: ownerKey, since: range?.since });
+      if (range?.until) {
+        records = records.filter(rec => rec.recordedAt <= range.until);
+      }
+      return records;
+    }
+
     function renderProfileStats() {
+      console.info('renderProfileStats triggered');
       updateProfilePeriodButtons();
       const root = $("#profileHabits");
       const empty = $("#profileEmpty");
@@ -4175,18 +4225,15 @@
       const currentRange = buildSlidingWindowRange(WEEKLY_SCORE_WINDOW_DAYS, 0);
       const prevRange = buildSlidingWindowRange(WEEKLY_SCORE_WINDOW_DAYS, WEEKLY_SCORE_WINDOW_DAYS);
       const scoreTarget = getWeeklyScoreTarget(spaceId);
-      let lastWeekRecords = [];
-      let prevWeekRecords = [];
       let scoreValue = 0;
       let diff = 0;
       const profileOwnerKey = resolveActiveProfileOwnerKey();
       const hasProfileKey = Boolean(profileOwnerKey);
       if (spaceId && hasProfileKey) {
-        const snapshot = getSpaceRecords(spaceId, prevRange.since);
-        lastWeekRecords = snapshot.filter(rec => rec.recordedAt <= currentRange.until);
-        prevWeekRecords = snapshot.filter(rec => rec.recordedAt >= prevRange.since && rec.recordedAt <= prevRange.until);
-        const profileCurrent = lastWeekRecords.filter(rec => doesRecordMatchOwnerKey(rec, profileOwnerKey));
-        const profilePrevious = prevWeekRecords.filter(rec => doesRecordMatchOwnerKey(rec, profileOwnerKey));
+        const lastWeekRecords = collectProfileRecords(spaceId, profileOwnerKey, currentRange);
+        const prevWeekRecords = collectProfileRecords(spaceId, profileOwnerKey, prevRange);
+        const profileCurrent = lastWeekRecords.filter(rec => (rec.state || 0) >= 2);
+        const profilePrevious = prevWeekRecords.filter(rec => (rec.state || 0) >= 2);
         scoreValue = profileCurrent.length;
         diff = scoreValue - profilePrevious.length;
         renderNeedsOverview(space, currentRange, lastWeekRecords);
@@ -4209,19 +4256,18 @@
         return;
       }
       const range = resolvePeriodRange(profilePeriod);
-      let records = getSpaceRecords(spaceId, range.since);
-      if (range.until) {
-        records = records.filter(rec => rec.recordedAt <= range.until);
-      }
-      records = records.filter(rec => doesRecordMatchOwnerKey(rec, profileOwnerKey));
+      const rangeRecords = collectProfileRecords(spaceId, profileOwnerKey, range);
+      console.info('debug records for stats', { ownerKey: profileOwnerKey, total: rangeRecords.length, filtered: rangeRecords.filter(rec => (rec.state || 0) >= 2).length });
+      const records = rangeRecords.filter(rec => (rec.state || 0) >= 2);
       const minutesPerHabit = new Map();
+      const completionsByHabit = new Map();
       records.forEach(rec => {
-        if ((rec.state || 0) >= 1) {
-          const minutes = BASE_MINUTES[rec.habitId] || 15;
-          minutesPerHabit.set(rec.habitId, (minutesPerHabit.get(rec.habitId) || 0) + minutes);
-        }
+        const habitKey = String(rec.habitId);
+        const minutes = BASE_MINUTES[habitKey] || 15;
+        minutesPerHabit.set(habitKey, (minutesPerHabit.get(habitKey) || 0) + minutes);
+        completionsByHabit.set(habitKey, (completionsByHabit.get(habitKey) || 0) + 1);
       });
-      const habitIds = new Set(minutesPerHabit.keys());
+      const habitIds = new Set(completionsByHabit.keys());
       if (!habitIds.size) {
         if (empty) empty.classList.remove('hide');
         return;
@@ -4230,8 +4276,10 @@
       const entries = Array.from(habitIds).map(hid => ({
         habit: findAny(hid),
         minutes: minutesPerHabit.get(hid) || 0,
+        total: completionsByHabit.get(hid) || 0,
+        streak: getStreakForHabit(spaceId, findAny(hid), profileOwnerKey),
         id: hid
-      })).sort((a, b) => b.minutes - a.minutes);
+      })).sort((a, b) => b.total - a.total || b.minutes - a.minutes);
       entries.forEach(item => {
         const name = habitLabel(item.habit) || 'Habitude';
         const row = document.createElement('div');
@@ -4240,16 +4288,18 @@
         left.className = 'leftRank profile-habit-left';
         const durationScore = document.createElement('span');
         durationScore.className = 'scoreEmoji';
-        const totalMinutes = item.minutes || 0;
-        durationScore.textContent = m2txt(totalMinutes);
+        durationScore.textContent = `🌿${item.total}`;
         const title = document.createElement('div');
         title.className = 'profile-habit-title';
         const emoji = document.createElement('span');
         emoji.textContent = item.habit?.emoji || '🌿';
         const text = document.createElement('span');
-        text.textContent = name;
+        text.textContent = `${name} · ${m2txt(item.minutes)}`;
         title.append(emoji, text);
-        left.append(durationScore, title);
+        const badge = document.createElement('span');
+        badge.className = 'profile-habit-badge';
+        badge.textContent = `🔥 ${item.streak}j`;
+        left.append(durationScore, title, badge);
         row.append(left);
         row.addEventListener('click', () => {
           openDetail(item.id, row);
@@ -4298,10 +4348,11 @@
       }
       const entries = habits.map(habit => {
         const records = getHabitRecords(spaceId, habit.id);
+        const successful = records.filter(rec => (rec.state || 0) >= 1);
         return {
           habit,
-          streak: computeHabitStreak(habit, records),
-          total: records.length
+          streak: computeHabitStreak(habit, successful),
+          total: successful.length
         };
       }).sort((a, b) => {
         if (b.streak !== a.streak) return b.streak - a.streak;
