@@ -637,7 +637,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.26.5';
+    const APP_VERSION = '0.11.26.6';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -4147,7 +4147,7 @@
         if (b.planned !== a.planned) return b.planned - a.planned;
         return a.label.localeCompare(b.label, 'fr');
       });
-      data.slice(0, 6).forEach(item => {
+      data.slice(0, 4).forEach(item => {
         const percentage = item.planned ? Math.round((item.realized / Math.max(1, item.planned)) * 100) : 0;
         const pill = document.createElement('div');
         pill.className = 'need-pill';
