@@ -198,29 +198,6 @@
       </div>
     </section>
 
-    <section id="profile" class="view">
-      <div class="detailHead profile-head">
-        <button class="backMini" id="backFromProfile">←</button>
-        <div class="profile-meta">
-          <div class="detailTitle" id="profileTitle"></div>
-        </div>
-        <div class="profile-head-actions">
-          <button class="btn secondary hide" id="grantAccessBtn">🔗 Redonner l'accès</button>
-          <button class="btn danger hide" id="removeFromGardenBtn">❌ Retirer</button>
-        </div>
-      </div>
-      <!-- rest remains -->
-      <div class="rankHeader profile-period-row">
-        <b>Période</b>
-        <div class="profile-period-buttons">
-          <button class="btnToggle" id="profilePeriod7">7 jours</button>
-          <button class="btnToggle active" id="profilePeriod30">30 jours</button>
-          <button class="btnToggle" id="profilePeriodAll">Total</button>
-        </div>
-      </div>
-      <div id="profileHabits" class="profile-habit-list"></div>
-      <div class="subtitle hide" id="profileEmpty">Pas encore d’activité sur cette période.</div>
-    </section>
     <section id="space" class="view">
       <div class="detailHead">
         <button class="backMini" id="backFromSpace">←</button>
@@ -660,7 +637,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.26.4';
+    const APP_VERSION = '0.11.26.5';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -4218,9 +4195,9 @@
     function renderProfileStats() {
       console.info('renderProfileStats triggered');
       updateProfilePeriodButtons();
-      const root = $("#profileHabits");
-      const empty = $("#profileEmpty");
-      if (root) root.innerHTML = '';
+      const body = $("#spaceStatsBody");
+      if (!body) return;
+      body.innerHTML = '';
       const space = getSpace();
       const currentRange = buildSlidingWindowRange(WEEKLY_SCORE_WINDOW_DAYS, 0);
       const prevRange = buildSlidingWindowRange(WEEKLY_SCORE_WINDOW_DAYS, WEEKLY_SCORE_WINDOW_DAYS);
@@ -4232,10 +4209,8 @@
       if (spaceId && hasProfileKey) {
         const lastWeekRecords = collectProfileRecords(spaceId, profileOwnerKey, currentRange);
         const prevWeekRecords = collectProfileRecords(spaceId, profileOwnerKey, prevRange);
-        const profileCurrent = lastWeekRecords.filter(rec => (rec.state || 0) >= 2);
-        const profilePrevious = prevWeekRecords.filter(rec => (rec.state || 0) >= 2);
-        scoreValue = profileCurrent.length;
-        diff = scoreValue - profilePrevious.length;
+        scoreValue = lastWeekRecords.filter(rec => (rec.state || 0) >= 2).length;
+        diff = scoreValue - prevWeekRecords.filter(rec => (rec.state || 0) >= 2).length;
         renderNeedsOverview(space, currentRange, lastWeekRecords);
       } else {
         renderNeedsOverview(space, currentRange, []);
@@ -4252,59 +4227,63 @@
         updateScoreGoalPreview(scoreTarget);
       }
       if (!spaceId || !hasProfileKey) {
-        if (empty) empty.classList.remove('hide');
+        const row = document.createElement('tr');
+        row.className = 'miniInfo';
+        row.innerHTML = '<td colspan="3">Choisis un jardin pour voir les statistiques.</td>';
+        body.appendChild(row);
         return;
       }
       const range = resolvePeriodRange(profilePeriod);
-      const rangeRecords = collectProfileRecords(spaceId, profileOwnerKey, range);
-      console.info('debug records for stats', { ownerKey: profileOwnerKey, total: rangeRecords.length, filtered: rangeRecords.filter(rec => (rec.state || 0) >= 2).length });
-      const records = rangeRecords.filter(rec => (rec.state || 0) >= 2);
-      const minutesPerHabit = new Map();
-      const completionsByHabit = new Map();
-      records.forEach(rec => {
-        const habitKey = String(rec.habitId);
-        const minutes = BASE_MINUTES[habitKey] || 15;
-        minutesPerHabit.set(habitKey, (minutesPerHabit.get(habitKey) || 0) + minutes);
-        completionsByHabit.set(habitKey, (completionsByHabit.get(habitKey) || 0) + 1);
-      });
-      const habitIds = new Set(completionsByHabit.keys());
-      if (!habitIds.size) {
-        if (empty) empty.classList.remove('hide');
+      const records = collectProfileRecords(spaceId, profileOwnerKey, range).filter(rec => (rec.state || 0) >= 2);
+      console.info('stats records count', { total: records.length, ownerKey: profileOwnerKey });
+      const habits = (space?.ch || []).filter(habit => habit && !habit.deleted);
+      if (!habits.length) {
+        const row = document.createElement('tr');
+        row.className = 'miniInfo';
+        row.innerHTML = '<td colspan="3">Aucune habitude enregistrée pour ce jardin.</td>';
+        body.appendChild(row);
         return;
       }
-      if (empty) empty.classList.add('hide');
-      const entries = Array.from(habitIds).map(hid => ({
-        habit: findAny(hid),
-        minutes: minutesPerHabit.get(hid) || 0,
-        total: completionsByHabit.get(hid) || 0,
-        streak: getStreakForHabit(spaceId, findAny(hid), profileOwnerKey),
-        id: hid
-      })).sort((a, b) => b.total - a.total || b.minutes - a.minutes);
-      entries.forEach(item => {
-        const name = habitLabel(item.habit) || 'Habitude';
-        const row = document.createElement('div');
-        row.className = 'row profile-habit';
-        const left = document.createElement('div');
-        left.className = 'leftRank profile-habit-left';
-        const durationScore = document.createElement('span');
-        durationScore.className = 'scoreEmoji';
-        durationScore.textContent = `🌿${item.total}`;
-        const title = document.createElement('div');
-        title.className = 'profile-habit-title';
-        const emoji = document.createElement('span');
-        emoji.textContent = item.habit?.emoji || '🌿';
-        const text = document.createElement('span');
-        text.textContent = `${name} · ${m2txt(item.minutes)}`;
-        title.append(emoji, text);
-        const badge = document.createElement('span');
-        badge.className = 'profile-habit-badge';
-        badge.textContent = `🔥 ${item.streak}j`;
-        left.append(durationScore, title, badge);
-        row.append(left);
-        row.addEventListener('click', () => {
-          openDetail(item.id, row);
+      const statsByHabit = new Map();
+      habits.forEach(habit => {
+        statsByHabit.set(String(habit.id), { habit, total: 0, last: null });
+      });
+      if (!statsByHabit.size) {
+        const row = document.createElement('tr');
+        row.className = 'miniInfo';
+        row.innerHTML = '<td colspan="3">Aucune habitude disponible.</td>';
+        body.appendChild(row);
+        return;
+      }
+      records.forEach(rec => {
+        const habitKey = String(rec.habitId);
+        if (!statsByHabit.has(habitKey)) {
+          statsByHabit.set(habitKey, { habit: findAny(habitKey), total: 0, last: null });
+        }
+        const entry = statsByHabit.get(habitKey);
+        entry.total += 1;
+        const recordedAt = timestampToDate(rec.recordedAt);
+        if (!entry.last || (recordedAt && recordedAt > entry.last)) {
+          entry.last = recordedAt;
+        }
+      });
+      Array.from(statsByHabit.values()).sort((a, b) => b.total - a.total).forEach(entry => {
+        const habit = entry.habit || {};
+        const streakValue = getStreakForHabit(spaceId, habit, profileOwnerKey);
+        const row = document.createElement('tr');
+        row.dataset.streak = String(streakValue);
+        const emoji = habit?.emoji || '🌱';
+        const label = habitLabel(habit) || 'Habitude';
+        const plural = streakValue > 1 ? 's' : '';
+        console.log('stat-row', {
+          ownerKey: profileOwnerKey,
+          habitId: habit.id,
+          total: entry.total,
+          streak: streakValue,
+          last: entry.last
         });
-        root.appendChild(row);
+        row.innerHTML = `<td><span class="stat-emoji">${emoji}</span><span>${label}</span></td><td>${streakValue} jour${plural}</td><td>${entry.total}</td>`;
+        body.appendChild(row);
       });
     }
     function computeHabitStreak(habit, records = []) {
@@ -5051,24 +5030,36 @@
         renderSpaceRank();
       };
     }
-    $('#profilePeriod7').onclick = () => {
-      const btn = $("#profilePeriod7");
-      profilePeriod = btn?.dataset.period || profilePeriod;
-      renderProfileStats();
-    };
-    $('#profilePeriod30').onclick = () => {
-      const btn = $("#profilePeriod30");
-      profilePeriod = btn?.dataset.period || profilePeriod;
-      renderProfileStats();
-    };
-    $('#profilePeriodAll').onclick = () => {
-      const btn = $("#profilePeriodAll");
-      profilePeriod = btn?.dataset.period || profilePeriod;
-      renderProfileStats();
-    };
-    $('#backFromProfile').onclick = closeProfileView;
-    $('#removeFromGardenBtn').onclick = removeActiveProfileMember;
-    $('#grantAccessBtn').onclick = grantActiveProfileAccess;
+    const btnProfilePeriod7 = $("#profilePeriod7");
+    if (btnProfilePeriod7) {
+      btnProfilePeriod7.onclick = () => {
+        const btn = $("#profilePeriod7");
+        profilePeriod = btn?.dataset.period || profilePeriod;
+        renderProfileStats();
+      };
+    }
+    const btnProfilePeriod30 = $("#profilePeriod30");
+    if (btnProfilePeriod30) {
+      btnProfilePeriod30.onclick = () => {
+        const btn = $("#profilePeriod30");
+        profilePeriod = btn?.dataset.period || profilePeriod;
+        renderProfileStats();
+      };
+    }
+    const btnProfilePeriodAll = $("#profilePeriodAll");
+    if (btnProfilePeriodAll) {
+      btnProfilePeriodAll.onclick = () => {
+        const btn = $("#profilePeriodAll");
+        profilePeriod = btn?.dataset.period || profilePeriod;
+        renderProfileStats();
+      };
+    }
+    const btnBackFromProfile = $("#backFromProfile");
+    if (btnBackFromProfile) btnBackFromProfile.onclick = closeProfileView;
+    const btnRemove = $("#removeFromGardenBtn");
+    if (btnRemove) btnRemove.onclick = removeActiveProfileMember;
+    const btnGrant = $("#grantAccessBtn");
+    if (btnGrant) btnGrant.onclick = grantActiveProfileAccess;
     const mScoreGoal = $("#modalScoreGoal");
     const scoreGoalBtn = $("#scoreGoalBtn");
     const scoreGoalRange = $("#scoreGoalRange");
@@ -6367,7 +6358,8 @@
               unit: 'week',
               interval: schedule.interval,
               weekDays: schedule.weekDays
-            }
+            },
+            addedBy: getProfileCanonicalId() || getCurrentOwnerKey()
           });
           (sp.ch || (sp.ch = [])).push(payload);
           ensureHabit(hid);
@@ -6748,6 +6740,7 @@
       }
       if (prefix === 'space' && key === 'sstats') {
         sortSpaceStats(statsSortDirection);
+        renderProfileStats();
       }
       if (key === 'shistory') { populateSpaceWho?.(); renderSpaceCalendar?.() }
     }
