@@ -10,7 +10,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -25,7 +24,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "family"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -40,7 +38,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "office"
     ],
-    "frequency": 3,
     "target": "group"
   },
   {
@@ -55,7 +52,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "office"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -70,7 +66,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "family"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -79,12 +74,11 @@ const LIBRARY_JSON_DATA = [
     "title": "Manger plus de fruits",
     "needs": [
       "nutrition",
-      "comfort"
+      "health"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -93,12 +87,11 @@ const LIBRARY_JSON_DATA = [
     "title": "Remplir sa gourde d’eau",
     "needs": [
       "nutrition",
-      "safety"
+      "health"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -107,12 +100,11 @@ const LIBRARY_JSON_DATA = [
     "title": "Prendre son traitement",
     "needs": [
       "comfort",
-      "safety"
+      "health"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -120,13 +112,12 @@ const LIBRARY_JSON_DATA = [
     "emoji": "🚭",
     "title": "Ne pas fumer aujourd’hui",
     "needs": [
-      "safety",
+      "health",
       "calm"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -140,7 +131,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 0.5,
     "target": "individual"
   },
   {
@@ -154,7 +144,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -168,7 +157,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -177,12 +165,11 @@ const LIBRARY_JSON_DATA = [
     "title": "Bien brosser ses dents",
     "needs": [
       "hygiene",
-      "safety"
+      "health"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -196,7 +183,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 0.5,
     "target": "individual"
   },
   {
@@ -205,12 +191,11 @@ const LIBRARY_JSON_DATA = [
     "title": "Nettoyer couloir et entrée",
     "needs": [
       "cleanliness",
-      "safety"
+      "comfort"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -224,7 +209,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 3,
     "target": "group"
   },
   {
@@ -238,7 +222,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 3,
     "target": "group"
   },
   {
@@ -252,7 +235,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -266,7 +248,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 0.5,
     "target": "group"
   },
   {
@@ -280,7 +261,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -294,7 +274,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -309,7 +288,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "office"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -323,7 +301,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "office"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -337,7 +314,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "office"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -352,7 +328,6 @@ const LIBRARY_JSON_DATA = [
       "office",
       "school"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -366,7 +341,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -381,7 +355,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "school"
     ],
-    "frequency": 3,
     "target": "group"
   },
   {
@@ -396,7 +369,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "social"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -413,7 +385,6 @@ const LIBRARY_JSON_DATA = [
       "school",
       "outdoor"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -427,7 +398,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "outdoor"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -436,12 +406,11 @@ const LIBRARY_JSON_DATA = [
     "title": "Réparer un petit souci",
     "needs": [
       "equipment",
-      "safety"
+      "comfort"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 0.5,
     "target": "individual"
   },
   {
@@ -453,33 +422,30 @@ const LIBRARY_JSON_DATA = [
       "privacy"
     ],
     "contexts": [],
-    "frequency": 1,
     "target": "individual"
   },
   {
     "id": 33,
     "emoji": "🗂️",
-    "title": "Trier ses documents",
+    "title": "Gérer l’administratif",
     "needs": [
       "organization",
       "privacy"
     ],
-    "contexts": [],
-    "frequency": 0.5,
+    "contexts": ["office", "home"],
     "target": "individual"
   },
   {
     "id": 34,
     "emoji": "📌",
-    "title": "Noter ses rappels",
+    "title": "Revoir ses rappels",
     "needs": [
       "organization",
       "communication"
     ],
     "contexts": [
-      "office"
+      "office", "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -494,21 +460,19 @@ const LIBRARY_JSON_DATA = [
       "social",
       "family"
     ],
-    "frequency": 7,
     "target": "group"
   },
   {
     "id": 36,
     "emoji": "💶",
-    "title": "Vérifier ses dépenses",
+    "title": "Gérer ses finances",
     "needs": [
       "organization",
-      "safety"
+      "meaning"
     ],
     "contexts": [
       "home"
     ],
-    "frequency": 0.5,
     "target": "individual"
   },
   {
@@ -522,7 +486,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 0.5,
     "target": "individual"
   },
   {
@@ -536,13 +499,12 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
     "id": 39,
-    "emoji": "🌦️",
-    "title": "Partager son humeur",
+    "emoji": "🌞",
+    "title": "Partager sa bonne humeur",
     "needs": [
       "expression",
       "communication"
@@ -550,13 +512,12 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "family"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
     "id": 40,
     "emoji": "👌",
-    "title": "Avoir un élan bienveillant",
+    "title": "Écouter sans interrompre",
     "needs": [
       "cooperation",
       "joy"
@@ -565,7 +526,6 @@ const LIBRARY_JSON_DATA = [
       "family",
       "social"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -581,7 +541,6 @@ const LIBRARY_JSON_DATA = [
       "school",
       "social"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -595,7 +554,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -609,7 +567,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "social"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -623,7 +580,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "school"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -635,7 +591,6 @@ const LIBRARY_JSON_DATA = [
       "inclusion"
     ],
     "contexts": [],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -649,7 +604,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "family"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -663,7 +617,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "family"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -677,7 +630,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "family"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -694,7 +646,6 @@ const LIBRARY_JSON_DATA = [
       "office",
       "school"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -710,13 +661,12 @@ const LIBRARY_JSON_DATA = [
       "school",
       "social"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
     "id": 51,
     "emoji": "🎁",
-    "title": "Offrir un petit cadeau",
+    "title": "Se montrer généreux",
     "needs": [
       "cooperation",
       "expression"
@@ -726,7 +676,6 @@ const LIBRARY_JSON_DATA = [
       "office",
       "school"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -741,7 +690,6 @@ const LIBRARY_JSON_DATA = [
       "school",
       "social"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -757,7 +705,6 @@ const LIBRARY_JSON_DATA = [
       "office",
       "social"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -772,7 +719,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "social"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -787,7 +733,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "school"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -799,7 +744,6 @@ const LIBRARY_JSON_DATA = [
       "privacy"
     ],
     "contexts": [],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -811,7 +755,6 @@ const LIBRARY_JSON_DATA = [
       "privacy"
     ],
     "contexts": [],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -826,7 +769,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "family"
     ],
-    "frequency": 0.5,
     "target": "group"
   },
   {
@@ -840,7 +782,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -854,7 +795,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -868,7 +808,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -882,7 +821,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -898,13 +836,12 @@ const LIBRARY_JSON_DATA = [
       "school",
       "outdoor"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
     "id": 64,
     "emoji": "🧘",
-    "title": "S’asseoir 2 min en silence",
+    "title": "Méditer 5 min en silence",
     "needs": [
       "calm",
       "slowness"
@@ -913,13 +850,12 @@ const LIBRARY_JSON_DATA = [
       "home",
       "school"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
     "id": 65,
     "emoji": "👀",
-    "title": "Admirer le paysage 30 sec",
+    "title": "Contempler le paysage un moment",
     "needs": [
       "nature",
       "rest"
@@ -927,7 +863,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "outdoor"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -942,7 +877,6 @@ const LIBRARY_JSON_DATA = [
       "office",
       "outdoor"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -957,7 +891,6 @@ const LIBRARY_JSON_DATA = [
       "social",
       "outdoor"
     ],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -973,13 +906,12 @@ const LIBRARY_JSON_DATA = [
       "office",
       "social"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
     "id": 69,
     "emoji": "🫂",
-    "title": "Veiller au besoin du groupe",
+    "title": "Veiller aux besoins du groupe",
     "needs": [
       "inclusion",
       "cooperation"
@@ -989,7 +921,6 @@ const LIBRARY_JSON_DATA = [
       "office",
       "social"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -1001,21 +932,19 @@ const LIBRARY_JSON_DATA = [
       "comfort"
     ],
     "contexts": [],
-    "frequency": 7,
     "target": "individual"
   },
   {
     "id": 71,
     "emoji": "💪",
-    "title": "Faire 30 min d’exercice",
+    "title": "Faire 30 min de sport",
     "needs": [
       "movement",
       "comfort"
     ],
     "contexts": [
-      "outdoor"
+      "outdoor", "home"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1029,7 +958,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "outdoor"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1046,7 +974,6 @@ const LIBRARY_JSON_DATA = [
       "school",
       "social"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -1061,7 +988,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "outdoor"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1075,7 +1001,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "home"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1089,7 +1014,6 @@ const LIBRARY_JSON_DATA = [
     "contexts": [
       "social"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -1101,7 +1025,6 @@ const LIBRARY_JSON_DATA = [
       "entertainment"
     ],
     "contexts": [],
-    "frequency": 1,
     "target": "individual"
   },
   {
@@ -1118,7 +1041,6 @@ const LIBRARY_JSON_DATA = [
       "school",
       "outdoor"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -1130,7 +1052,6 @@ const LIBRARY_JSON_DATA = [
       "entertainment"
     ],
     "contexts": [],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1145,7 +1066,6 @@ const LIBRARY_JSON_DATA = [
       "social",
       "outdoor"
     ],
-    "frequency": 0.5,
     "target": "individual"
   },
   {
@@ -1157,7 +1077,6 @@ const LIBRARY_JSON_DATA = [
       "expression"
     ],
     "contexts": [],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -1173,7 +1092,6 @@ const LIBRARY_JSON_DATA = [
       "office",
       "social"
     ],
-    "frequency": 1,
     "target": "group"
   },
   {
@@ -1189,7 +1107,6 @@ const LIBRARY_JSON_DATA = [
       "school",
       "social"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -1204,7 +1121,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "office"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1219,13 +1135,12 @@ const LIBRARY_JSON_DATA = [
       "home",
       "social"
     ],
-    "frequency": 0.5,
     "target": "individual"
   },
   {
     "id": 86,
     "emoji": "🕺",
-    "title": "Danser 30 secondes",
+    "title": "Danser librement",
     "needs": [
       "movement",
       "joy"
@@ -1235,7 +1150,6 @@ const LIBRARY_JSON_DATA = [
       "social",
       "outdoor"
     ],
-    "frequency": 7,
     "target": "individual"
   },
   {
@@ -1247,7 +1161,6 @@ const LIBRARY_JSON_DATA = [
       "meaning"
     ],
     "contexts": [],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1262,7 +1175,6 @@ const LIBRARY_JSON_DATA = [
       "school",
       "social"
     ],
-    "frequency": 3,
     "target": "group"
   },
   {
@@ -1277,7 +1189,6 @@ const LIBRARY_JSON_DATA = [
       "home",
       "outdoor"
     ],
-    "frequency": 3,
     "target": "individual"
   },
   {
@@ -1286,108 +1197,14 @@ const LIBRARY_JSON_DATA = [
     "title": "Préparer un repas sain",
     "needs": [
       "nutrition",
-      "safety"
+      "health"
     ],
     "contexts": [
       "home",
       "family"
     ],
-    "frequency": 1,
     "target": "individual"
   }
-];
-
-const HABIT_LINKS = [
-  { "id": 1, "related": [22, 23, 35] },
-  { "id": 2, "related": [3, 5, 10] },
-  { "id": 3, "related": [5, 6, 14] },
-  { "id": 4, "related": [8, 9, 1] },
-  { "id": 5, "related": [6, 7, 15] },
-  { "id": 6, "related": [7, 43, 16] },
-  { "id": 7, "related": [43, 90, 17] },
-  { "id": 8, "related": [9, 11, 22] },
-  { "id": 9, "related": [11, 12, 23] },
-  { "id": 10, "related": [14, 15, 4] },
-  { "id": 11, "related": [12, 13, 8] },
-  { "id": 12, "related": [13, 4, 9] },
-  { "id": 13, "related": [4, 8, 11] },
-  { "id": 14, "related": [15, 16, 2] },
-  { "id": 15, "related": [16, 17, 3] },
-  { "id": 16, "related": [17, 18, 5] },
-  { "id": 17, "related": [18, 19, 6] },
-  { "id": 18, "related": [19, 20, 10] },
-  { "id": 19, "related": [20, 21, 14] },
-  { "id": 20, "related": [21, 26, 19] },
-  { "id": 21, "related": [26, 27, 31] },
-  { "id": 22, "related": [23, 24, 36] },
-  { "id": 23, "related": [24, 25, 1] },
-  { "id": 24, "related": [25, 29, 4] },
-  { "id": 25, "related": [29, 32, 8] },
-  { "id": 26, "related": [27, 28, 37] },
-  { "id": 27, "related": [28, 31, 38] },
-  { "id": 28, "related": [31, 37, 85] },
-  { "id": 29, "related": [32, 33, 65] },
-  { "id": 30, "related": [65, 66, 70] },
-  { "id": 31, "related": [37, 38, 20] },
-  { "id": 32, "related": [33, 34, 24] },
-  { "id": 33, "related": [34, 36, 25] },
-  { "id": 34, "related": [36, 1, 29] },
-  { "id": 35, "related": [39, 40, 2] },
-  { "id": 36, "related": [1, 22, 32] },
-  { "id": 37, "related": [38, 85, 21] },
-  { "id": 38, "related": [85, 10, 27] },
-  { "id": 39, "related": [40, 41, 42] },
-  { "id": 40, "related": [41, 42, 44] },
-  { "id": 41, "related": [44, 45, 76] },
-  { "id": 42, "related": [44, 45, 3] },
-  { "id": 43, "related": [90, 2, 6] },
-  { "id": 44, "related": [45, 46, 79] },
-  { "id": 45, "related": [46, 47, 77] },
-  { "id": 46, "related": [47, 48, 39] },
-  { "id": 47, "related": [48, 49, 40] },
-  { "id": 48, "related": [49, 50, 41] },
-  { "id": 49, "related": [50, 51, 52] },
-  { "id": 50, "related": [51, 52, 53] },
-  { "id": 51, "related": [52, 53, 68] },
-  { "id": 52, "related": [53, 54, 69] },
-  { "id": 53, "related": [54, 55, 73] },
-  { "id": 54, "related": [55, 35, 78] },
-  { "id": 55, "related": [35, 39, 88] },
-  { "id": 56, "related": [57, 68, 80] },
-  { "id": 57, "related": [68, 69, 81] },
-  { "id": 58, "related": [59, 60, 11] },
-  { "id": 59, "related": [60, 61, 12] },
-  { "id": 60, "related": [61, 62, 13] },
-  { "id": 61, "related": [62, 63, 30] },
-  { "id": 62, "related": [63, 64, 56] },
-  { "id": 63, "related": [64, 4, 57] },
-  { "id": 64, "related": [4, 8, 58] },
-  { "id": 65, "related": [66, 67, 70] },
-  { "id": 66, "related": [67, 70, 71] },
-  { "id": 67, "related": [70, 71, 72] },
-  { "id": 68, "related": [69, 73, 52] },
-  { "id": 69, "related": [73, 78, 53] },
-  { "id": 70, "related": [71, 72, 72] },
-  { "id": 71, "related": [72, 83, 74] },
-  { "id": 72, "related": [83, 86, 83] },
-  { "id": 73, "related": [78, 82, 54] },
-  { "id": 74, "related": [83, 86, 61] },
-  { "id": 75, "related": [89, 58, 62] },
-  { "id": 76, "related": [77, 79, 87] },
-  { "id": 77, "related": [79, 80, 76] },
-  { "id": 78, "related": [82, 88, 79] },
-  { "id": 79, "related": [80, 81, 80] },
-  { "id": 80, "related": [81, 84, 81] },
-  { "id": 81, "related": [84, 87, 84] },
-  { "id": 82, "related": [88, 35, 65] },
-  { "id": 83, "related": [86, 30, 66] },
-  { "id": 84, "related": [87, 76, 67] },
-  { "id": 85, "related": [10, 14, 37] },
-  { "id": 86, "related": [30, 65, 71] },
-  { "id": 87, "related": [76, 77, 75] },
-  { "id": 88, "related": [39, 40, 87] },
-  { "id": 89, "related": [75, 58, 59] },
-  { "id": 90, "related": [2, 3, 7] }
 ];
 
 if (typeof module !== "undefined" && module.exports) {
