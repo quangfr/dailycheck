@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "routine-buddy-2e6e5"
-  }
+    "default": "habitube-app",
+    "production": "habitube-app"
+  },
+  "targets": {},
+  "etags": {}
 }

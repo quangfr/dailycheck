@@ -2,7 +2,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 1,
     "emoji": "🌱",
-    "title": "Ouvrir l'application Habitube",
+    "title": "Ouvrir l'appli Habitube",
     "needs": [
       "organization",
       "joy"
@@ -15,7 +15,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 2,
     "emoji": "🥣",
-    "title": "Préparer un petit-déjeuner commun",
+    "title": "Faire un repas en commun",
     "needs": [
       "nutrition",
       "joy"
@@ -29,7 +29,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 3,
     "emoji": "🥪",
-    "title": "Préparer une collation saine",
+    "title": "Préparer son repas midi",
     "needs": [
       "nutrition",
       "joy"
@@ -188,7 +188,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 15,
     "emoji": "🧹",
-    "title": "Nettoyer couloir et entrée",
+    "title": "Nettoyer les espaces communs",
     "needs": [
       "cleanliness",
       "comfort"
@@ -252,7 +252,7 @@ const LIBRARY_JSON_DATA = [
   },
   {
     "id": 20,
-    "emoji": "🛏️",
+    "emoji": "🪟",
     "title": "Aérer et ranger la chambre",
     "needs": [
       "cleanliness",
@@ -293,13 +293,13 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 23,
     "emoji": "🏢",
-    "title": "Ranger la salle de réunion",
+    "title": "Ranger la salle",
     "needs": [
       "cleanliness",
       "organization"
     ],
     "contexts": [
-      "office"
+      "office", "school"
     ],
     "target": "group"
   },
@@ -312,7 +312,7 @@ const LIBRARY_JSON_DATA = [
       "calm"
     ],
     "contexts": [
-      "office"
+      "office", "home"
     ],
     "target": "individual"
   },
@@ -353,7 +353,7 @@ const LIBRARY_JSON_DATA = [
     ],
     "contexts": [
       "home",
-      "school"
+      "school", "office"
     ],
     "target": "group"
   },
@@ -451,14 +451,14 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 35,
     "emoji": "💗",
-    "title": "Partager une envie",
+    "title": "Voir ses amis",
     "needs": [
       "expression",
       "joy"
     ],
     "contexts": [
       "social",
-      "family"
+      "family", "outdoor"
     ],
     "target": "group"
   },
@@ -531,10 +531,10 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 41,
     "emoji": "🗣️",
-    "title": "Partager une astuce productive",
+    "title": "Passer une info utile",
     "needs": [
       "communication",
-      "entertainment"
+      "expression"
     ],
     "contexts": [
       "office",
@@ -559,7 +559,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 43,
     "emoji": "🤝",
-    "title": "Manger avec sa famille",
+    "title": "Voir sa famille",
     "needs": [
       "joy",
       "inclusion"
@@ -572,7 +572,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 44,
     "emoji": "🧡",
-    "title": "Remonter le moral à un ami",
+    "title": "Apporter du réconfort",
     "needs": [
       "communication",
       "inclusion"
@@ -595,8 +595,8 @@ const LIBRARY_JSON_DATA = [
   },
   {
     "id": 46,
-    "emoji": "🤗",
-    "title": "Faire un câlin",
+    "emoji": "🐈",
+    "title": "Prendre soin de",
     "needs": [
       "comfort",
       "inclusion"
@@ -634,8 +634,8 @@ const LIBRARY_JSON_DATA = [
   },
   {
     "id": 49,
-    "emoji": "👏",
-    "title": "Encourager quelqu’un",
+    "emoji": "✌️",
+    "title": "Marquer un mini-succès",
     "needs": [
       "participation",
       "joy"
@@ -680,11 +680,11 @@ const LIBRARY_JSON_DATA = [
   },
   {
     "id": 52,
-    "emoji": "🧶",
-    "title": "Inclure une personne isolée",
+    "emoji": "💬",
+    "title": "Briser la glace",
     "needs": [
       "inclusion",
-      "cooperation"
+      "communication"
     ],
     "contexts": [
       "school",
@@ -695,7 +695,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 53,
     "emoji": "💡",
-    "title": "Proposer son aide",
+    "title": "Faire un geste sympa",
     "needs": [
       "cooperation",
       "participation"
@@ -710,7 +710,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 54,
     "emoji": "💆‍♀️",
-    "title": "Offrir un massage court",
+    "title": "Offrir un geste apaisant",
     "needs": [
       "comfort",
       "expression"
@@ -799,8 +799,8 @@ const LIBRARY_JSON_DATA = [
   },
   {
     "id": 61,
-    "emoji": "🕯️",
-    "title": "Créer une ambiance douce",
+    "emoji": "🏡",
+    "title": "Créer une ambiance agréable",
     "needs": [
       "nature",
       "slowness"
@@ -855,7 +855,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 65,
     "emoji": "👀",
-    "title": "Contempler le paysage un moment",
+    "title": "Contempler le paysage",
     "needs": [
       "nature",
       "rest"
@@ -867,7 +867,7 @@ const LIBRARY_JSON_DATA = [
   },
   {
     "id": 66,
-    "emoji": "🌿",
+    "emoji": "🌬️",
     "title": "Prendre l’air 5 min",
     "needs": [
       "nature",
@@ -882,7 +882,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 67,
     "emoji": "🌳",
-    "title": "Se balader dans la nature",
+    "title": "Se connecter à la nature",
     "needs": [
       "nature",
       "rest"
@@ -896,7 +896,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 68,
     "emoji": "🕊️",
-    "title": "Apaiser l’ambiance du groupe",
+    "title": "Détendre l'ambiance",
     "needs": [
       "calm",
       "participation"
@@ -911,7 +911,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 69,
     "emoji": "🫂",
-    "title": "Veiller aux besoins du groupe",
+    "title": "Veiller au collectif",
     "needs": [
       "inclusion",
       "cooperation"
@@ -1030,7 +1030,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 78,
     "emoji": "🎲",
-    "title": "Lancer un jeu collectif",
+    "title": "Faire une activité ludique",
     "needs": [
       "entertainment",
       "participation"
@@ -1046,10 +1046,10 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 79,
     "emoji": "🧩",
-    "title": "Résoudre une énigme",
+    "title": "Apprendre 3 nouveaux mots",
     "needs": [
       "meaning",
-      "entertainment"
+      "expression"
     ],
     "contexts": [],
     "target": "individual"
@@ -1180,7 +1180,7 @@ const LIBRARY_JSON_DATA = [
   {
     "id": 89,
     "emoji": "🌸",
-    "title": "Sentir un parfum agréable",
+    "title": "Sentir un parfum doux",
     "needs": [
       "calm",
       "meaning"

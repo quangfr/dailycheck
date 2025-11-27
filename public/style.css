@@ -73,6 +73,12 @@ button,
   color: #600;
   background: #fff5f5
 }
+.btn--disabled {
+  background: #ebe7f0;
+  border-color: #c6c0d2;
+  color: #7a7485;
+  cursor: not-allowed;
+}
 
 .btn.secondary {
   background: #fff;
@@ -261,7 +267,7 @@ button,
 .auth-card form {
   display: flex;
   flex-direction: column;
-  gap: 10px
+  gap: 2px
 }
 
 .auth-card input {
