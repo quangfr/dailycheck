@@ -361,43 +361,43 @@ const HABIT_TIPS = [
   },
   {
     "id": 10,
-    "title": "Mettre tout le matériel au même endroit"
+    "title": "Préparer ton sac la veille au soir"
   },
   {
     "id": 10,
-    "title": "Commencer par le lavabo"
+    "title": "Bloquer un créneau fixe chaque semaine"
   },
   {
     "id": 10,
-    "title": "Finir par le sol rapidement"
+    "title": "Y aller avec un ami motivant"
   },
   {
     "id": 10,
-    "title": "Utiliser un minuteur de 10 minutes"
+    "title": "Choisir un objectif simple pour la séance"
   },
   {
     "id": 10,
-    "title": "Nettoyer le miroir en dernier"
+    "title": "Commencer petit, augmenter progressivement les charges"
   },
   {
     "id": 10,
-    "title": "Vider les produits presque finis"
+    "title": "Mettre une playlist qui te booste"
   },
   {
     "id": 10,
-    "title": "Essuyer les éclaboussures immédiatement"
+    "title": "Poser ton téléphone, rester dans le moment"
   },
   {
     "id": 10,
-    "title": "Ranger les produits dans un panier"
+    "title": "Noter tes progrès après chaque entraînement"
   },
   {
     "id": 10,
-    "title": "Changer la serviette si nécessaire"
+    "title": "Prévoir une récompense saine après la séance"
   },
   {
     "id": 10,
-    "title": "Aérer quelques minutes après"
+    "title": "Te rappeler pourquoi tu as commencé"
   },
   {
     "id": 11,
