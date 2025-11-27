@@ -6486,10 +6486,10 @@
       const controls = document.createElement('div');
       controls.className = 'habit-actions footer-sticky';
       const infoWrapper = document.createElement('div');
-      infoWrapper.className = 'habit-actions__info';
-      const label = document.createElement('span');
-      label.className = 'habit-actions__label';
-      label.textContent = 'Choisir';
+      infoWrapper.className = 'habit-actions__selection';
+      const heading = document.createElement('div');
+      heading.className = 'habit-actions__choice-label';
+      heading.textContent = 'Choix des jours de la semaine';
       const dayWrapper = document.createElement('div');
       dayWrapper.className = 'habit-actions__days';
       const selectedWeekDays = new Set();
@@ -6511,10 +6511,9 @@
         });
         dayWrapper.appendChild(dayBtn);
       });
-      infoWrapper.append(label, dayWrapper);
+      infoWrapper.append(heading, dayWrapper);
       const buttonsWrap = document.createElement('div');
-      buttonsWrap.style.display = 'flex';
-      buttonsWrap.style.gap = '8px';
+      buttonsWrap.className = 'habit-actions__buttons';
       const updateAddLabel = () => {
         const count = selection.size;
         const hasWeekDays = selectedWeekDays.size > 0;

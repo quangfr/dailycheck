@@ -1715,6 +1715,7 @@ textarea#habitDesc {
 
 .sheetBody {
   padding: var(--gap);
+  padding-bottom: calc(var(--gap) + 90px);
   height: calc(100% - 50px);
   overflow: auto;
   background: var(--bg)
@@ -1810,6 +1811,14 @@ textarea#habitDesc {
   .sheetBody {
     height: auto;
     max-height: calc(90vh - 60px);
+  }
+
+  .habit-actions.footer-sticky {
+    position: sticky;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    z-index: 2;
   }
 }
 
@@ -1942,7 +1951,7 @@ textarea#habitDesc {
 .habit-actions__days {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
+  gap: 2px;
   width: 100%;
 }
 
@@ -1952,7 +1961,11 @@ textarea#habitDesc {
   color: var(--text);
   border-radius: 10px;
   font-size: 13px;
-  padding: 10px 0;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 6px 0;
+  min-height: 32px;
+  line-height: 1;
   text-align: center;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s;
@@ -1969,20 +1982,25 @@ textarea#habitDesc {
   flex-direction: column;
   gap: 8px;
   align-items: flex-end;
+  margin-left: auto;
+  justify-content: flex-end;
+  align-self: flex-end;
 }
 
 .habit-actions.footer-sticky {
   display: none;
-  position: sticky;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
+  max-width: min(480px, 100%);
+  margin: 0 auto;
   flex-wrap: wrap;
   padding: 10px var(--gap);
-  margin-top: 0;
   background: var(--bg);
   border-top: 1px solid var(--border);
-  z-index: 2;
+  z-index: 60;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
