@@ -6007,6 +6007,10 @@
     }
     document.querySelectorAll('.menu-back').forEach(btn => {
       btn.addEventListener('click', () => {
+        if (habitWizardStep === 2) {
+          step1();
+          return;
+        }
         const modal = btn.closest('.modal');
         if (modal) close(modal);
         maybeTogglePrivateAdd(true);
