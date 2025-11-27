@@ -809,30 +809,30 @@ button,
 .score-panel {
   border: 1px solid var(--border);
   border-radius: var(--r);
-  padding: 16px;
+  padding: 10px 12px;
   background: var(--card);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   position: relative;
 }
 .score-title {
-  font-size: 13px;
-  color: #5c5c5c;
+  font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
 }
 .score-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: center;
 }
 .score-goal-btn {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--card);
-  width: 36px;
-  height: 36px;
-  font-size: 18px;
+  width: 28px;
+  height: 28px;
+  font-size: 15px;
   cursor: pointer;
   color: inherit;
   display: inline-flex;
@@ -840,19 +840,19 @@ button,
   justify-content: center;
   transition: border-color 0.2s, background 0.2s;
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 8px;
+  right: 8px;
   margin: 0;
 }
 .score-goal-btn:hover {
   border-color: var(--text);
 }
 .score-value {
-  font-size: 38px;
+  font-size: 34px;
   font-weight: 700;
 }
 .score-diff {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #2a7a57;
 }
@@ -893,6 +893,25 @@ button,
   cursor: pointer;
   width: 100%;
 }
+.score-goal-emoji-line {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.score-goal-emoji {
+  transition: transform 0.2s;
+  color: #777;
+}
+.score-goal-emoji.active {
+  font-size: 50px;
+  color: var(--text);
+  transform: translateY(-2px);
+}
+.score-goal-big-emoji {
+  font-size: 56px;
+}
 .needs-panel {
   padding: 4px;
 }
@@ -918,6 +937,107 @@ button,
   margin-top: 4px;
   font-size: 12px;
   color: var(--green);
+}
+.space-profile-regularity {
+  margin-top: 8px;
+  border-radius: var(--r);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.regularity-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.regularity-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.regularity-subtitle {
+  font-size: 12px;
+  color: #5c5c5c;
+}
+.regularity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.regularity-card {
+  border: 1px solid rgba(30, 31, 26, 0.12);
+  border-radius: var(--r);
+  background: var(--card);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.regularity-card__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #454545;
+  text-align: center;
+}
+.regularity-pie {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  --regularity-percent: 0%;
+  background: conic-gradient(var(--green) 0 var(--regularity-percent), rgba(30, 31, 26, 0.08) var(--regularity-percent) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.regularity-pie__value {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-weight: 600;
+  color: var(--text);
+}
+.regularity-pie__value-number {
+  font-size: 26px;
+  line-height: 1;
+}
+.regularity-pie::after {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  background: var(--card);
+}
+.regularity-pie__value-unit {
+  font-size: 12px;
+  color: #5c5c5c;
+}
+.regularity-pie__value {
+  position: relative;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+.regularity-delta {
+  font-size: 12px;
+  color: #5c5c5c;
+  text-align: center;
+  line-height: 1.4;
+}
+.regularity-delta.positive {
+  color: var(--green);
+  font-weight: 600;
+}
+.regularity-delta.negative {
+  color: #c02e2e;
+  font-weight: 600;
+}
+.regularity-delta.neutral {
+  color: #5c5c5c;
 }
 .profile-top-three {
   width: 100%;
@@ -986,6 +1106,12 @@ button,
 }
 .space-stats-table td span {
   vertical-align: middle;
+}
+.space-stats-table tbody tr.clickable {
+  cursor: pointer;
+}
+.space-stats-table tbody tr.clickable:hover {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 /* Encadrés par état + auteur + mode */
@@ -1800,7 +1926,7 @@ textarea#habitDesc {
 
 .habit-actions__days {
   display: flex;
-  gap: 4px;
+  gap: 1px;
   flex-wrap: wrap;
 }
 
@@ -2338,6 +2464,9 @@ textarea.editing {
 .miniInfo {
   font-size: 12px;
   color: #555
+}
+.miniInfo--centered {
+  text-align: center!important ;
 }
 
 .hide {

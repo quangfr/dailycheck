@@ -76,8 +76,8 @@
         <div class="auth-separator">
           <span class="label">ou</span>
         </div>
-        <button type="button" class="auth-guest-btn text-btn secondary" id="authGuestBtn">Se connecter en mode
-          anonyme</button>
+        <button type="button" class="auth-guest-btn text-btn secondary" id="authGuestBtn">Se connecter avec mon
+          appareil</button>
         <div class="auth-note" id="authNote">Nous gardons tes jardins privés.<br>Aucune donnée n’est transmise à des
           tiers.</div>
       </div>
@@ -89,7 +89,7 @@
       <div class="brand" id="brand"><span class="logo">🌱</span>Habitube</div>
       <div class="spacer"></div>
       <select id="spaceSel" class="select" title="Changer de jardin"></select>
-      <button class="navbtn" id="openSpace" title="Jardin">⛭</button>
+      <button class="navbtn" id="addBtn" title="Menu">☰</button>
     </div>
 
     <div class="daysWrap" id="daysWrap">
@@ -99,7 +99,8 @@
       </div>
       <div class="rightBtns">
         <button class="navbtn" id="nextDay">→</button>
-        <button class="navbtn" id="addBtn" title="Menu">☰</button>
+        <button class="navbtn" id="openSpace" title="Jardin">⛭</button>
+
       </div>
     </div>
 
@@ -185,8 +186,8 @@
                   <tr>
                     <th>#</th>
                     <th class="sortable" data-sort="owner" title="Trier par jardinier">Jardinier</th>
-                    <th class="sortable" data-sort="window" title="Trier par les 30 derniers jours">30 jours</th>
-                    <th class="sortable" data-sort="total" title="Trier par le total">Total</th>
+                    <th class="sortable" data-sort="streak" title="Trier par streak actuel">Streak</th>
+                    <th class="sortable" data-sort="total" title="Trier par les 30 derniers jours">30 jours</th>
                   </tr>
                 </thead>
                 <tbody id="habitGardenersBody"></tbody>
@@ -222,11 +223,41 @@
               <div class="score-bar">
                 <span class="score-fill" id="scoreFill" style="width: 0%;"></span>
               </div>
-              <div class="score-note" id="scoreNote">Objectif : 30 activités validées</div>
+              <div class="score-note" id="scoreNote">Objectif : 30 </div>
             </div>
             <div class="needs-panel">
               <div class="needs-title">Top des besoins</div>
               <div class="needs-list" id="needsList"></div>
+            </div>
+          </div>
+          <div class="space-profile-regularity" aria-live="polite">
+            <div class="regularity-head">
+              <div class="regularity-title">Régularité</div>
+              <div class="regularity-subtitle">% de réalisés vs planifiés</div>
+            </div>
+            <div class="regularity-grid">
+              <div class="regularity-card">
+                <div class="regularity-card__label">7 jours glissants</div>
+                <div class="regularity-visual">
+                  <div class="regularity-pie" id="regularityPie7" role="img"
+                    aria-label="Régularité sur 7 jours glissants : 0 %"></div>
+                  <div class="regularity-pie-center">
+                    <span class="regularity-pie__value" id="regularityPercent7">-</span>
+                  </div>
+                </div>
+                <div class="regularity-delta neutral" id="regularityDelta7">0 pts vs période précédente</div>
+              </div>
+              <div class="regularity-card">
+                <div class="regularity-card__label">30 jours glissants</div>
+                <div class="regularity-visual">
+                  <div class="regularity-pie" id="regularityPie30" role="img"
+                    aria-label="Régularité sur 30 jours glissants : 0 %"></div>
+                  <div class="regularity-pie-center">
+                    <span class="regularity-pie__value" id="regularityPercent30">-</span>
+                  </div>
+                </div>
+                <div class="regularity-delta neutral" id="regularityDelta30">0 pts vs période précédente</div>
+              </div>
             </div>
           </div>
         </div>
@@ -236,15 +267,15 @@
               <label><b>Profil</b></label>
               <div class="profile-mode-options" role="radiogroup" aria-label="Choisir le profil de votre jardin">
                 <button type="button" class="profile-mode-option" data-mode="local" aria-pressed="false">
-                  <div class="profile-mode-option__name">🔒 Privé</div>
+                  <div class="profile-mode-option__name">🕵️ Anonyme</div>
 
                 </button>
                 <button type="button" class="profile-mode-option" data-mode="minimal" aria-pressed="false">
-                  <div class="profile-mode-option__name">🔗 Partagé</div>
+                  <div class="profile-mode-option__name">🔒 Privé</div>
 
                 </button>
                 <button type="button" class="profile-mode-option" data-mode="complet" aria-pressed="false">
-                  <div class="profile-mode-option__name">🌍 Ouvert</div>
+                  <div class="profile-mode-option__name">🌍 Visible</div>
 
                 </button>
               </div>
@@ -254,10 +285,13 @@
               <label><b>Pseudo</b></label>
               <div class="rowInline">
                 <input id="paramSpacePseudo" type="text" readonly placeholder="AloeCalme" />
+                <button type="button" class="btn mini refresh-btn" id="spacePseudoRefresh" title="Regénérer un pseudo">
+                  ⟳
+                </button>
               </div>
               <div class="subtitle">Ton pseudo est visible dans ton espace individuel.</div>
             </div>
-            <div class="field"><label><b>Prénom affiché</b></label><input id="paramName" type="text" placeholder="" />
+            <div class="field"><label><b>Nom affiché</b></label><input id="paramName" type="text" placeholder="" />
             </div>
             <div class="field" id="spaceLabelField"><label><b>Nom du jardin</b></label><input id="paramSpaceLabel"
                 type="text" /></div>
@@ -305,8 +339,8 @@
               <thead>
                 <tr>
                   <th>Habitude</th>
-                  <th data-sortable="streak" data-direction="desc">Streak</th>
-                  <th>Total</th>
+                  <th data-sortable="streak" title="Trier par streak actuel">Streak</th>
+                  <th data-sortable="total" title="30 derniers jours">30 jours</th>
                 </tr>
               </thead>
               <tbody id="spaceStatsBody"></tbody>
@@ -345,26 +379,8 @@
         <div class="grid">
           <div class="opt" id="addHabit">
             <div class="emoji">🌱</div>
-            <div><b>Semer des graines</b>
+            <div><b>Planter des habitudes</b>
               <div class="subtitle">Démarrer des nouvelles routines</div>
-            </div>
-          </div>
-          <div class="opt" id="inviteFriend">
-            <div class="emoji">💌</div>
-            <div><b>Inviter un jardinier</b>
-              <div class="subtitle">Partager un code d'accès ou un lien d'invitation</div>
-            </div>
-          </div>
-          <div class="opt hide" id="joinGarden">
-            <div class="emoji">🧑‍🌾</div>
-            <div><b>Rejoindre un jardin</b>
-              <div class="subtitle">Entrer un code d'accès</div>
-            </div>
-          </div>
-          <div class="opt hide" id="createGarden">
-            <div class="emoji">🏡</div>
-            <div><b>Créer un jardin</b>
-              <div class="subtitle">Nouvel espace partagé</div>
             </div>
           </div>
           <div class="opt" id="installApp">
@@ -394,43 +410,6 @@
     </div>
   </div>
 
-  <!-- Inviter -->
-  <div class="modal" id="modalInvite">
-    <div class="sheet">
-      <div class="sheetHeader">
-        <button type="button" class="backMini menu-back">←</button>
-        <div>Inviter</div><button class="closeX" id="closeInvite">⨉</button>
-      </div>
-      <div class="sheetBody">
-        <div class="grid">
-          <div class="field">
-            <label><b>Identifiant du jardin</b></label>
-            <input id="inviteGardenPseudo" type="text" readonly placeholder="—" />
-            <div class="subtitle" id="joinSpaceDesc"></div>
-          </div>
-
-          <div class="field">
-            <label><b>Pseudo du jardinier</b></label>
-            <input id="invitePseudo" type="text" placeholder="ForetCalme" />
-            <div class="subtitle">Ajoute un jardinier déjà inscrit via son pseudo</div>
-            <div class="rowInline">
-              <button class="btn primary" id="addMemberByPseudo">Ajouter par pseudo</button>
-            </div>
-          </div>
-          <div class="field">
-            <label><b>Nouveau jardinier</b></label>
-            <input id="inviteName" type="text" placeholder="Prénom" />
-          </div>
-          <div class="rowInline">
-            <button class="btn primary" id="generateInvite">Inviter</button>
-          </div>
-          <div class="subtitle">Liste des invitations </div>
-          <div id="inviteList" class="invite-list"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Habitude (bibliothèque multi-sélection) -->
   <div class="modal" id="modalHabit">
     <div class="sheet">
@@ -445,62 +424,6 @@
     </div>
   </div>
 
-  <!-- Création de jardin -->
-  <div class="modal garden" id="modalGarden">
-    <div class="sheet">
-      <div class="sheetHeader">
-        <button type="button" class="backMini menu-back">←</button>
-        <div>Créer un jardin</div>
-      </div>
-      <div class="sheetBody">
-        <div class="garden-form">
-          <div class="field">
-            <label><b>Nom du jardin</b></label>
-            <input id="gardenNameInput" type="text" placeholder="Nom du jardin" />
-          </div>
-          <div class="field">
-            <label><b>Identifiant du jardin</b></label>
-            <input id="gardenPseudoInput" type="text" placeholder="Identifiant du jardin" />
-            <div class="subtitle">L'identifiant est utilisé dans les invitations et les partages.</div>
-          </div>
-          <div class="field">
-            <div class="rowInlineActions">
-              <button class="btn primary" id="createGardenBtn">Suivant</button>
-            </div>
-            <div class="subtitle" id="gardenStatus"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal join" id="modalJoin">
-    <div class="sheet">
-      <div class="sheetHeader">
-        <button type="button" class="backMini menu-back">←</button>
-        <div>Rejoindre un jardin</div>
-      </div>
-      <div class="sheetBody">
-        <div class="grid">
-          <div class="field">
-            <label><b>Prénom</b></label>
-            <input id="joinName" type="text" placeholder="Ton prénom" />
-          </div>
-          <div class="field">
-            <label><b>Identifiant du jardin</b></label>
-            <input id="joinPseudo" type="text" maxlength="16" placeholder="foret01" />
-          </div>
-          <div class="field">
-            <div class="rowInlineActions">
-              <button class="btn primary" id="joinSpaceBtn">Rejoindre</button>
-            </div>
-            <div class="subtitle" id="joinStatus"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="modal profile-setup" id="modalProfileSetup">
     <div class="sheet">
       <div class="sheetHeader">
@@ -511,16 +434,16 @@
           <div class="field">
             <label><b>Profil</b></label>
             <select id="profileModeSelector" class="select">
-              <option value="local">Local</option>
-              <option value="minimal">Minimal</option>
-              <option value="complet">Complet</option>
+              <option value="local">Anonyme</option>
+              <option value="minimal">Privé</option>
+              <option value="complet">Public</option>
             </select>
             <div class="subtitle" id="profileModeSetupHint"></div>
           </div>
           <div class="field hide" id="profilePseudoField">
             <label><b>Pseudo</b></label>
             <div class="rowInline">
-              <input id="profilePseudoInput" type="text" placeholder="doux-mousse-42" />
+              <input id="profilePseudoInput" type="text" placeholder="doux-mousse-42" readonly />
               <button type="button" class="btn mini refresh-btn" id="profilePseudoRefresh"
                 title="Générer un nouveau pseudo">
                 ⟲
@@ -545,10 +468,20 @@
         <button class="closeX" id="closeScoreGoal">⨉</button>
       </div>
       <div class="sheetBody">
-        <p>Choisis ton objectif hebdomadaire entre 5 et 35 activités.</p>
+        <p>Choisis ton objectif hebdomadaire</p>
+        <div class="score-goal-emoji-line" id="scoreGoalEmojiLine">
+          <span class="score-goal-emoji" data-value="5">🌱</span>
+          <span class="score-goal-emoji" data-value="10">🌼</span>
+          <span class="score-goal-emoji" data-value="15">🌻</span>
+          <span class="score-goal-emoji" data-value="20">🌹</span>
+          <span class="score-goal-emoji" data-value="25">🌷</span>
+          <span class="score-goal-emoji" data-value="30">🪻</span>
+          <span class="score-goal-emoji" data-value="35">💐</span>
+          <span class="score-goal-emoji" data-value="40">🎋</span>
+        </div>
         <div class="score-slider">
           <span id="scoreGoalValue">30</span>
-          <input type="range" min="5" max="35" step="1" id="scoreGoalRange" />
+          <input type="range" min="5" max="40" step="1" id="scoreGoalRange" />
         </div>
         <div class="modal-link-row">
           <button class="btn" id="cancelScoreGoal">Annuler</button>
@@ -624,7 +557,6 @@
           PSEUDO_LIBRARY.locations = locations;
         }
       } catch (err) {
-        console.warn('loadPseudoLibrary', err);
       }
       return PSEUDO_LIBRARY;
     }
@@ -637,13 +569,14 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.26.6';
+    const APP_VERSION = '0.11.26.7';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
       joie: '😄',
       calme: '🕊️',
       calm: '🕊️',
+      health: '🧑‍⚕️',
       nature: '🌿',
       nutrition: '🍎',
       organization: '🗂️',
@@ -902,7 +835,7 @@
       participation: 'Participation',
       privacy: 'Intimité',
       rest: 'Repos',
-      safety: 'Sécurité',
+      health: 'Santé',
       school: 'École',
       sleep: 'Sommeil',
       slowness: 'Lenteur',
@@ -958,7 +891,6 @@
         if (currentProfile?.uid && doc.id === currentProfile.uid) return false;
         return true;
       } catch (err) {
-        console.warn('isPseudoTaken', err);
         return false;
       }
     }
@@ -981,7 +913,6 @@
         if (excludeId && doc.id === excludeId) return false;
         return true;
       } catch (err) {
-        console.warn('isSpacePseudoTaken', err);
         return false;
       }
     }
@@ -1081,6 +1012,13 @@
     ];
     const DEFAULT_DURATION = 15;
     const DEFAULT_GARDENER_WINDOW_DAYS = 30;
+    const STATS_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
+    const STATS_SYNC_STORAGE_KEY = 'habitu-last-stats-sync';
+    const STATS_FETCH_STORAGE_KEY = 'habitu-last-stats-fetch';
+    const HABIT_LIST_SNAPSHOT_CACHE_KEY = 'habitu-habit-list-snapshot';
+    const HABIT_LIST_SNAPSHOT_MAX_AGE = STATS_SYNC_INTERVAL_MS;
+    const SPACE_PRIVATE_HABITS_COLL = 'privateHabits';
+    const SPACE_PRIVATE_HABITS_DOC = 'snapshot';
     const WEEKLY_SCORE_WINDOW_DAYS = 7;
     const MIN_WEEKLY_SCORE_TARGET = 5;
     const MAX_WEEKLY_SCORE_TARGET = 35;
@@ -1355,24 +1293,18 @@
       }
       return `G${genCode()}`;
     }
-    function inviteBaseUrl() {
-      const pathname = window.location.pathname.replace(/\/index\.html$/i, '/');
-      return `${window.location.origin}${pathname}`;
-    }
-    function genInviteToken() {
-      if (window.crypto?.randomUUID) {
-        return crypto.randomUUID().replace(/-/g, '');
-      }
-      if (window.crypto?.getRandomValues) {
-        const bytes = new Uint8Array(16);
-        crypto.getRandomValues(bytes);
-        return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-      }
-      return genCode();
-    }
     const round15 = m => Math.round(m / 15) * 15;
-    function lvlEmoji(v) { if (v < 5) return '🌱'; if (v < 10) return '🌼'; if (v < 15) return '🌻'; if (v < 20) return '🌷'; if (v < 25) return '🌹'; if (v < 30) return '🪻'; if (v < 35) return '💐'; return '🎋'; }
-    function names(xs, m = 3) { if (xs.length <= m) return xs.join(', '); const s = xs.slice(0, m).join(', '); return `${s}… et ${xs.length - m} autres`; }
+    function lvlEmoji(v) {
+      if (v < 5) return '🌰';
+      if (v < 10) return '🌱';
+      if (v < 15) return '🌼';
+      if (v < 20) return '🌻';
+      if (v < 25) return '🌹';
+      if (v < 30) return '🌷';
+      if (v < 35) return '🪻';
+      if (v < 40) return '💐';
+      return '🎋';
+    } function names(xs, m = 3) { if (xs.length <= m) return xs.join(', '); const s = xs.slice(0, m).join(', '); return `${s}… et ${xs.length - m} autres`; }
     const INSTALL_PROMPT_STORAGE_KEY = 'habitu-install-prompt-seen';
     const INSTALL_PROMPT_SUPPRESSION_MS = 15 * 24 * 60 * 60 * 1000;
     const INSTALL_PROMPT_FIRST_HABIT_KEY = 'habitu-install-first-habit';
@@ -1382,6 +1314,7 @@
     let installPromptAutoShown = false;
     let installPromptAwaitingModalClose = false;
     let toastContainerEl = null;
+    hydrateHabitListSnapshotCache();
 
     function safeStorageGet(key) {
       try {
@@ -1394,6 +1327,300 @@
       try {
         localStorage.setItem(key, value);
       } catch (e) { }
+    }
+    const HABIT_GARDENERS_LOCAL_KEY = 'habitu-habit-gardeners-cache';
+    const HABIT_GARDENERS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
+    const HABIT_STREAK_COUNTS_LOCAL_KEY = 'habitu-habit-streak-counts-cache';
+    const HABIT_STREAK_COUNTS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
+    function readExpiringCache(key, maxAge) {
+      try {
+        const raw = safeStorageGet(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        if (parsed.spaceId !== (spaceId || '')) return null;
+        const timestamp = Number(parsed.ts);
+        if (!Number.isFinite(timestamp)) return null;
+        if (maxAge && Date.now() - timestamp > maxAge) return null;
+        return parsed.data || null;
+      } catch (err) {
+        return null;
+      }
+    }
+    function writeExpiringCache(key, data) {
+      try {
+        safeStorageSet(key, JSON.stringify({ spaceId: spaceId || '', ts: Date.now(), data }));
+      } catch (err) { }
+    }
+    function readStatsTimestamps(storageKey) {
+      try {
+        const raw = safeStorageGet(storageKey);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return {};
+        return parsed;
+      } catch (err) {
+        return {};
+      }
+    }
+    function getStatsTimestamp(storageKey, targetSpaceId) {
+      if (!targetSpaceId) return 0;
+      const timestamps = readStatsTimestamps(storageKey);
+      const candidate = Number(timestamps[targetSpaceId]);
+      return Number.isFinite(candidate) ? candidate : 0;
+    }
+    function setStatsTimestamp(storageKey, targetSpaceId, timestamp = Date.now()) {
+      if (!targetSpaceId) return;
+      try {
+        const timestamps = readStatsTimestamps(storageKey);
+        timestamps[targetSpaceId] = timestamp;
+        safeStorageSet(storageKey, JSON.stringify(timestamps));
+      } catch (err) {
+      }
+    }
+    function canPerformStatsOperation(storageKey, targetSpaceId) {
+      if (!targetSpaceId) return false;
+      const last = getStatsTimestamp(storageKey, targetSpaceId);
+      if (!last) return true;
+      return Date.now() - last >= STATS_SYNC_INTERVAL_MS;
+    }
+    let habitListSnapshot = { spaceId: '', ts: 0, habits: [] };
+    function hydrateHabitListSnapshotCache() {
+      try {
+        const raw = safeStorageGet(HABIT_LIST_SNAPSHOT_CACHE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return;
+        const ts = Number(parsed.ts);
+        if (!Number.isFinite(ts)) return;
+        const cacheSpaceId = typeof parsed.spaceId === 'string' ? parsed.spaceId : '';
+        if (!cacheSpaceId) return;
+        const habits = Array.isArray(parsed.habits) ? parsed.habits : [];
+        habitListSnapshot = { spaceId: cacheSpaceId, ts, habits };
+      } catch (err) {
+      }
+    }
+    function persistHabitListSnapshotCache(spaceId, habits = []) {
+      if (!spaceId) return;
+      const payload = {
+        spaceId,
+        ts: Date.now(),
+        habits: Array.isArray(habits) ? habits.map(h => ({ ...h })) : []
+      };
+      habitListSnapshot = payload;
+      try {
+        safeStorageSet(HABIT_LIST_SNAPSHOT_CACHE_KEY, JSON.stringify(payload));
+      } catch (err) {
+      }
+    }
+    function getCachedHabitList(spaceId) {
+      if (!spaceId) return [];
+      if (habitListSnapshot.spaceId !== spaceId) return [];
+      if (!habitListSnapshot.ts) return [];
+      if (Date.now() - habitListSnapshot.ts > HABIT_LIST_SNAPSHOT_MAX_AGE) return [];
+      return Array.isArray(habitListSnapshot.habits) ? habitListSnapshot.habits : [];
+    }
+    const SPACE_SYNC_KEY = 'habitu-space-last-sync';
+    const SPACE_CHANGE_KEY = 'habitu-space-last-change';
+    const SPACE_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
+    const HABIT_STATS_COLLECTION = 'habitStats';
+    const HABIT_STATS_OWNER_SUBCOLL = 'owners';
+    const HABIT_STREAK_COUNTS_COLLECTION = 'habitStreakCounts';
+    let spaceSyncTimer = null;
+
+    function readSpaceTimestamp(keyName) {
+      const raw = safeStorageGet(keyName);
+      if (!raw) return null;
+      try {
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        if (!parsed.spaceId || parsed.spaceId !== (spaceId || '')) return null;
+        const candidate = Number(parsed.ts);
+        if (!Number.isFinite(candidate)) return null;
+        return candidate;
+      } catch (err) {
+        return null;
+      }
+    }
+    function writeSpaceTimestamp(keyName, timestamp = Date.now()) {
+      const record = {
+        spaceId: spaceId || '',
+        ts: timestamp
+      };
+      safeStorageSet(keyName, JSON.stringify(record));
+    }
+    function getLastSpaceSync() {
+      return readSpaceTimestamp(SPACE_SYNC_KEY);
+    }
+    function setLastSpaceSync(timestamp = Date.now()) {
+      writeSpaceTimestamp(SPACE_SYNC_KEY, timestamp);
+    }
+    function getSpaceLastChange() {
+      return readSpaceTimestamp(SPACE_CHANGE_KEY);
+    }
+    function shouldQueueSpaceSnapshot() {
+      return Boolean(currentProfile && !isProfileModeLocal(currentProfile));
+    }
+    function markSpaceDirty() {
+      if (!shouldQueueSpaceSnapshot()) return;
+      writeSpaceTimestamp(SPACE_CHANGE_KEY, Date.now());
+      scheduleSpaceSync();
+    }
+    function scheduleSpaceSync(delay = 4000) {
+      if (!shouldQueueSpaceSnapshot()) return;
+      if (spaceSyncTimer) clearTimeout(spaceSyncTimer);
+      spaceSyncTimer = setTimeout(() => {
+        spaceSyncTimer = null;
+        maybeSyncSpaceSnapshot();
+      }, delay);
+    }
+    async function maybeSyncSpaceSnapshot({ force = false } = {}) {
+      if (!spaceId || !HABITU_FIREBASE_DB) return;
+      if (!shouldQueueSpaceSnapshot()) return;
+      const lastChange = getSpaceLastChange();
+      if (!force && !lastChange) return;
+      const lastSync = getLastSpaceSync();
+      const now = Date.now();
+      if (!force) {
+        if (lastSync && now - lastSync < SPACE_SYNC_INTERVAL_MS) {
+          const remaining = SPACE_SYNC_INTERVAL_MS - (now - lastSync);
+          scheduleSpaceSync(Math.max(remaining, 0) + 1000);
+          return;
+        }
+        if (lastSync && lastChange <= lastSync) {
+          return;
+        }
+      }
+      const space = getSpace();
+      if (!space) return;
+      try {
+        await persistSpaceDoc(spaceId, { scoreTarget: getWeeklyScoreTarget(spaceId) }, { force: true, suppressErrors: false });
+        const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
+        await Promise.all(habits.map(habit => persistHabit(spaceId, habit, { force: true })));
+        await syncHabitStatsSnapshot(space);
+        if (currentProfile?.uid) {
+          await persistUserProfile({
+            uid: currentProfile.uid,
+            email: currentProfile.email,
+            name: currentProfile.name,
+            pseudo: currentProfile.pseudo,
+            profileMode: currentProfile.profileMode
+          }, { force: true, suppressErrors: false });
+        }
+        setLastSpaceSync(now);
+        refreshProfileStatsCache({ force: true });
+      } catch (err) {
+        scheduleSpaceSync(30 * 1000);
+      }
+    }
+
+    function scheduleActivityFlush(delay = ACTIVITY_BUFFER_MS) {
+      if (activityFlushTimer) clearTimeout(activityFlushTimer);
+      activityFlushTimer = setTimeout(() => {
+        activityFlushTimer = null;
+        maybeFlushActivityBuffer();
+      }, delay);
+    }
+    function queueActivityEvent(event) {
+      if (!event || typeof event !== 'object') return;
+      const recordedDate = timestampToDate(event.recordedAt) || null;
+      const record = {
+        ...event,
+        recordedAt: recordedDate ? recordedDate.toISOString() : null
+      };
+      activityBuffer.push(record);
+      persistActivityBuffer();
+      scheduleActivityFlush();
+    }
+    async function maybeFlushActivityBuffer({ force = false } = {}) {
+      // Keep the buffer empty since activities no longer sync remotely.
+      if (!activityBuffer.length) return;
+      activityBuffer = [];
+      persistActivityBuffer();
+    }
+    const PROFILE_STATS_CACHE_KEY = 'habitu-profile-stats-cache';
+    const SPACE_STATS_CACHE_KEY = 'habitu-space-stats-cache';
+    const PROFILE_STATS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
+    const SPACE_STATS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
+    let profileStatsCacheMap = null;
+    let spaceStatsCacheMap = null;
+
+    function readCacheMap(storageKey, maxAge) {
+      try {
+        const raw = safeStorageGet(storageKey);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return {};
+        const now = Date.now();
+        Object.keys(parsed).forEach(key => {
+          const entry = parsed[key];
+          if (!entry || typeof entry !== 'object') {
+            delete parsed[key];
+            return;
+          }
+          if (!('ts' in entry) || now - entry.ts > maxAge) {
+            delete parsed[key];
+          }
+        });
+        return parsed;
+      } catch (err) {
+        return {};
+      }
+    }
+    function persistCacheMap(storageKey, map) {
+      try {
+        safeStorageSet(storageKey, JSON.stringify(map || {}));
+      } catch (err) {
+      }
+    }
+    function getProfileStatsCacheMap(refresh = false) {
+      if (refresh || !profileStatsCacheMap) {
+        profileStatsCacheMap = readCacheMap(PROFILE_STATS_CACHE_KEY, PROFILE_STATS_CACHE_MAX_AGE);
+      }
+      return profileStatsCacheMap;
+    }
+    function getSpaceStatsCacheMap(refresh = false) {
+      if (refresh || !spaceStatsCacheMap) {
+        spaceStatsCacheMap = readCacheMap(SPACE_STATS_CACHE_KEY, SPACE_STATS_CACHE_MAX_AGE);
+      }
+      return spaceStatsCacheMap;
+    }
+    function getProfileStatsCacheId(spaceId, ownerKey, period) {
+      const normalizedSpace = spaceId || '__none__';
+      const normalizedOwner = ownerKey || '__any__';
+      const normalizedPeriod = period || 'all';
+      return `${normalizedSpace}:${normalizedOwner}:${normalizedPeriod}`;
+    }
+    function getSpaceStatsCacheId(spaceId) {
+      return spaceId || '__none__';
+    }
+    function getCachedProfileStats(spaceId, ownerKey, period) {
+      const map = getProfileStatsCacheMap();
+      const entry = map[getProfileStatsCacheId(spaceId, ownerKey, period)];
+      return entry?.data || null;
+    }
+    function getProfileStatsCacheEntry(spaceId, ownerKey, period) {
+      const map = getProfileStatsCacheMap();
+      return map[getProfileStatsCacheId(spaceId, ownerKey, period)] || null;
+    }
+    function persistProfileStatsCache(spaceId, ownerKey, period, data) {
+      if (!spaceId) return;
+      const map = getProfileStatsCacheMap();
+      const id = getProfileStatsCacheId(spaceId, ownerKey, period);
+      map[id] = { data: { ...(data || {}) }, ts: Date.now() };
+      persistCacheMap(PROFILE_STATS_CACHE_KEY, map);
+    }
+    function getCachedSpaceStats(spaceId) {
+      const map = getSpaceStatsCacheMap();
+      const entry = map[getSpaceStatsCacheId(spaceId)];
+      return entry?.data || null;
+    }
+    function persistSpaceStatsCache(spaceId, entries) {
+      if (!spaceId) return;
+      const map = getSpaceStatsCacheMap();
+      const id = getSpaceStatsCacheId(spaceId);
+      map[id] = { data: { entries: Array.isArray(entries) ? entries : [] }, ts: Date.now() };
+      persistCacheMap(SPACE_STATS_CACHE_KEY, map);
     }
     function generateGuestId() {
       if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -1419,7 +1646,6 @@
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') return parsed;
       } catch (err) {
-        console.warn('readOwnerActivityStore', err);
       }
       return {};
     }
@@ -1427,7 +1653,6 @@
       try {
         safeStorageSet(STORAGE_ACTIVITY_STORE_KEY, JSON.stringify(ownerActivityStore));
       } catch (err) {
-        console.warn('persistOwnerActivityStore', err);
       }
     }
     function activityRecordKey(ownerId, spaceId, habitId, dayKey) {
@@ -1514,7 +1739,6 @@
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') return parsed;
       } catch (err) {
-        console.warn('readWeeklyScoreTargets', err);
       }
       return {};
     }
@@ -1522,7 +1746,6 @@
       try {
         safeStorageSet(WEEKLY_SCORE_STORAGE_KEY, JSON.stringify(targets || {}));
       } catch (err) {
-        console.warn('persistWeeklyScoreTargets', err);
       }
     }
     function normalizeWeeklyTarget(value) {
@@ -1543,6 +1766,7 @@
       const key = spaceId || '__global__';
       targets[key] = normalizeWeeklyTarget(value);
       persistWeeklyScoreTargets(targets);
+      markSpaceDirty();
       return targets[key];
     }
     function getLastMemberName() {
@@ -1551,6 +1775,28 @@
     function setLastMemberName(value) {
       safeStorageSet(STORAGE_LAST_MEMBER_NAME, (value || '').trim());
     }
+    const ACTIVITY_EVENT_BUFFER_KEY = 'habitu-activity-buffer';
+    let activityBuffer = [];
+    let activityFlushTimer = null;
+
+    function loadActivityBuffer() {
+      try {
+        const raw = safeStorageGet(ACTIVITY_EVENT_BUFFER_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed;
+      } catch (err) {
+        return [];
+      }
+    }
+    function persistActivityBuffer() {
+      try {
+        safeStorageSet(ACTIVITY_EVENT_BUFFER_KEY, JSON.stringify(activityBuffer));
+      } catch (err) {
+      }
+    }
+    activityBuffer = loadActivityBuffer();
     function ensureToastContainer() {
       if (!toastContainerEl) {
         toastContainerEl = $("#toastContainer");
@@ -1632,7 +1878,6 @@
         closeInstallPromptCard();
         updateInstallOptionVisibility();
       }).catch(err => {
-        console.warn('triggerInstallPrompt', err);
         showToast('Impossible d’installer pour l’instant.', { type: 'error' });
       });
     }
@@ -1878,13 +2123,94 @@
     function oneLiner(s) { return (s || '').replace(/\s*\n\s*/g, ' · ') }
 
     /* Global */
-    let spaceId = 'D0PWE3', userName = 'Moi', dayOff = 0;
+    const STORAGE_LAST_SPACE_ID_KEY = 'habitu-last-space-id';
+    let spaceId = safeStorageGet(STORAGE_LAST_SPACE_ID_KEY) || 'D0PWE3', userName = '', dayOff = 0;
+    let pendingSpacePseudo = null;
     let profilePeriod = '30d', activeProfileName = null, activeProfileEmail = null, profileReturnView = 'detail';
+    let statsSortDirection = 'desc';
+    let statsSortKey = 'streak';
+    let statsSortHeaders = [];
 
     /* Spaces */
     const SPACES = {};
     let ownerActivityStore = readOwnerActivityStore();
-    const INVITE_CACHE = {};
+    const LOCAL_SPACE_STATE_KEY = 'habitu-local-space-state';
+    let allowedSpaces = [];
+
+    function readLocalSpaceState() {
+      try {
+        const raw = safeStorageGet(LOCAL_SPACE_STATE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        return {
+          spaceId: typeof parsed.spaceId === 'string' ? parsed.spaceId : '',
+          allowedSpaces: Array.isArray(parsed.allowedSpaces)
+            ? parsed.allowedSpaces.filter(Boolean)
+            : [],
+          spaces: parsed.spaces && typeof parsed.spaces === 'object' ? parsed.spaces : {}
+        };
+      } catch (err) {
+        return null;
+      }
+    }
+    function applyLocalSpaceState(state) {
+      if (!state) return false;
+      const storedSpaces = state.spaces && typeof state.spaces === 'object' ? state.spaces : {};
+      const storedAllowed = Array.isArray(state.allowedSpaces) ? state.allowedSpaces.filter(Boolean) : [];
+      if (!storedAllowed.length && !Object.keys(storedSpaces).length) return false;
+      allowedSpaces = Array.from(new Set(storedAllowed));
+      Object.keys(SPACES).forEach(key => delete SPACES[key]);
+      Object.keys(storedSpaces).forEach(spaceKey => {
+        const entry = storedSpaces[spaceKey];
+        if (!entry || typeof entry !== 'object') return;
+        SPACES[spaceKey] = {
+          ...entry,
+          ch: Array.isArray(entry.ch) ? entry.ch.map(habit => ({ ...habit })) : []
+        };
+      });
+      if (state.spaceId) {
+        spaceId = state.spaceId;
+      } else if (!spaceId && allowedSpaces.length) {
+        spaceId = allowedSpaces[0];
+      }
+      return true;
+    }
+    function persistLocalSpaceState({ clear = false } = {}) {
+      if (typeof window === 'undefined' || !window.localStorage) return;
+      try {
+        if (clear) {
+          window.localStorage.removeItem(LOCAL_SPACE_STATE_KEY);
+          return;
+        }
+        const storedAllowedSpaces = Array.isArray(allowedSpaces) ? Array.from(new Set(allowedSpaces)) : [];
+        const payload = {
+          spaceId: spaceId || '',
+          allowedSpaces: storedAllowedSpaces,
+          spaces: {}
+        };
+        const spaceIds = new Set(storedAllowedSpaces);
+        Object.keys(SPACES).forEach(id => spaceIds.add(id));
+        spaceIds.forEach(id => {
+          const space = SPACES[id];
+          if (!space || typeof space !== 'object') return;
+          payload.spaces[id] = {
+            ...space,
+            ch: Array.isArray(space.ch) ? space.ch.map(habit => ({ ...habit })) : []
+          };
+        });
+        const hasSpaces = Object.keys(payload.spaces).length > 0;
+        if (!hasSpaces) {
+          window.localStorage.removeItem(LOCAL_SPACE_STATE_KEY);
+          return;
+        }
+        safeStorageSet(LOCAL_SPACE_STATE_KEY, JSON.stringify(payload));
+      } catch (err) {
+      }
+    }
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('beforeunload', () => persistLocalSpaceState());
+    }
     const STORAGE_USER_PROFILE = 'habitu-user-profile';
     const STORAGE_GUEST_SPACES = 'habitu-guest-spaces';
     const STORAGE_PROFILE_SETUP_KEY = 'habitu-profile-setup-done';
@@ -1896,11 +2222,12 @@
       { emoji: '🏫', label: 'École / Classe', type: 'group', desc: 'Rituels pédagogiques simples.' },
       { emoji: '🏢', label: '🏢 Bureau', type: 'group', desc: 'Rituels collaboratifs pro.' }
     ];
-    let allowedSpaces = [];
+    const initialLocalSpaceState = readLocalSpaceState();
+    if (initialLocalSpaceState) {
+      applyLocalSpaceState(initialLocalSpaceState);
+    }
     let currentProfile = loadStoredProfile();
     let guestSpaces = loadGuestSpaces();
-    let pendingInviteToken = new URLSearchParams(window.location.search).get('invite');
-    let pendingInviteInfo = null;
     const HABITU_FIREBASE_DB = window.HABITU_FIREBASE_DB;
     const ACTIVITY_BUFFER_MS = 3e3;
     const ACTIVITY_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
@@ -1915,7 +2242,6 @@
         if (stored === '0') return false;
         if (stored === '1') return true;
       } catch (err) {
-        console.warn('isFirestoreAllowedLocally', err);
       }
       return false;
     }
@@ -1925,19 +2251,22 @@
     }
     const PROFILE_MODE_INFO = {
       local: {
-        label: '🔒 Privé',
-        summary: 'Données en locale. Pas de sauvegarde ni de jardin partagé.'
+        label: '👤 Anonyme',
+        summary: 'Données en locale. Pas de sauvegarde ni de partage.'
       },
       minimal: {
-        label: '🔗 Partagé',
-        summary: 'Données de compte en ligne. Pas de classement.'
+        label: '🔒 Privé',
+        summary: 'Données de base sauvegardées en ligne. Profil non visible.'
       },
       complet: {
         label: '🌍 Public',
-        summary: 'Données complètes synchronisées. Profil et classement visibles'
+        summary: 'Données complètes sauvegardées en ligne. Profil visible.'
       }
     };
     const DEFAULT_PROFILE_MODE = 'complet';
+    function getAllowedProfileModesForProfile(profile = currentProfile) {
+      return ['local', 'minimal', 'complet'];
+    }
     function getProfileMode(profile = currentProfile) {
       const candidate = (profile?.profileMode || '').toString().toLowerCase();
       if (PROFILE_MODE_INFO[candidate]) {
@@ -1958,7 +2287,8 @@
       return Boolean(canWriteFirestore() && !isProfileModeLocal(profile));
     }
     function shouldSyncActivities(profile = currentProfile) {
-      return Boolean(shouldWriteToFirestore(profile) && isProfileModeComplet(profile));
+      // Activities now stay local only; never push to Firestore.
+      return false;
     }
     function getLastActivitySyncTime() {
       if (typeof window === 'undefined' || !window.localStorage) return null;
@@ -1966,7 +2296,6 @@
         const stored = window.localStorage.getItem(ACTIVITY_SYNC_STORAGE_KEY);
         return stored ? Number(stored) : null;
       } catch (err) {
-        console.warn('getLastActivitySyncTime', err);
         return null;
       }
     }
@@ -1975,7 +2304,6 @@
       try {
         window.localStorage.setItem(ACTIVITY_SYNC_STORAGE_KEY, String(timestamp));
       } catch (err) {
-        console.warn('setLastActivitySyncTime', err);
       }
     }
     function canSyncActivitiesNow() {
@@ -2011,6 +2339,11 @@
       renderCards();
       renderSpaceRank();
       renderHabitGardeners();
+      if (normalized !== 'local') {
+        await maybeSyncSpaceSnapshot({ force: true });
+        await maybeFlushActivityBuffer({ force: true });
+      }
+      refreshGardenerTabVisibility();
     }
     const activityQueue = new Map();
     const SESSION_COOKIE_NAME = 'habitube-session';
@@ -2028,7 +2361,6 @@
       try {
         localStorage.setItem(STORAGE_GUEST_SPACES, JSON.stringify(Array.from(guestSpaces)));
       } catch (e) {
-        console.warn('persistGuestSpaces', e);
       }
     }
     function addGuestSpace(spaceId) {
@@ -2061,9 +2393,8 @@
       if (nextProfile.guest && !nextProfile.guestId) {
         nextProfile.guestId = nextProfile.uuid || getOrCreateGuestId();
       }
-      if (!PROFILE_MODE_INFO[nextProfile.profileMode]) {
-        nextProfile.profileMode = DEFAULT_PROFILE_MODE;
-      }
+      const candidateMode = (nextProfile.profileMode || '').toString().toLowerCase();
+      nextProfile.profileMode = PROFILE_MODE_INFO[candidateMode] ? candidateMode : DEFAULT_PROFILE_MODE;
       localStorage.setItem(STORAGE_USER_PROFILE, JSON.stringify(nextProfile));
       currentProfile = nextProfile;
       setSessionCookie();
@@ -2091,9 +2422,8 @@
       allowedSpaces = [];
       ownerActivityStore = {};
       persistOwnerActivityStore();
-      Object.keys(INVITE_CACHE).forEach(k => delete INVITE_CACHE[k]);
       Object.keys(SPACES).forEach(k => delete SPACES[k]);
-      spaceId = null;
+      setActiveSpace(null);
       spacesInitialized = false;
     }
     function normalizeEmail(email) {
@@ -2158,6 +2488,40 @@
         space.memberSettings = {};
       }
       return space.memberSettings;
+    }
+    function persistLastSpaceId(id) {
+      if (typeof id !== 'string') return;
+      safeStorageSet(STORAGE_LAST_SPACE_ID_KEY, id);
+    }
+    function restoreLastSpaceId() {
+      const stored = safeStorageGet(STORAGE_LAST_SPACE_ID_KEY);
+      return stored || null;
+    }
+    function setActiveSpace(nextId) {
+      if (!nextId) {
+        spaceId = null;
+        persistLastSpaceId('');
+        return;
+      }
+      if (spaceId === nextId) return;
+      spaceId = nextId;
+      persistLastSpaceId(nextId);
+    }
+    function ensureCurrentSpaceSelection() {
+      if (spaceId) return;
+      if (allowedSpaces.length) {
+        setActiveSpace(allowedSpaces[0]);
+        return;
+      }
+      const restored = restoreLastSpaceId();
+      if (restored) {
+        setActiveSpace(restored);
+        return;
+      }
+      const fallback = Object.keys(SPACES)[0];
+      if (fallback) {
+        setActiveSpace(fallback);
+      }
     }
     function getSpaceMemberLabel(space, memberKey) {
       const key = normalizeMemberKey(memberKey);
@@ -2241,25 +2605,6 @@
       }
       return null;
     }
-    async function refreshOwnedSpaces(profile) {
-      const email = profile?.email;
-      const uid = profile?.uid;
-      if (!email && !uid) return [];
-      try {
-        const spaces = await fetchSpacesForUser(profile);
-        spaces.forEach(space => {
-          const existing = SPACES[space.id] || {};
-          const memberSettings = space.memberSettings || existing.memberSettings || {};
-          SPACES[space.id] = { ...existing, ...space, members: space.members || [], memberSettings, ch: space.ch || [] };
-        });
-        const collected = spaces.map(space => space.id);
-        allowedSpaces = [...new Set([...allowedSpaces, ...collected])];
-        return spaces;
-      } catch (err) {
-        console.warn('refreshOwnedSpaces', err);
-        return [];
-      }
-    }
     function isProfileSpaceOwner(space, profile) {
       if (!space || !profile) return false;
       return Boolean(space.ownerId && profile.uid && space.ownerId === profile.uid);
@@ -2271,11 +2616,11 @@
     function getSpaceOwnerLabel(space) {
       if (!space) return '';
       if (space.ownerId && currentProfile?.uid && space.ownerId === currentProfile.uid) {
-        return currentProfile.name || userName || 'Moi';
+        return currentProfile.name || userName || '';
       }
       const ownerLabel = getSpaceMemberLabel(space, space.ownerId);
       if (ownerLabel) return ownerLabel;
-      return 'Un jardinier';
+      return '';
     }
     function countOwnedGardens(profile) {
       if (currentProfile?.guest) {
@@ -2301,11 +2646,12 @@
       return ((label || '').trim() || '').toLowerCase();
     }
     function getProfileCanonicalId(profile = currentProfile) {
-      if (!profile) return '';
-      if (profile.uuid) return normalizeMemberKey(profile.uuid);
-      if (profile.uid) return normalizeMemberKey(profile.uid);
-      if (profile.guestId) return normalizeMemberKey(profile.guestId);
-      return '';
+      if (profile) {
+        if (profile.uuid) return normalizeMemberKey(profile.uuid);
+        if (profile.uid) return normalizeMemberKey(profile.uid);
+        if (profile.guestId) return normalizeMemberKey(profile.guestId);
+      }
+      return normalizeMemberKey(getOrCreateGuestId());
     }
     function getEventOwnerId(event) {
       if (!event) return '';
@@ -2351,21 +2697,7 @@
       return isCurrentUserLabel(record.owner);
     }
     function resolveActiveProfileOwnerKey() {
-      if (!activeProfileName) {
-        return getCurrentOwnerKey();
-      }
-      const isSelfProfile = normalizeOwnerLabel(activeProfileName) === normalizeOwnerLabel(getCurrentOwnerLabel());
-      if (isSelfProfile) {
-        return getCurrentOwnerKey();
-      }
-      if (activeProfileEmail) {
-        const ownerKey = findOwnerKeyByNameOrEmail(activeProfileName, activeProfileEmail);
-        if (ownerKey) return ownerKey;
-        return normalizeEmail(activeProfileEmail);
-      }
-      const ownerKey = findOwnerKeyByNameOrEmail(activeProfileName);
-      if (ownerKey) return ownerKey;
-      return normalizeOwnerLabel(activeProfileName);
+      return getCurrentOwnerKey();
     }
     function isCurrentUserLabel(label) {
       const normalized = normalizeOwnerLabel(label);
@@ -2473,8 +2805,12 @@
       }
       return true;
     }
-    function persistUserProfile(profile) {
-      if (!shouldWriteToFirestore(profile) || !profile?.uid) return Promise.resolve();
+    function persistUserProfile(profile, { force = false, suppressErrors = true } = {}) {
+      if (!profile?.uid) return Promise.resolve();
+      if (!force) {
+        markSpaceDirty();
+        return Promise.resolve();
+      }
       const payload = {
         name: profile.name,
         email: profile.email,
@@ -2505,9 +2841,9 @@
       if (profile.profileMode !== undefined) {
         payload.profileMode = profile.profileMode;
       }
-      return HABITU_FIREBASE_DB.collection('users').doc(profile.uid)
-        .set(payload, { merge: true })
-        .catch(e => console.warn('persistUserProfile', e));
+      const op = HABITU_FIREBASE_DB.collection('users').doc(profile.uid)
+        .set(payload, { merge: true });
+      return suppressErrors ? op.catch(() => { }) : op;
     }
 
     async function loadRemoteUserProfile(uid) {
@@ -2517,7 +2853,6 @@
         if (!snapshot.exists) return null;
         return snapshot.data() || null;
       } catch (err) {
-        console.warn('loadRemoteUserProfile', err);
         return null;
       }
     }
@@ -2543,6 +2878,7 @@
       if (!normalized) return;
       const updated = { ...currentProfile, pseudo: normalized };
       persistProfile(updated);
+      const forceWrite = shouldWriteToFirestore(updated);
       await persistUserProfile({
         uid: updated.uid,
         email: updated.email,
@@ -2553,26 +2889,38 @@
         postponedHabits: updated.postponedHabits,
         forgottenHabits: updated.forgottenHabits,
         showFriendBadges: updated.showFriendBadges
-      });
+      }, { force: forceWrite });
     }
-    function persistSpaceDoc(spaceId, data = {}) {
-      if (!shouldWriteToFirestore() || !spaceId) return Promise.resolve();
+    function persistSpaceDoc(spaceId, data = {}, { force = false, suppressErrors = true } = {}) {
+      if (!spaceId) return Promise.resolve();
+      if (!force) {
+        markSpaceDirty();
+        return Promise.resolve();
+      }
+      if (!HABITU_FIREBASE_DB) return Promise.resolve();
       const space = SPACES[spaceId] || {};
       const members = sanitizeSpaceMembers(space.members);
       const memberSettings = ensureSpaceMemberSettings(space);
+      const normalizedPseudo = normalizeSpacePseudo(space.pseudo || '');
       const payload = {
-        ...space,
-        ...data,
-        ...(space.ownerId ? { ownerId: space.ownerId } : {}),
-        memberSettings,
-        members,
+        ownerId: space.ownerId || null,
+        pseudo: space.pseudo || '',
+        pseudoNormalized: normalizedPseudo,
+        type: space.type || 'individual',
+        ...(data || {}),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
-      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId).set(payload, { merge: true }).catch(e => console.warn('persistSpaceDoc', e));
+      const op = HABITU_FIREBASE_DB.collection('spaces').doc(spaceId).set(payload, { merge: true });
+      return suppressErrors ? op.catch(() => { }) : op;
     }
 
-    function persistHabit(spaceId, habitData) {
-      if (!shouldWriteToFirestore() || !spaceId || !habitData?.id) return Promise.resolve();
+    function persistHabit(spaceId, habitData, { force = false } = {}) {
+      if (!spaceId || !habitData?.id) return Promise.resolve();
+      if (!force) {
+        markSpaceDirty();
+        markFirstHabitCreated();
+        return Promise.resolve();
+      }
       habitData.repeatConfig = normalizeRepeatConfig(habitData, habitData.repeatConfig || {});
       ensureHabitMetadata(habitData);
       const habitId = String(habitData.id);
@@ -2581,35 +2929,14 @@
         .then(() => {
           markFirstHabitCreated();
         })
-        .catch(e => console.warn('persistHabit', e));
-    }
-    function persistInviteDoc(token, payload) {
-      if (!shouldWriteToFirestore() || !token) return Promise.resolve();
-      const ownerId = payload.ownerId || currentProfile?.uid || null;
-      const ownerName = payload.ownerName || currentProfile?.name || userName || 'Un jardinier';
-      return HABITU_FIREBASE_DB.collection('invites').doc(token)
-        .set({ ...payload, ownerId, ownerName, token, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
-        .catch(e => console.warn('persistInvite', e));
-    }
-    function deleteInviteDoc(token) {
-      if (!shouldWriteToFirestore() || !token) return Promise.resolve();
-      delete INVITE_CACHE[token];
-      return HABITU_FIREBASE_DB.collection('invites').doc(token).delete().catch(e => console.warn('deleteInvite', e));
+        .catch(() => { });
     }
     function sendActivityToServer(payload) {
-      if (!canSyncActivitiesNow()) {
-        console.info('Skipping Firestore activity log because sync window has not elapsed');
+      if (!shouldSyncActivities()) {
         return Promise.resolve();
       }
-      return HABITU_FIREBASE_DB.collection('activities').add(payload)
-        .then((docRef) => {
-          setLastActivitySyncTime();
-          return docRef;
-        })
-        .catch(e => {
-          console.warn('sendActivity', e);
-          return Promise.reject(e);
-        });
+      queueActivityEvent(payload);
+      return maybeFlushActivityBuffer();
     }
     function scheduleHabitActivity(habitId, payload) {
       if (!habitId || !payload) return;
@@ -2639,14 +2966,23 @@
         actorPseudo,
         activityDate
       };
-      if (payload.state === 2) {
-        console.log('Habit realization logged', {
-          habitId,
-          owner: ownerLabel,
-          ownerId: ownerId || null,
-          spaceId,
-          recordedAt: localRecordedAt.toISOString()
-        });
+      const localEvent = {
+        ...baseEvent,
+        recordedAt: localRecordedAt,
+        loggedAt: loggedAtLocal
+      };
+      let remoteCounts = null;
+      if (payload.type === 'realization') {
+        upsertLocalHabitActivity(localEvent);
+        const counts = computeActorCountsForEvent(localEvent);
+        localEvent.actor30DaysCount = counts.window;
+        localEvent.actorTotalCount = counts.total;
+        remoteCounts = counts;
+        upsertLocalHabitActivity(localEvent);
+        bumpHabitStreakCount(habitId);
+      }
+      if (!shouldSyncActivities()) {
+        return;
       }
       const serverRecordedAt = targetRecordedAt
         ? firebase.firestore.Timestamp.fromDate(targetRecordedAt)
@@ -2656,25 +2992,9 @@
         recordedAt: serverRecordedAt,
         loggedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
-      const localEvent = {
-        ...baseEvent,
-        recordedAt: localRecordedAt,
-        loggedAt: loggedAtLocal
-      };
-      if (payload.type === 'realization') {
-        upsertLocalHabitActivity(localEvent);
-        const counts = computeActorCountsForEvent(localEvent);
-        localEvent.actor30DaysCount = counts.window;
-        localEvent.actorTotalCount = counts.total;
-        eventData.actor30DaysCount = counts.window;
-        eventData.actorTotalCount = counts.total;
-        upsertLocalHabitActivity(localEvent);
-      }
-      if (!shouldSyncActivities()) {
-        if (IS_LOCAL_FILE_URL) {
-          console.warn('Skipping Firestore activity log while running from file:// or profile settings');
-        }
-        return;
+      if (remoteCounts) {
+        eventData.actor30DaysCount = remoteCounts.window;
+        eventData.actorTotalCount = remoteCounts.total;
       }
       const timer = setTimeout(() => {
         sendActivityToServer(eventData);
@@ -2713,7 +3033,6 @@
           const snapshot = await queryPromise;
           snapshots.push(snapshot);
         } catch (err) {
-          console.warn('fetchSpacesForUser query', err);
         }
       }
       if (!snapshots.length) return [];
@@ -2757,7 +3076,6 @@
           createdAt: timestampToDate(raw.createdAt)
         };
       } catch (err) {
-        console.warn('fetchPersonalSpaceForOwner', err);
         return null;
       }
     }
@@ -2783,7 +3101,6 @@
         SPACES[spaceId] = { ...(SPACES[spaceId] || {}), ch: visibleHabits };
         return visibleHabits;
       } catch (err) {
-        console.warn('loadHabitsForSpace', err);
         return (SPACES[spaceId]?.ch || []).filter(habit => habit && !habit.deleted);
       }
     }
@@ -2821,7 +3138,6 @@
           createdAt: timestampToDate(raw.createdAt)
         };
       } catch (err) {
-        console.warn('fetchSpaceDoc', err);
         return null;
       }
     }
@@ -2852,84 +3168,17 @@
       await Promise.all(validIds.map(id => loadActivitiesForSpace(id)));
       await Promise.all(validIds.map(id => ensureSpaceHasPseudo(id)));
       if (!spaceId && allowedSpaces.length) {
-        spaceId = allowedSpaces[0];
+        setActiveSpace(allowedSpaces[0]);
       }
       if (spaceId && !allowedSpaces.includes(spaceId)) {
-        spaceId = allowedSpaces[0] || null;
+        setActiveSpace(allowedSpaces[0] || null);
       }
       spacesInitialized = true;
       return spaces;
     }
-    async function loadInvitesForOwner(ownerId) {
-      if (!HABITU_FIREBASE_DB || !ownerId) return;
-      try {
-        const snapshot = await HABITU_FIREBASE_DB.collection('invites').where('ownerId', '==', ownerId).get();
-        Object.keys(INVITE_CACHE).forEach(key => delete INVITE_CACHE[key]);
-        snapshot.forEach(doc => { INVITE_CACHE[doc.id] = { token: doc.id, ...doc.data() }; });
-      } catch (err) {
-        console.warn('loadInvitesForOwner', err);
-      }
-    }
-    async function refreshPendingInviteInfo() {
-      if (!pendingInviteToken || !HABITU_FIREBASE_DB) {
-        pendingInviteInfo = null;
-        return null;
-      }
-      try {
-        const doc = await HABITU_FIREBASE_DB.collection('invites').doc(pendingInviteToken).get();
-        pendingInviteInfo = doc.exists ? { token: doc.id, ...doc.data() } : null;
-      } catch (err) {
-        console.warn('refreshPendingInviteInfo', err);
-        pendingInviteInfo = null;
-      }
-      return pendingInviteInfo;
-    }
-    async function acceptPendingInvite(email) {
-      if (!pendingInviteToken || !email) return null;
-      const invite = await refreshPendingInviteInfo();
-      if (!invite) return null;
-      await joinSpace(invite.spaceId, email, { name: invite.invitedName });
-      await deleteInviteDoc(invite.token);
-      pendingInviteToken = null;
-      if (window.history.replaceState) {
-        const url = new URL(window.location);
-        url.searchParams.delete('invite');
-        window.history.replaceState({}, '', url.pathname);
-      }
-      pendingInviteInfo = null;
-      if (INVITE_CACHE[invite.token]) {
-        delete INVITE_CACHE[invite.token];
-        if (typeof renderInviteList === 'function') renderInviteList();
-      }
-      updateAuthMessage();
-      return invite;
-    }
-    async function joinSpace(spaceId, email, { name } = {}) {
-      if (!HABITU_FIREBASE_DB || !spaceId || !email) return;
-      const normalized = normalizeEmail(email);
-      try {
-        await HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
-          .update({ members: firebase.firestore.FieldValue.arrayUnion(normalized) });
-      } catch (err) {
-        if (err?.code === 'not-found') {
-          console.warn('joinSpace space not found', spaceId);
-        } else {
-          console.warn('joinSpace', err);
-        }
-      }
-      if (SPACES[spaceId]) {
-        const members = new Set(sanitizeSpaceMembers(SPACES[spaceId].members));
-        members.add(normalized);
-        SPACES[spaceId].members = Array.from(members);
-      }
-      if (name && normalized) {
-        await updateSpaceMemberName(spaceId, normalized, name);
-      }
-    }
     async function loadLibraryData() {
       const data = Array.isArray(window.LIBRARY_JSON_DATA) ? window.LIBRARY_JSON_DATA : null;
       if (!data) {
-        console.warn('loadLibraryData: no library data available');
         return;
       }
       LIBRARY_HABITS.length = 0;
@@ -2953,11 +3202,21 @@
       refreshLoader(getLoaderMinuteSeed());
     }
     async function resetFirestoreState(profile) {
+      const fallbackState = readLocalSpaceState();
       clearLocalState();
       const email = profile?.email;
       if (!email) { return; }
       await loadLibraryData();
       const spaces = await fetchSpacesForUser(profile);
+      if (!spaces.length && fallbackState && applyLocalSpaceState(fallbackState)) {
+        await Promise.all(allowedSpaces.map(id => ensureSpaceHasPseudo(id)));
+        if (!spaceId && allowedSpaces.length) { setActiveSpace(allowedSpaces[0]); }
+        if (spaceId && !allowedSpaces.includes(spaceId)) { setActiveSpace(allowedSpaces[0] || null); }
+        spacesInitialized = true;
+        maybeTogglePrivateAdd();
+        persistLocalSpaceState();
+        return;
+      }
       allowedSpaces = spaces.map(space => space.id);
       spaces.forEach(space => {
         const existing = SPACES[space.id] || {};
@@ -2973,14 +3232,13 @@
       });
       await Promise.all(spaces.map(space => loadHabitsForSpace(space.id)));
       await Promise.all(spaces.map(space => loadActivitiesForSpace(space.id)));
-      await loadInvitesForOwner(profile.uid);
-      renderInviteList();
       await Promise.all(allowedSpaces.map(id => ensureSpaceHasPseudo(id)));
-      if (!spaceId && allowedSpaces.length) { spaceId = allowedSpaces[0]; }
-      if (spaceId && !allowedSpaces.includes(spaceId)) { spaceId = allowedSpaces[0] || null; }
-      updateInviteGardenPseudo();
+      await Promise.all(allowedSpaces.map(id => ensureSpaceHasPseudo(id)));
+      if (!spaceId && allowedSpaces.length) { setActiveSpace(allowedSpaces[0]); }
+      if (spaceId && !allowedSpaces.includes(spaceId)) { setActiveSpace(allowedSpaces[0] || null); }
       spacesInitialized = true;
       maybeTogglePrivateAdd();
+      persistLocalSpaceState();
     }
     const HABIT_TITLE_IS_CUSTOM = {};
 
@@ -3358,7 +3616,6 @@
       }
       personalActivityRefreshPromise = loadPersonalSpaceActivities(days)
         .catch(err => {
-          console.warn('refreshPersonalActivityCache', err);
           return getMergedPersonalSpaceRecords(days);
         })
         .finally(() => {
@@ -3380,13 +3637,13 @@
       return getOwnerActivityRecords({ spaceId, since });
     }
     /* Emojis & bouton */
-    function currentBigEmoji(btn, tot) { return btn.dataset.override || (tot <= 7 ? '🌱' : tot <= 14 ? '🍀' : tot <= 21 ? '🌼' : tot <= 28 ? '🌻' : tot <= 35 ? '🌷' : tot <= 42 ? '🌹' : tot <= 49 ? '🪻' : tot <= 56 ? '💐' : tot <= 64 ? '🎋' : '🎋'); }
+    let scorePanelEmoji = '🌱';
     function drawBtn(btn) {
       const p = +btn.dataset.plants || 0;
       const tot = p;
       const st = +btn.dataset.state || 0;
       const habitEmoji = btn.dataset.habitEmoji || '🌱';
-      const bigEmoji = (st === 2) ? currentBigEmoji(btn, tot) : habitEmoji;
+      const bigEmoji = (st === 2 && scorePanelEmoji) ? scorePanelEmoji : habitEmoji;
       btn.innerHTML = `<div class="big">${bigEmoji}</div>`;
       btn.classList.toggle('done', st === 2);
     }
@@ -3417,6 +3674,16 @@
       const root = $("#cards");
       hideCardContextMenu();
       if (!root) return;
+      const currentSpace = getSpace();
+      const isPrivateSpaceView = Boolean(currentSpace && isPersonalSpaceType(currentSpace));
+      if (spaceId !== lastSpaceIdForGardenerCache) {
+        habitStreakCountsCache.clear();
+        habitGardenerSnapshotCache.clear();
+        habitStreakCountsPromise = null;
+        lastSpaceIdForGardenerCache = spaceId;
+        hydrateHabitCachesFromStorage();
+      }
+      habitGardenerBadgeElements.clear();
       const filterCounts = new Map(HABIT_FILTERS.map(filter => [filter.key, 0]));
       root.classList.remove('dense-view');
       root.innerHTML = '';
@@ -3441,7 +3708,7 @@
       if (!items.length) {
         const emptyState = document.createElement('div');
         emptyState.className = 'empty-state';
-        emptyState.innerHTML = '<strong>Ton jardin est encore vide.</strong><p>Ajoute quelques habitudes via « Nouvelle(s) habitude(s) » pour commencer à les cultiver.</p>';
+        emptyState.innerHTML = '<strong>Ton jardin est encore vide.</strong><p>Ajoute quelques habitudes via ☰ pour commencer à les cultiver.</p>';
         root.appendChild(emptyState);
       } else {
         let cardsAppended = 0;
@@ -3542,22 +3809,22 @@
           );
           const windowGardenersCount = windowGardeners.size;
           if (gardenerBadge) {
-            gardenerBadge.textContent = `🧑‍🌾${windowGardenersCount}`;
             gardenerBadge.dataset.habitId = String(it.id);
+            gardenerBadge.dataset.fallbackCount = String(windowGardenersCount);
+            habitGardenerBadgeElements.set(String(it.id), gardenerBadge);
+            gardenerBadge.disabled = false;
             gardenerBadge.classList.toggle('gardener-badge--empty', windowGardenersCount === 0);
+            updateGardenerBadge(it.id);
             gardenerBadge.addEventListener('click', (event) => {
               event.stopPropagation();
               openDetail(it.id, btn, 'gardeners');
             });
           }
           btn.dataset.ownerList = JSON.stringify(ownerNames);
-          const baseMin = BASE_MINUTES[it.id] || 15;
           const ownerState = ownerRecord?.state ?? 0;
           const owner = ownerState > 0 ? canonicalOwnerLabel(ownerRecord?.owner || '') : '';
           const ownerIdValue = ownerState > 0 ? (ownerRecord?.ownerId || ownerRecord?.userId || '') : '';
           const userState = userRecord?.state ?? 0;
-          const storedCount = Number(userRecord?.count ?? 0) || 0;
-          const computedCount = storedCount || (userState === 2 ? freqWeekly + 1 : 0);
           const state = userState;
           const contextForCounts = {
             state,
@@ -3576,11 +3843,7 @@
           btn.dataset.state = String(state);
           btn.dataset.owner = owner;
           btn.dataset.ownerId = ownerIdValue || '';
-          btn.dataset.count = '0';
-          btn.dataset.baseMin = String(baseMin);
           btn.dataset.recur = String(freqWeekly);
-          btn.dataset.basePlants = String(state >= 1 ? baseMin : 0);
-          btn.dataset.plants = btn.dataset.basePlants;
           btn.dataset.pinned = pinned ? '1' : '0';
 
           const setVisualFromState = stNow => {
@@ -3596,7 +3859,6 @@
               const parsed = JSON.parse(btn.dataset.ownerList || '[]');
               return Array.isArray(parsed) ? parsed : [];
             } catch (err) {
-              console.warn('parseOwnerList', err);
               return [];
             }
           };
@@ -3664,6 +3926,15 @@
             }
           };
 
+          const clickPrivate = () => {
+            const st = +btn.dataset.state || 0;
+            if (st >= 2) {
+              applyState(0);
+            } else {
+              applyState(2);
+            }
+          };
+
           const clickCommon = () => {
             clickLibre();
           };
@@ -3678,7 +3949,11 @@
               shouldSuppressCardClick = false;
               return;
             }
-            (mode.type === 'commun') ? clickCommon() : clickLibre();
+            if (isPrivateSpaceView) {
+              clickPrivate();
+            } else {
+              (mode.type === 'commun') ? clickCommon() : clickLibre();
+            }
           };
 
           drawBtn(btn);
@@ -3721,6 +3996,9 @@
       updateHabitFilterCounts(filterCounts);
       updateHabitFilterButtons();
       renderDateBar();
+      if (shouldQueueSpaceSnapshot()) {
+        ensureHabitStreakCounts().catch(() => { });
+      }
       updateAddModalOptions();
     }
     function getHabitGardenersStats(habitId, sinceDate) {
@@ -3808,13 +4086,13 @@
     }
 
     function formatGardenerLabel(entry) {
-      const first = (entry.firstName || '').trim();
+      const display = (entry.displayName || entry.firstName || '').trim();
       const pseudo = (entry.pseudo || entry.ownerLabel || '').trim();
-      if (first) {
-        if (pseudo) {
-          return `${first} (${pseudo})`;
+      if (display) {
+        if (pseudo && pseudo !== display) {
+          return `${display} (${pseudo})`;
         }
-        return first;
+        return display;
       }
       if (pseudo) {
         return `(${pseudo})`;
@@ -3823,9 +4101,12 @@
     }
 
     function isGardenerCurrentUser(entry) {
-      if (isCurrentUserLabel(entry.firstName) || isCurrentUserLabel(entry.pseudo) || isCurrentUserLabel(entry.ownerLabel)) {
-        return true;
-      }
+      if (!entry) return false;
+      const ownerKey = entry.ownerKey || '';
+      if (ownerKey && ownerKey === getCurrentOwnerKey()) return true;
+      if (entry.ownerLabel && isCurrentUserLabel(entry.ownerLabel)) return true;
+      const pseudoCandidate = entry.pseudo || entry.displayName || '';
+      if (pseudoCandidate && isCurrentUserLabel(pseudoCandidate)) return true;
       const email = currentProfile?.email;
       if (email && entry.userEmails?.has(normalizeEmail(email))) {
         return true;
@@ -3839,18 +4120,18 @@
 
     const HABIT_GARDENER_SORTERS = {
       owner: (a, b) => {
-        const aKey = (a.firstName || a.pseudo || a.ownerLabel || '').trim().toLowerCase();
-        const bKey = (b.firstName || b.pseudo || b.ownerLabel || '').trim().toLowerCase();
+        const aKey = (a.displayName || a.ownerLabel || '').trim().toLowerCase();
+        const bKey = (b.displayName || b.ownerLabel || '').trim().toLowerCase();
         return aKey.localeCompare(bKey, 'fr', { sensitivity: 'base' });
       },
-      window: (a, b) => (a.pastCount - b.pastCount),
-      total: (a, b) => (a.totalCount - b.totalCount)
+      streak: (a, b) => (a.streak - b.streak),
+      total: (a, b) => (a.total - b.total)
     };
 
-    let habitGardenersSortKey = 'window';
+    let habitGardenersSortKey = 'streak';
     let habitGardenersSortDesc = true;
     let habitGardenersSortHeaders = [];
-    function renderHabitGardeners() {
+    async function renderHabitGardeners() {
       const tbody = habitGardenersBody;
       const empty = habitGardenersEmpty;
       if (!tbody) return;
@@ -3859,8 +4140,8 @@
         const row = document.createElement('tr');
         const cell = document.createElement('td');
         cell.colSpan = 4;
-        cell.className = 'miniInfo';
-        cell.textContent = 'Les classements sont désactivés pour ce profil.';
+        cell.className = 'miniInfo miniInfo--centered';
+        cell.textContent = 'Ton profil doit être public pour consulter ces infos.';
         row.append(cell);
         tbody.append(row);
         if (empty) empty.classList.add('hide');
@@ -3872,13 +4153,29 @@
         return;
       }
       const sinceDate = addDays(curDate(), -DEFAULT_GARDENER_WINDOW_DAYS);
-      const stats = getHabitGardenersStats(activeId, sinceDate);
+      let stats = [];
+      if (shouldQueueSpaceSnapshot()) {
+        stats = await loadHabitGardenersSnapshot(activeId);
+      }
       if (!stats.length) {
-        if (empty) empty.classList.remove('hide');
-        return;
+        const fallback = getHabitGardenersStats(activeId, sinceDate);
+        if (!fallback.length) {
+          if (empty) empty.classList.remove('hide');
+          return;
+        }
+        stats = fallback.map(entry => ({
+          ownerKey: entry.normalizedOwner,
+          ownerLabel: entry.ownerLabel,
+          pseudo: entry.pseudo,
+          displayName: entry.firstName,
+          streak: entry.pastCount,
+          total: entry.totalCount,
+          userEmails: entry.userEmails,
+          userIds: entry.userIds
+        }));
       }
       if (empty) empty.classList.add('hide');
-      const sorter = HABIT_GARDENER_SORTERS[habitGardenersSortKey] || HABIT_GARDENER_SORTERS.window;
+      const sorter = HABIT_GARDENER_SORTERS[habitGardenersSortKey] || HABIT_GARDENER_SORTERS.streak;
       stats.sort((a, b) => {
         const result = sorter(a, b);
         return habitGardenersSortDesc ? -result : result;
@@ -3892,11 +4189,11 @@
         rankCell.textContent = String(index + 1);
         const ownerCell = document.createElement('td');
         ownerCell.textContent = formatGardenerLabel(entry);
-        const recentCell = document.createElement('td');
-        recentCell.textContent = String(entry.pastCount);
+        const streakCell = document.createElement('td');
+        streakCell.textContent = String(entry.streak || 0);
         const totalCell = document.createElement('td');
-        totalCell.textContent = String(entry.totalCount);
-        row.append(rankCell, ownerCell, recentCell, totalCell);
+        totalCell.textContent = String(entry.total || 0);
+        row.append(rankCell, ownerCell, streakCell, totalCell);
         tbody.appendChild(row);
       });
     }
@@ -3926,6 +4223,11 @@
       if (!btn) return;
       switchViews(btn, 'data-tab', 'detail');
     }
+    function refreshGardenerTabVisibility() {
+      const tab = document.querySelector('#detail .tabs [data-tab="gardeners"]');
+      if (!tab) return;
+      tab.classList.toggle('hide', isProfileModeLocal());
+    }
     /* ===== Calendriers ===== */
     /* ===== Navigation vues ===== */
     function showHome() { hideAll(); $("#home").classList.add('active'); $("#daysWrap").classList.remove('hide') }
@@ -3933,53 +4235,6 @@
     $("#backHome").onclick = showHome;
 
     /* ===== Classement (texte simple ❤️🤝) ===== */
-    const PROFILE_PERIOD_BUTTONS = [
-      { selector: '#profilePeriod7', key: '7d', label: '7 jours' },
-      { selector: '#profilePeriod30', key: '30d', label: '30 jours' },
-      { selector: '#profilePeriodAll', key: 'all', label: 'Total' }
-    ];
-    const SPACE_PERIOD_BUTTONS = [
-      { selector: '#sBtnP7', key: '7d', label: '7 jours' },
-      { selector: '#sBtnP30', key: '30d', label: '30 jours' },
-      { selector: '#sBtnPAll', key: 'all', label: 'Total' }
-    ];
-    function applyPeriodButtonLayout(buttons) {
-      const allowed = [];
-      let defaultKey = null;
-      buttons.forEach(item => {
-        const btn = $(item.selector);
-        if (!btn) return;
-        const info = item;
-        if (!info) return;
-        btn.dataset.period = info.key;
-        btn.textContent = info.label;
-        allowed.push(info.key);
-        if (!defaultKey) defaultKey = info.key;
-      });
-      return { allowed, defaultKey };
-    }
-    function updateProfilePeriodButtons() {
-      const { allowed, defaultKey } = applyPeriodButtonLayout(PROFILE_PERIOD_BUTTONS);
-      if (!allowed.includes(profilePeriod)) {
-        profilePeriod = defaultKey || 'all';
-      }
-      PROFILE_PERIOD_BUTTONS.forEach(item => {
-        const btn = $(item.selector);
-        if (!btn) return;
-        btn.classList.toggle('active', btn.dataset.period === profilePeriod);
-      });
-    }
-    function updateSpacePeriodButtons() {
-      const { allowed, defaultKey } = applyPeriodButtonLayout(SPACE_PERIOD_BUTTONS);
-      if (!allowed.includes(sPeriod)) {
-        sPeriod = defaultKey || 'all';
-      }
-      SPACE_PERIOD_BUTTONS.forEach(item => {
-        const btn = $(item.selector);
-        if (!btn) return;
-        btn.classList.toggle('active', btn.dataset.period === sPeriod);
-      });
-    }
     function getWeekRange(count) {
       const now = new Date();
       now.setHours(0, 0, 0, 0);
@@ -4040,7 +4295,6 @@
         nameBtn.type = 'button';
         nameBtn.className = 'profile-link';
         nameBtn.textContent = `${n}${me ? ' (toi)' : ''}`;
-        nameBtn.addEventListener('click', () => openProfileView(n, 'detail'));
         left.append(big, nameBtn);
         row.append(left);
         root.appendChild(row);
@@ -4077,14 +4331,16 @@
       const noteEl = $("#scoreNote");
       const normalizedScore = Math.max(0, Number.isFinite(score) ? score : 0);
       if (valueEl) {
-        valueEl.textContent = `${lvlEmoji(normalizedScore)}${normalizedScore}`;
+        const emoji = lvlEmoji(normalizedScore);
+        valueEl.textContent = `${emoji}${normalizedScore}`;
+        scorePanelEmoji = emoji;
       }
       if (fillEl) {
         const percent = target ? Math.min(100, Math.round((normalizedScore / target) * 100)) : 0;
         fillEl.style.width = `${percent}%`;
       }
       if (noteEl) {
-        noteEl.textContent = `Objectif : ${target} activités validées`;
+        noteEl.textContent = `Objectif : ${target}`;
       }
       if (diffEl) {
         if (placeholder != null) {
@@ -4092,7 +4348,7 @@
           diffEl.classList.remove('negative', 'positive');
         } else {
           const normalizedDiff = Number.isFinite(diff) ? diff : 0;
-          diffEl.textContent = `${normalizedDiff >= 0 ? '+' : ''}${normalizedDiff} par rapport à la semaine précédente`;
+          diffEl.textContent = `${normalizedDiff >= 0 ? '+' : ''}${normalizedDiff} vs semaine précédente`;
           diffEl.classList.toggle('negative', normalizedDiff < 0);
           diffEl.classList.toggle('positive', normalizedDiff >= 0);
         }
@@ -4100,16 +4356,16 @@
     }
     function renderNeedsOverview(space, range, records = []) {
       const container = $("#needsList");
-      if (!container) return;
+      if (!container) return [];
       container.innerHTML = '';
       if (!space) {
         container.innerHTML = '<div class="miniInfo">Aucun jardin sélectionné.</div>';
-        return;
+        return [];
       }
       const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
       if (!habits.length) {
         container.innerHTML = '<div class="miniInfo">Aucune habitude enregistrée pour ce jardin.</div>';
-        return;
+        return [];
       }
       const activeRange = range || buildSlidingWindowRange();
       const realizedByHabit = new Map();
@@ -4141,7 +4397,7 @@
       const data = Array.from(needStats.values()).filter(item => item.planned > 0 || item.realized > 0);
       if (!data.length) {
         container.innerHTML = '<div class="miniInfo">Aucun besoin planifié pour l’instant.</div>';
-        return;
+        return [];
       }
       data.sort((a, b) => {
         if (b.planned !== a.planned) return b.planned - a.planned;
@@ -4152,8 +4408,67 @@
         const pill = document.createElement('div');
         pill.className = 'need-pill';
         pill.innerHTML = `<span class="need-emoji">${item.emoji}</span><span class="need-label">${item.label}</span><span class="need-percentage">${percentage}%</span>`;
+        item.percentage = percentage;
         container.appendChild(pill);
       });
+      return data.slice(0, 4);
+    }
+    function renderNeedsFromCache(needs = []) {
+      const container = $("#needsList");
+      if (!container) return;
+      container.innerHTML = '';
+      if (!Array.isArray(needs) || !needs.length) return;
+      needs.forEach(item => {
+        const emoji = item?.emoji || '🌱';
+        const label = item?.label || '';
+        const percentage = Number.isFinite(item?.percentage) ? item.percentage : 0;
+        const pill = document.createElement('div');
+        pill.className = 'need-pill';
+        pill.innerHTML = `<span class="need-emoji">${emoji}</span><span class="need-label">${label}</span><span class="need-percentage">${percentage}%</span>`;
+        container.appendChild(pill);
+      });
+    }
+    function applyProfileStatsCache(cache, fallbackTarget) {
+      if (!cache) return;
+      const target = cache.target || fallbackTarget;
+      const hasScore = Number.isFinite(cache.score);
+      const hasDiff = Number.isFinite(cache.diff);
+      if (hasScore) {
+        updateScorePanel({
+          score: cache.score,
+          diff: hasDiff ? cache.diff : 0,
+          target,
+          placeholder: null
+        });
+      } else if (target) {
+        updateScorePanel({ target, placeholder: null });
+      }
+      if (Array.isArray(cache.needs) && cache.needs.length) {
+        renderNeedsFromCache(cache.needs);
+      }
+    }
+    const scoreGoalEmojiLine = $("#scoreGoalEmojiLine");
+    const scoreGoalBigEmoji = $("#scoreGoalBigEmoji");
+    function highlightScoreGoalEmoji(value) {
+      if (!scoreGoalEmojiLine) return null;
+      const spans = Array.from(scoreGoalEmojiLine.querySelectorAll('.score-goal-emoji'));
+      if (!spans.length) return null;
+      const normalized = Number(value);
+      let bestSpan = spans[0];
+      let bestValue = Number(spanValue(bestSpan.dataset.value));
+      spans.forEach(span => {
+        const val = Number(spanValue(span.dataset.value));
+        if (normalized >= val && val >= bestValue) {
+          bestSpan = span;
+          bestValue = val;
+        }
+      });
+      spans.forEach(span => span.classList.toggle('active', span === bestSpan));
+      return bestSpan;
+    }
+    function spanValue(raw) {
+      const num = Number(raw);
+      return Number.isFinite(num) ? num : 0;
     }
     function updateScoreGoalPreview(value) {
       const rangeEl = $("#scoreGoalRange");
@@ -4161,26 +4476,18 @@
       if (!rangeEl || !valueEl) return;
       const displayValue = value !== undefined ? value : rangeEl.value;
       valueEl.textContent = displayValue;
+      const activeEmoji = highlightScoreGoalEmoji(displayValue);
+      if (scoreGoalBigEmoji && activeEmoji) {
+        scoreGoalBigEmoji.textContent = activeEmoji.textContent;
+      }
     }
     function showDetailView() { hideAll(); $("#detail").classList.add('active'); $("#daysWrap").classList.add('hide') }
     function getStreakForHabit(spaceIdValue, habit, ownerKey) {
       if (!spaceIdValue || !habit || !ownerKey) return 0;
-      const records = getOwnerActivityRecords({ spaceId: spaceIdValue, habitId: String(habit.id), ownerId: ownerKey });
-      const days = new Set(records.filter(rec => (rec.state || 0) >= 2).map(rec => rec.dayKey));
-      const today = curDate();
-      let streak = 0;
-      for (let offset = 0; offset < 365; offset++) {
-        const cursor = new Date(today);
-        cursor.setDate(cursor.getDate() - offset);
-        if (!shouldOccurOnDate(habit, cursor)) continue;
-        const key = dayKeyFromDate(cursor);
-        if (days.has(key)) {
-          streak += 1;
-        } else {
-          break;
-        }
-      }
-      return streak;
+      const records = getOwnerActivityRecords({ spaceId: spaceIdValue, habitId: String(habit.id), ownerId: ownerKey })
+        .filter(rec => (rec.state || 0) >= 2);
+      const recordDays = new Set(records.map(rec => dayKeyFromDate(rec.recordedAt)));
+      return countStreakFromDays(habit, recordDays);
     }
 
     function collectProfileRecords(spaceIdValue, ownerKey, range) {
@@ -4192,12 +4499,22 @@
       return records;
     }
 
+    function refreshProfileStatsCache({ force = false } = {}) {
+      if (!spaceId) return;
+      const ownerKey = resolveActiveProfileOwnerKey();
+      const entry = getProfileStatsCacheEntry(spaceId, ownerKey, profilePeriod);
+      const now = Date.now();
+      if (force || !entry || !entry.ts || (now - entry.ts) >= PROFILE_STATS_CACHE_MAX_AGE) {
+        renderProfileStats();
+      }
+    }
+
     function renderProfileStats() {
-      console.info('renderProfileStats triggered');
-      updateProfilePeriodButtons();
       const body = $("#spaceStatsBody");
       if (!body) return;
       body.innerHTML = '';
+      updateSpaceStatsSortingHeaders();
+      renderSpaceRegularity();
       const space = getSpace();
       const currentRange = buildSlidingWindowRange(WEEKLY_SCORE_WINDOW_DAYS, 0);
       const prevRange = buildSlidingWindowRange(WEEKLY_SCORE_WINDOW_DAYS, WEEKLY_SCORE_WINDOW_DAYS);
@@ -4206,14 +4523,19 @@
       let diff = 0;
       const profileOwnerKey = resolveActiveProfileOwnerKey();
       const hasProfileKey = Boolean(profileOwnerKey);
+      const cachedProfileStats = getCachedProfileStats(spaceId, profileOwnerKey, profilePeriod);
+      if (cachedProfileStats) {
+        applyProfileStatsCache(cachedProfileStats, scoreTarget);
+      }
+      let needsSnapshot = [];
       if (spaceId && hasProfileKey) {
         const lastWeekRecords = collectProfileRecords(spaceId, profileOwnerKey, currentRange);
         const prevWeekRecords = collectProfileRecords(spaceId, profileOwnerKey, prevRange);
         scoreValue = lastWeekRecords.filter(rec => (rec.state || 0) >= 2).length;
         diff = scoreValue - prevWeekRecords.filter(rec => (rec.state || 0) >= 2).length;
-        renderNeedsOverview(space, currentRange, lastWeekRecords);
+        needsSnapshot = renderNeedsOverview(space, currentRange, lastWeekRecords);
       } else {
-        renderNeedsOverview(space, currentRange, []);
+        needsSnapshot = renderNeedsOverview(space, currentRange, []);
       }
       updateScorePanel({
         score: scoreValue,
@@ -4235,7 +4557,6 @@
       }
       const range = resolvePeriodRange(profilePeriod);
       const records = collectProfileRecords(spaceId, profileOwnerKey, range).filter(rec => (rec.state || 0) >= 2);
-      console.info('stats records count', { total: records.length, ownerKey: profileOwnerKey });
       const habits = (space?.ch || []).filter(habit => habit && !habit.deleted);
       if (!habits.length) {
         const row = document.createElement('tr');
@@ -4272,38 +4593,153 @@
         const streakValue = getStreakForHabit(spaceId, habit, profileOwnerKey);
         const row = document.createElement('tr');
         row.dataset.streak = String(streakValue);
+        row.dataset.total = String(entry.total);
         const emoji = habit?.emoji || '🌱';
         const label = habitLabel(habit) || 'Habitude';
         const plural = streakValue > 1 ? 's' : '';
-        console.log('stat-row', {
-          ownerKey: profileOwnerKey,
-          habitId: habit.id,
-          total: entry.total,
-          streak: streakValue,
-          last: entry.last
-        });
-        row.innerHTML = `<td><span class="stat-emoji">${emoji}</span><span>${label}</span></td><td>${streakValue} jour${plural}</td><td>${entry.total}</td>`;
+        row.innerHTML = `<td><span class="stat-emoji">${emoji}</span><span>${label}</span></td><td>${streakValue}</td><td>${entry.total}</td>`;
         body.appendChild(row);
       });
+      sortSpaceStats(statsSortKey, statsSortDirection);
+      persistProfileStatsCache(spaceId, profileOwnerKey, profilePeriod, {
+        score: scoreValue,
+        diff,
+        target: scoreTarget,
+        needs: needsSnapshot
+      });
     }
-    function computeHabitStreak(habit, records = []) {
+    const REGULARITY_WINDOWS = [7, 30];
+    function renderSpaceRegularity() {
+      REGULARITY_WINDOWS.forEach(days => {
+        const currentRange = buildSlidingWindowRange(days);
+        const previousRange = buildSlidingWindowRange(days, days);
+        const currentPercent = computeRegularityPercent(currentRange);
+        const previousPercent = computeRegularityPercent(previousRange);
+        updateRegularityCard(days, currentPercent, currentPercent - previousPercent);
+      });
+    }
+    function collectSpaceRecordsInRange(range) {
+      if (!spaceId || !range?.since) return [];
+      let records = getOwnerActivityRecords({ spaceId, since: range.since });
+      if (range.until) {
+        records = records.filter(rec => rec.recordedAt && rec.recordedAt <= range.until);
+      }
+      return records;
+    }
+    function countPlannedOccurrencesInRange(range) {
+      if (!range) return 0;
+      const space = getSpace();
+      if (!space) return 0;
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
+      return habits.reduce((total, habit) => total + countScheduledOccurrencesInRange(habit, range), 0);
+    }
+    function computeRegularityPercent(range) {
+      if (!range) return 0;
+      const planned = countPlannedOccurrencesInRange(range);
+      if (!planned) return 0;
+      const completed = collectSpaceRecordsInRange(range).filter(rec => (rec.state || 0) >= 2).length;
+      const ratio = Math.min(1, Math.max(0, completed / planned));
+      return Math.round(ratio * 100);
+    }
+    function updateRegularityCard(days, percent, delta) {
+      const pie = $(`#regularityPie${days}`);
+      const percentEl = $(`#regularityPercent${days}`);
+      const deltaEl = $(`#regularityDelta${days}`);
+      if (!pie || !percentEl || !deltaEl) return;
+      const normalizedPercent = Number.isFinite(percent) ? Math.max(0, Math.min(100, Math.round(percent))) : 0;
+      pie.style.setProperty('--regularity-percent', `${normalizedPercent}%`);
+      percentEl.textContent = `${normalizedPercent}%`;
+      pie.setAttribute('aria-label', `Régularité sur ${days} jours glissants : ${normalizedPercent} %`);
+      const deltaValue = Number.isFinite(delta) ? Math.round(delta) : 0;
+      deltaEl.textContent = `${deltaValue > 0 ? '+' : ''}${deltaValue} pts vs période précédente`;
+      deltaEl.classList.toggle('positive', deltaValue > 0);
+      deltaEl.classList.toggle('negative', deltaValue < 0);
+      deltaEl.classList.toggle('neutral', deltaValue === 0);
+    }
+    function appendSpaceStatRow(body, { label, emoji, streak, total, habitId }) {
+      if (!body) return;
+      const normalizedStreak = Number.isFinite(streak) ? streak : 0;
+      const normalizedTotal = Number.isFinite(total) ? total : 0;
+      const row = document.createElement('tr');
+      row.dataset.streak = String(normalizedStreak);
+      row.dataset.total = String(normalizedTotal);
+      const plural = normalizedStreak > 1 ? 's' : '';
+      const emojiValue = emoji || '🌱';
+      const labelValue = label || 'Habitude';
+      row.innerHTML = `<td><span class="stat-emoji">${emojiValue}</span><span>${labelValue}</span></td><td>${normalizedStreak}</td><td>${normalizedTotal}</td>`;
+      const hasHabitId = habitId !== undefined && habitId !== null;
+      if (hasHabitId) {
+        const habitKey = String(habitId);
+        if (habitKey) {
+          const openGardenerTab = () => openDetail(habitId, null, 'gardeners');
+          row.dataset.habitId = habitKey;
+          row.classList.add('clickable');
+          row.tabIndex = 0;
+          row.setAttribute('role', 'button');
+          row.addEventListener('click', openGardenerTab);
+          row.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              openGardenerTab();
+            }
+          });
+        }
+      }
+      body.appendChild(row);
+    }
+    function renderSpaceStatsCacheRows(body, entries) {
+      if (!body || !Array.isArray(entries)) return;
+      entries.forEach(entry => appendSpaceStatRow(body, entry));
+    }
+    function countStreakFromDays(habit, recordDays) {
       if (!habit) return 0;
-      const recordDays = new Set((records || []).map(rec => dayKeyFromDate(rec.recordedAt)));
       const today = curDate();
+      const todayKey = dayKeyFromDate(today);
+      const todayShouldOccur = shouldOccurOnDate(habit, today);
+      const todayDone = todayShouldOccur && recordDays.has(todayKey);
       const maxLookback = 365;
       let streak = 0;
+      const startDate = new Date(today);
+      startDate.setDate(startDate.getDate() - 1);
       for (let offset = 0; offset < maxLookback; offset++) {
-        const cursor = new Date(today);
+        const cursor = new Date(startDate);
         cursor.setDate(cursor.getDate() - offset);
         if (!shouldOccurOnDate(habit, cursor)) continue;
         const key = dayKeyFromDate(cursor);
         if (recordDays.has(key)) {
           streak += 1;
-        } else {
-          break;
+          continue;
         }
+        break;
       }
-      return streak;
+      return streak + (todayDone ? 1 : 0);
+    }
+    function computeHabitStreak(habit, records = []) {
+      if (!habit) return 0;
+      const recordDays = new Set((records || []).map(rec => dayKeyFromDate(rec.recordedAt)));
+      return countStreakFromDays(habit, recordDays);
+    }
+    function resolveOwnerDisplayName(space, ownerKey, fallback) {
+      const label = getSpaceMemberLabel(space, ownerKey);
+      if (label) return label;
+      if (fallback) return fallback;
+      if (ownerKey && ownerKey !== '__current__') return ownerKey;
+      return currentProfile?.name || 'Moi';
+    }
+    function persistHabitOwnerSnapshot(spaceId, habitId, ownerKey, payload) {
+      if (!spaceId || !habitId || !ownerKey) return Promise.resolve();
+      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
+        .collection(HABIT_STATS_COLLECTION).doc(String(habitId))
+        .collection(HABIT_STATS_OWNER_SUBCOLL).doc(ownerKey)
+        .set({ ...payload, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+        .catch(() => { });
+    }
+    function persistHabitStreakCount(spaceId, habitId, count) {
+      if (!spaceId || !habitId) return Promise.resolve();
+      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
+        .collection(HABIT_STREAK_COUNTS_COLLECTION).doc(String(habitId))
+        .set({ count, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
+        .catch(() => { });
     }
     function renderSpaceStats() {
       const body = $("#spaceStatsBody");
@@ -4325,28 +4761,367 @@
         body.appendChild(row);
         return;
       }
+      const cached = getCachedSpaceStats(spaceId);
+      if (cached?.entries?.length) {
+        renderSpaceStatsCacheRows(body, cached.entries);
+      }
       const entries = habits.map(habit => {
         const records = getHabitRecords(spaceId, habit.id);
         const successful = records.filter(rec => (rec.state || 0) >= 1);
+        let lastRecord = null;
+        successful.forEach(rec => {
+          const recordedAt = timestampToDate(rec.recordedAt);
+          if (!recordedAt) return;
+          if (!lastRecord || recordedAt > lastRecord) {
+            lastRecord = recordedAt;
+          }
+        });
         return {
           habit,
           streak: computeHabitStreak(habit, successful),
-          total: successful.length
+          total: successful.length,
+          last: lastRecord
         };
       }).sort((a, b) => {
         if (b.streak !== a.streak) return b.streak - a.streak;
         if (b.total !== a.total) return b.total - a.total;
         return (habitLabel(a.habit) || '').localeCompare(habitLabel(b.habit) || '', 'fr');
       });
-      entries.forEach(entry => {
-        const row = document.createElement('tr');
-        row.dataset.streak = String(entry.streak);
-        const emoji = entry.habit?.emoji || '🌱';
-        const label = habitLabel(entry.habit) || 'Habitude';
-        const plural = entry.streak > 1 ? 's' : '';
-        row.innerHTML = `<td><span class="stat-emoji">${emoji}</span><span>${label}</span></td><td>${entry.streak} jour${plural}</td><td>${entry.total}</td>`;
-        body.appendChild(row);
+      const rows = entries.map(entry => {
+        const habit = entry.habit || {};
+        return {
+          habitId: habit.id,
+          last: entry.last,
+          label: habitLabel(habit) || 'Habitude',
+          emoji: habit?.emoji || '🌱',
+          streak: entry.streak,
+          total: entry.total
+        };
       });
+      body.innerHTML = '';
+      rows.forEach(rowData => appendSpaceStatRow(body, rowData));
+      sortSpaceStats(statsSortKey, statsSortDirection);
+      persistSpaceStatsCache(spaceId, rows.map(({ habitId, label, emoji, streak, total }) => ({ habitId, label, emoji, streak, total })));
+    }
+    async function syncHabitStatsSnapshot(space) {
+      if (!spaceId || !space || !HABITU_FIREBASE_DB) return;
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
+      if (!habits.length) return;
+      const habitMap = new Map(habits.map(habit => [String(habit.id), habit]));
+      const records = getOwnerActivityRecords({ spaceId }).filter(rec => (rec.state || 0) >= 2);
+      const statsByHabitOwner = new Map();
+      records.forEach(rec => {
+        const habitId = String(rec.habitId);
+        const ownerKey = getRecordOwnerKey(rec);
+        if (!ownerKey) return;
+        const key = `${habitId}:${ownerKey}`;
+        let entry = statsByHabitOwner.get(key);
+        if (!entry) {
+          const displayCandidate = canonicalOwnerLabel(rec.owner || rec.ownerLabel || ownerKey);
+          const ownerLabelValue = displayCandidate;
+          const resolvedName = resolveOwnerDisplayName(space, ownerKey, displayCandidate);
+          entry = {
+            habitId,
+            ownerKey,
+            ownerLabel: ownerLabelValue,
+            displayName: resolvedName,
+            pseudo: ownerLabelValue,
+            total: 0,
+            recordDays: new Set()
+          };
+          statsByHabitOwner.set(key, entry);
+        }
+        entry.total += 1;
+        const recordedDay = dayKeyFromDate(rec.recordedAt);
+        if (recordedDay) {
+          entry.recordDays.add(recordedDay);
+        }
+      });
+      const writes = [];
+      const localGardeners = {};
+      const streakCounts = new Map();
+      statsByHabitOwner.forEach(entry => {
+        const habit = habitMap.get(entry.habitId) || findAny(entry.habitId) || { id: entry.habitId };
+        const streak = countStreakFromDays(habit, entry.recordDays);
+        writes.push(persistHabitOwnerSnapshot(spaceId, entry.habitId, entry.ownerKey, {
+          ownerLabel: entry.ownerLabel,
+          displayName: entry.displayName,
+          pseudo: entry.pseudo,
+          streak,
+          total: entry.total
+        }));
+        if (streak >= 1) {
+          streakCounts.set(entry.habitId, (streakCounts.get(entry.habitId) || 0) + 1);
+        }
+        const list = localGardeners[entry.habitId] || [];
+        list.push({
+          ownerKey: entry.ownerKey,
+          ownerLabel: entry.ownerLabel,
+          displayName: entry.displayName,
+          pseudo: entry.pseudo,
+          streak,
+          total: entry.total
+        });
+        localGardeners[entry.habitId] = list;
+      });
+      streakCounts.forEach((count, habitId) => {
+        writes.push(persistHabitStreakCount(spaceId, habitId, count));
+        habitStreakCountsCache.set(String(habitId), count);
+      });
+      await Promise.all(writes);
+      Object.keys(localGardeners).forEach(habitId => {
+        habitGardenerSnapshotCache.set(habitId, localGardeners[habitId]);
+      });
+      persistHabitGardenersLocalCache();
+      persistHabitStreakCountsLocalCache();
+      habitStreakCountsPromise = null;
+      ensureHabitStreakCounts(true).catch(() => { });
+    }
+    async function persistSpaceHabitListSnapshot(space) {
+      if (!spaceId || !space || !HABITU_FIREBASE_DB) return;
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted).map(habit => ({
+        id: String(habit.id),
+        label: habitLabel(habit) || '',
+        emoji: habit?.emoji || '',
+        customTitle: HABIT_TITLE_CUSTOM[habit.id] || '',
+        desc: HABIT_DESC[habit.id] || habit.desc || habit.note || '',
+        mode: HABIT_MODE[habit.id] || habit.mode || '',
+        frequency: habit.frequency || habit.baseMin || DEFAULT_DURATION,
+        repeatConfig: habit.repeatConfig ? { ...habit.repeatConfig } : null,
+        ownerId: space.ownerId || null
+      }));
+      if (!habits.length) {
+        return;
+      }
+      persistHabitListSnapshotCache(spaceId, habits);
+      const payload = {
+        ownerId: space.ownerId || null,
+        habits,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
+        .collection(SPACE_PRIVATE_HABITS_COLL).doc(SPACE_PRIVATE_HABITS_DOC)
+        .set(payload, { merge: true })
+        .catch(() => { });
+    }
+    const habitStreakCountsCache = new Map();
+    let habitStreakCountsPromise = null;
+    const habitStreakCountDeltas = new Map();
+    const habitStreakCountLastBump = new Map();
+    const habitGardenerBadgeElements = new Map();
+    const habitGardenerSnapshotCache = new Map();
+    const habitGardenerSnapshotRequests = new Map();
+    let lastSpaceIdForGardenerCache = null;
+    function hydrateHabitCachesFromStorage() {
+      const gardeners = readExpiringCache(HABIT_GARDENERS_LOCAL_KEY, HABIT_GARDENERS_CACHE_MAX_AGE);
+      if (gardeners && typeof gardeners === 'object') {
+        Object.entries(gardeners).forEach(([habitId, list]) => {
+          if (Array.isArray(list)) {
+            habitGardenerSnapshotCache.set(habitId, list);
+          }
+        });
+      }
+      const counts = readExpiringCache(HABIT_STREAK_COUNTS_LOCAL_KEY, HABIT_STREAK_COUNTS_CACHE_MAX_AGE);
+      if (counts && typeof counts === 'object') {
+        Object.entries(counts).forEach(([habitId, value]) => {
+          habitStreakCountsCache.set(habitId, Number(value) || 0);
+        });
+      }
+    }
+    function persistHabitGardenersLocalCache() {
+      const data = {};
+      habitGardenerSnapshotCache.forEach((value, habitId) => {
+        if (Array.isArray(value)) {
+          data[habitId] = value;
+        }
+      });
+      writeExpiringCache(HABIT_GARDENERS_LOCAL_KEY, data);
+    }
+    function persistHabitStreakCountsLocalCache() {
+      const data = {};
+      habitStreakCountsCache.forEach((value, habitId) => {
+        data[habitId] = value;
+      });
+      writeExpiringCache(HABIT_STREAK_COUNTS_LOCAL_KEY, data);
+    }
+    hydrateHabitCachesFromStorage();
+
+    function getPrivateHabitListLength() {
+      if (!spaceId) return null;
+      const list = getCachedHabitList(spaceId);
+      return Array.isArray(list) ? list.length : null;
+    }
+    function getHabitStreakCount(habitId) {
+      if (isProfileModeMinimal()) {
+        const privateCount = getPrivateHabitListLength();
+        if (privateCount !== null) {
+          return privateCount;
+        }
+      }
+      const key = String(habitId);
+      const base = habitStreakCountsCache.get(key) || 0;
+      const delta = habitStreakCountDeltas.get(key) || 0;
+      return base + delta;
+    }
+    function updateGardenerBadge(habitId) {
+      const key = String(habitId);
+      const badge = habitGardenerBadgeElements.get(key);
+      if (!badge) return;
+      const fallback = Number(badge.dataset.fallbackCount) || 0;
+      const count = getHabitStreakCount(key);
+      const display = count > 0 ? count : fallback;
+      badge.textContent = `🧑‍🌾${display}`;
+      badge.classList.toggle('gardener-badge--empty', display === 0);
+    }
+    function updateAllGardenerBadges() {
+      habitGardenerBadgeElements.forEach((badge, habitId) => {
+        updateGardenerBadge(habitId);
+      });
+    }
+    function bumpHabitStreakCount(habitId, delta = 1) {
+      if (!shouldShowGardenerBadges()) return;
+      if (!habitId) return;
+      const key = String(habitId);
+      const nowKey = dayKeyFromDate(curDate());
+      if (habitStreakCountLastBump.get(key) === nowKey) return;
+      habitStreakCountLastBump.set(key, nowKey);
+      const next = (habitStreakCountDeltas.get(key) || 0) + delta;
+      habitStreakCountDeltas.set(key, next);
+      updateGardenerBadge(key);
+    }
+    function ensureHabitStreakCounts(force = false) {
+      if (!shouldQueueSpaceSnapshot()) {
+        habitStreakCountsCache.clear();
+        habitStreakCountsPromise = Promise.resolve(new Map());
+        return habitStreakCountsPromise;
+      }
+      if (!force && habitStreakCountsPromise) {
+        return habitStreakCountsPromise;
+      }
+      if (!spaceId || !HABITU_FIREBASE_DB) {
+        habitStreakCountsCache.clear();
+        habitStreakCountsPromise = Promise.resolve(new Map());
+        return habitStreakCountsPromise;
+      }
+      if (!force && habitStreakCountsCache.size) {
+        updateAllGardenerBadges();
+        habitStreakCountsPromise = Promise.resolve(habitStreakCountsCache);
+        return habitStreakCountsPromise;
+      }
+      habitStreakCountsPromise = HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
+        .collection(HABIT_STREAK_COUNTS_COLLECTION)
+        .get()
+        .then(snapshot => {
+          snapshot.docs.forEach(doc => {
+            const docKey = doc.id;
+            const countValue = Number(doc.data()?.count) || 0;
+            habitStreakCountsCache.set(docKey, countValue);
+          });
+          updateAllGardenerBadges();
+          persistHabitStreakCountsLocalCache();
+          return habitStreakCountsCache;
+        })
+        .catch(() => {
+          return habitStreakCountsCache;
+        });
+      return habitStreakCountsPromise;
+    }
+    async function loadHabitGardenersSnapshot(habitId, { force = false } = {}) {
+      if (!shouldQueueSpaceSnapshot()) {
+        return [];
+      }
+      const key = String(habitId);
+      if (!force && habitGardenerSnapshotCache.has(key)) {
+        return habitGardenerSnapshotCache.get(key);
+      }
+      if (habitGardenerSnapshotRequests.has(key)) {
+        return habitGardenerSnapshotRequests.get(key);
+      }
+      if (!spaceId || !HABITU_FIREBASE_DB) {
+        return [];
+      }
+      const promise = HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
+        .collection(HABIT_STATS_COLLECTION).doc(key)
+        .collection(HABIT_STATS_OWNER_SUBCOLL)
+        .get()
+        .then(snapshot => {
+          const list = snapshot.docs.map(doc => ({
+            ownerKey: doc.id,
+            ownerLabel: doc.data()?.ownerLabel || doc.id,
+            displayName: doc.data()?.displayName || '',
+            pseudo: doc.data()?.pseudo || '',
+            streak: Number(doc.data()?.streak) || 0,
+            total: Number(doc.data()?.total) || 0,
+            userEmails: new Set(),
+            userIds: new Set()
+          }));
+          habitGardenerSnapshotCache.set(key, list);
+          persistHabitGardenersLocalCache();
+          return list;
+        })
+        .catch(() => {
+          return [];
+        })
+        .finally(() => {
+          habitGardenerSnapshotRequests.delete(key);
+        });
+      habitGardenerSnapshotRequests.set(key, promise);
+      return promise;
+    }
+    async function refreshAllHabitStatsFromServer({ force = false } = {}) {
+      if (!spaceId || !shouldQueueSpaceSnapshot() || !HABITU_FIREBASE_DB) return;
+      if (!isProfileModeComplet()) return;
+      if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
+      const space = getSpace();
+      if (!space) return;
+      const habitIds = (space.ch || []).filter(habit => habit && !habit.deleted).map(habit => String(habit.id));
+      await Promise.all(habitIds.map(habitId => loadHabitGardenersSnapshot(habitId, { force: true })));
+      await ensureHabitStreakCounts(true);
+      setStatsTimestamp(STATS_FETCH_STORAGE_KEY, spaceId);
+    }
+    async function refreshPrivateHabitListFromServer({ force = false } = {}) {
+      if (!spaceId || !HABITU_FIREBASE_DB) return;
+      if (!isProfileModeMinimal()) return;
+      if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
+      try {
+        const doc = await HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
+          .collection(SPACE_PRIVATE_HABITS_COLL).doc(SPACE_PRIVATE_HABITS_DOC)
+          .get();
+        const habits = doc.exists && Array.isArray(doc.data()?.habits)
+          ? doc.data().habits
+          : [];
+        persistHabitListSnapshotCache(spaceId, habits);
+        setStatsTimestamp(STATS_FETCH_STORAGE_KEY, spaceId);
+        return habits;
+      } catch (err) {
+        return [];
+      }
+    }
+    async function maybePushStatsSnapshot({ force = false } = {}) {
+      if (!spaceId || !currentProfile || !HABITU_FIREBASE_DB) return;
+      if (!force && !canPerformStatsOperation(STATS_SYNC_STORAGE_KEY, spaceId)) return;
+      const space = getSpace();
+      if (!space) return;
+      if (isProfileModeComplet()) {
+        await syncHabitStatsSnapshot(space);
+        setStatsTimestamp(STATS_SYNC_STORAGE_KEY, spaceId);
+        return;
+      }
+      if (isProfileModeMinimal()) {
+        await persistSpaceHabitListSnapshot(space);
+        setStatsTimestamp(STATS_SYNC_STORAGE_KEY, spaceId);
+      }
+    }
+    async function maybeFetchStatsSnapshot({ force = false } = {}) {
+      if (!spaceId || !currentProfile || !HABITU_FIREBASE_DB) return;
+      if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
+      if (isProfileModeComplet()) {
+        await refreshAllHabitStatsFromServer({ force: true });
+        return;
+      }
+      if (isProfileModeMinimal()) {
+        await refreshPrivateHabitListFromServer({ force: true });
+      }
     }
     function resolveProfileEmail(name) {
       const normalizedTarget = normalizeOwnerLabel(name);
@@ -4382,7 +5157,7 @@
       activeProfileName = name;
       profileReturnView = returnView || 'detail';
       activeProfileEmail = resolveProfileEmail(name);
-      updateProfilePeriodButtons();
+      ensureCurrentSpaceSelection();
       hideAll();
       $("#profile").classList.add('active');
       $("#daysWrap").classList.add('hide');
@@ -4418,37 +5193,11 @@
       closeProfileView();
     }
 
-    async function grantActiveProfileAccess() {
-      if (!activeProfileName || !spaceId) return;
-      if (!isCurrentSpaceAdmin()) return;
-      const sp = getSpace();
-      if (!sp) return;
-      const token = genInviteToken();
-      const link = `${inviteBaseUrl()}?invite=${token}`;
-      const ownerName = getSpaceOwnerLabel(sp);
-      const inviteData = {
-        ownerName,
-        invitedName: activeProfileName,
-        spaceId,
-        spacePseudo: sp.pseudo || '',
-        spaceDesc: (sp.desc || '').trim(),
-        gardenLabel: sp.label || 'ton jardin',
-        created: Date.now(),
-        ownerId: sp.ownerId || null
-      };
-      await persistInviteDoc(token, inviteData);
-      INVITE_CACHE[token] = { token, ...inviteData };
-      if (typeof renderInviteList === 'function') renderInviteList();
-      showToast('Lien généré !', { type: 'success' });
-      copyText(link);
-    }
-
     /* ===== Paramètres habitude ===== */
     let activeId = null, refBtn = null;
     function openDetail(id, btnRef, targetTab = 'settings') {
       const it = findAny(id);
       if (!it) {
-        console.warn('openDetail: habit not found', id);
         return;
       }
       activeId = id;
@@ -4576,6 +5325,27 @@
             ...repeatConfig,
             weekDays: Array.isArray(repeatConfig.weekDays) ? repeatConfig.weekDays.slice() : []
           };
+          const previousRecurrence = normalizeRepeatConfig(it, storedRecurrence || {});
+          const normalizedPrev = JSON.stringify({
+            interval: previousRecurrence.interval,
+            unit: previousRecurrence.unit,
+            weekDays: previousRecurrence.weekDays || [],
+            startDate: previousRecurrence.startDate || '',
+            endDate: previousRecurrence.endDate || ''
+          });
+          const normalizedNext = JSON.stringify({
+            interval: repeatConfigPayload.interval,
+            unit: repeatConfigPayload.unit,
+            weekDays: repeatConfigPayload.weekDays || [],
+            startDate: repeatConfigPayload.startDate || '',
+            endDate: repeatConfigPayload.endDate || ''
+          });
+          if (normalizedPrev !== normalizedNext) {
+            const confirmText = 'Changer la récurrence réinitialisera les statistiques de cette habitude. Continuer ?';
+            if (!window.confirm(confirmText)) {
+              return;
+            }
+          }
           const payload = {
             id: activeId,
             customTitle: HABIT_TITLE_CUSTOM[activeId] || '',
@@ -4606,7 +5376,9 @@
     function updSpaceHeader() {
       const sp = getSpace();
       if (sp) {
-        const headerLabel = isPersonalSpaceType(sp) ? (currentProfile?.pseudo || sp.pseudo || sp.label || '') : (sp.label || '');
+        const headerLabel = isPersonalSpaceType(sp)
+          ? (currentProfile?.pseudo || sp.pseudo || sp.label || '—')
+          : (sp.label || '—');
         $("#spaceHeaderTitle").textContent = headerLabel;
         $("#paramSpaceLabel").value = sp.label || '';
       } else {
@@ -4645,6 +5417,7 @@
       const spaceLabelField = $("#spaceLabelField");
       const spacePseudoField = $("#spacePseudoField");
       const pseudoInput = $("#paramSpacePseudo");
+      const spacePseudoRefresh = $("#spacePseudoRefresh");
       const profileModeField = $("#spaceProfileModeField");
       const profileModeHint = $("#profileModeHint");
       const deleteAccountBtn = $("#deleteAccountBtn");
@@ -4666,6 +5439,30 @@
             : "Le pseudo du jardin est utilisé pour partager l’espace.";
         }
       }
+      if (pseudoInput) {
+        pseudoInput.value = pendingSpacePseudo
+          || currentProfile?.pseudo
+          || sp?.pseudo
+          || '';
+      }
+      if (spacePseudoRefresh) {
+        spacePseudoRefresh.disabled = !isOwner;
+        spacePseudoRefresh.onclick = async () => {
+          if (!isOwner) return;
+          if (!spaceId) return;
+          spacePseudoRefresh.disabled = true;
+          try {
+            const candidate = await ensureProfilePseudoInput(true);
+            if (!candidate) return;
+            pendingSpacePseudo = candidate;
+            if (pseudoInput) {
+              pseudoInput.value = candidate;
+            }
+          } finally {
+            spacePseudoRefresh.disabled = !isOwner;
+          }
+        };
+      }
       if (profileModeField) {
         profileModeField.classList.toggle('hide', !isPersonal);
       }
@@ -4686,9 +5483,10 @@
       }
       if (profileModeField) {
         const profileModeButtons = Array.from(profileModeField.querySelectorAll('.profile-mode-option'));
-        const refreshProfileModeHint = () => {
+        const refreshProfileModeHint = (mode) => {
           if (!profileModeHint) return;
-          const info = PROFILE_MODE_INFO[getProfileMode()] || PROFILE_MODE_INFO[DEFAULT_PROFILE_MODE];
+          const targetMode = mode || getProfileMode();
+          const info = PROFILE_MODE_INFO[targetMode] || PROFILE_MODE_INFO[DEFAULT_PROFILE_MODE];
           profileModeHint.textContent = info?.summary || '';
         };
         const highlightProfileModeOption = (mode) => {
@@ -4698,25 +5496,19 @@
             btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
           });
         };
-        const localButton = profileModeButtons.find((btn) => btn.dataset.mode === 'local');
-        if (localButton) {
-          const hideLocal = !!currentProfile?.email;
-          localButton.disabled = hideLocal;
-          localButton.setAttribute('aria-hidden', hideLocal ? 'true' : 'false');
-        }
+        const currentMode = getProfileMode();
         profileModeButtons.forEach((btn) => {
           if (btn.dataset.bound) return;
           btn.addEventListener('click', () => {
-            if (btn.disabled) return;
             const mode = btn.dataset.mode;
             updateProfileMode(mode);
             highlightProfileModeOption(mode);
-            refreshProfileModeHint();
+            refreshProfileModeHint(mode);
           });
           btn.dataset.bound = '1';
         });
-        highlightProfileModeOption(getProfileMode());
-        refreshProfileModeHint();
+        highlightProfileModeOption(currentMode);
+        refreshProfileModeHint(currentMode);
       }
       if (deleteAccountBtn) {
         deleteAccountBtn.classList.toggle('hide', !(isOwner && isPersonal));
@@ -4757,8 +5549,29 @@
           if (ownerKey && ownerKey !== currentKey) {
             await updateSpaceMemberName(spaceId, ownerKey, customName, { persist: false });
           }
+          let candidatePseudo = null;
+          if (pendingSpacePseudo && sp) {
+            candidatePseudo = pendingSpacePseudo;
+            sp.pseudo = pendingSpacePseudo;
+            sp.pseudoNormalized = normalizeSpacePseudo(pendingSpacePseudo);
+            sp.label = pendingSpacePseudo;
+            pendingSpacePseudo = null;
+          }
+          const shouldPush = Boolean(shouldWriteToFirestore());
           await persistSpaceDoc(spaceId);
+          if (pseudoInput) {
+            pseudoInput.value = sp?.pseudo || '';
+          }
           showToast('Réglages sauvegardés.', { type: 'success' });
+          if (candidatePseudo) {
+            await updateUserPseudo(candidatePseudo);
+          }
+          if (shouldPush && sp) {
+            const habits = (sp.ch || []).filter(habit => habit && !habit.deleted);
+            await persistSpaceDoc(spaceId, {}, { force: true, suppressErrors: false });
+            await Promise.all(habits.map(habit => persistHabit(spaceId, habit, { force: true })));
+          }
+          updSel();
         };
         saveSettingsBtn.dataset.bound = '1';
       }
@@ -4782,55 +5595,18 @@
 
 
     async function leaveCurrentSpace() {
-      if (!spaceId || !currentProfile?.email) return;
-      const email = currentProfile.email;
-      await removeMemberFromSpace(spaceId, email);
-      await deleteMemberActivities(spaceId, email);
+      if (!spaceId) return;
+      removeOwnerActivityRecords(record => record.spaceId === spaceId);
+      delete SPACES[spaceId];
       allowedSpaces = allowedSpaces.filter(id => id !== spaceId);
       const nextSpace = allowedSpaces[0] || null;
-      spaceId = nextSpace;
+      setActiveSpace(nextSpace);
       updSel();
       renderCards();
       if (spaceId) {
         openSpacePage();
       } else {
         showHome();
-      }
-    }
-
-    async function removeMemberFromSpace(spaceIdArg, email) {
-      if (!spaceIdArg || !email) return;
-      const normalized = normalizeEmail(email);
-      try {
-        if (HABITU_FIREBASE_DB) {
-          await HABITU_FIREBASE_DB.collection('spaces').doc(spaceIdArg)
-            .update({ members: firebase.firestore.FieldValue.arrayRemove(normalized) });
-        }
-      } catch (err) {
-        console.warn('removeMemberFromSpace', err);
-      }
-      const sp = SPACES[spaceIdArg];
-      if (sp) {
-        sp.members = (sp.members || []).filter(mail => normalizeEmail(mail) !== normalized);
-      }
-    }
-
-    async function deleteMemberActivities(spaceIdArg, email) {
-      if (!spaceIdArg || !email) return;
-      const normalized = normalizeEmail(email);
-      removeOwnerActivityRecords(record => record.spaceId === spaceIdArg && normalizeEmail(record.userEmail || '') === normalized);
-      if (!HABITU_FIREBASE_DB) return;
-      try {
-        const snapshot = await HABITU_FIREBASE_DB.collection('activities')
-          .where('spaceId', '==', spaceIdArg)
-          .where('userEmail', '==', normalized)
-          .get();
-        if (snapshot.empty) return;
-        const batch = HABITU_FIREBASE_DB.batch();
-        snapshot.docs.forEach(doc => batch.delete(doc.ref));
-        await batch.commit();
-      } catch (err) {
-        console.warn('deleteMemberActivities', err);
       }
     }
 
@@ -4860,24 +5636,19 @@
       try {
         if (HABITU_FIREBASE_DB) {
           const spaceRef = HABITU_FIREBASE_DB.collection('spaces').doc(target);
-          const [habitsSnap, activitiesSnap] = await Promise.all([
-            spaceRef.collection('habits').get(),
-            HABITU_FIREBASE_DB.collection('activities').where('spaceId', '==', target).get()
-          ]);
+          const habitsSnap = await spaceRef.collection('habits').get();
           const batch = HABITU_FIREBASE_DB.batch();
           habitsSnap.docs.forEach(doc => batch.delete(doc.ref));
-          activitiesSnap.docs.forEach(doc => batch.delete(doc.ref));
           batch.delete(spaceRef);
           await batch.commit();
         }
       } catch (err) {
-        console.warn('deleteSpace', err);
       }
       delete SPACES[target];
       removeOwnerActivityRecords(record => record.spaceId === target);
       allowedSpaces = allowedSpaces.filter(id => id !== target);
       const nextSpace = allowedSpaces[0] || null;
-      spaceId = nextSpace;
+      setActiveSpace(nextSpace);
       updSel();
       renderCards();
       if (spaceId) {
@@ -4898,7 +5669,6 @@
         try {
           await HABITU_FIREBASE_AUTH.signOut();
         } catch (err) {
-          console.warn('signOut after account deletion', err);
         }
       }
     }
@@ -4924,7 +5694,6 @@
       return names;
     }
     function renderSpaceRank() {
-      updateSpacePeriodButtons();
       const root = $("#spaceRank");
       if (!root) return;
       root.innerHTML = '';
@@ -4997,7 +5766,6 @@
         nameBtn.type = 'button';
         nameBtn.className = 'profile-link';
         nameBtn.textContent = `${n}${me ? ' (toi)' : ''}`;
-        nameBtn.addEventListener('click', () => openProfileView(n, 'space'));
         left.append(big, nameBtn);
         row.append(left);
         root.appendChild(row);
@@ -5008,58 +5776,32 @@
     let sPeriod = '30d';
     const sBtnP7 = $("#sBtnP7");
     if (sBtnP7) {
-      sBtnP7.onclick = () => {
-        const btn = $("#sBtnP7");
-        sPeriod = btn?.dataset.period || sPeriod;
-        renderSpaceRank();
-      };
+      sBtnP7.classList.add('hide');
     }
     const sBtnP30 = $("#sBtnP30");
     if (sBtnP30) {
-      sBtnP30.onclick = () => {
-        const btn = $("#sBtnP30");
-        sPeriod = btn?.dataset.period || sPeriod;
-        renderSpaceRank();
-      };
+      sBtnP30.classList.add('hide');
     }
     const sBtnPAll = $("#sBtnPAll");
     if (sBtnPAll) {
-      sBtnPAll.onclick = () => {
-        const btn = $("#sBtnPAll");
-        sPeriod = btn?.dataset.period || sPeriod;
-        renderSpaceRank();
-      };
+      sBtnPAll.classList.add('hide');
     }
     const btnProfilePeriod7 = $("#profilePeriod7");
     if (btnProfilePeriod7) {
-      btnProfilePeriod7.onclick = () => {
-        const btn = $("#profilePeriod7");
-        profilePeriod = btn?.dataset.period || profilePeriod;
-        renderProfileStats();
-      };
+      btnProfilePeriod7.classList.add('hide');
     }
     const btnProfilePeriod30 = $("#profilePeriod30");
     if (btnProfilePeriod30) {
-      btnProfilePeriod30.onclick = () => {
-        const btn = $("#profilePeriod30");
-        profilePeriod = btn?.dataset.period || profilePeriod;
-        renderProfileStats();
-      };
+      btnProfilePeriod30.classList.add('hide');
     }
     const btnProfilePeriodAll = $("#profilePeriodAll");
     if (btnProfilePeriodAll) {
-      btnProfilePeriodAll.onclick = () => {
-        const btn = $("#profilePeriodAll");
-        profilePeriod = btn?.dataset.period || profilePeriod;
-        renderProfileStats();
-      };
+      btnProfilePeriodAll.classList.add('hide');
     }
     const btnBackFromProfile = $("#backFromProfile");
     if (btnBackFromProfile) btnBackFromProfile.onclick = closeProfileView;
     const btnRemove = $("#removeFromGardenBtn");
     if (btnRemove) btnRemove.onclick = removeActiveProfileMember;
-    const btnGrant = $("#grantAccessBtn");
-    if (btnGrant) btnGrant.onclick = grantActiveProfileAccess;
     const mScoreGoal = $("#modalScoreGoal");
     const scoreGoalBtn = $("#scoreGoalBtn");
     const scoreGoalRange = $("#scoreGoalRange");
@@ -5209,16 +5951,15 @@
         const displayName = ((isPersonalSpaceType(spaceEntry)
           ? memberName
           : (spaceEntry.label || '').trim() || memberName) || '').trim();
-        const pseudo = (spaceEntry.pseudo || currentProfile?.pseudo || '').trim();
+        const pseudo = (currentProfile?.pseudo || spaceEntry.pseudo || '').trim();
         const label = displayName || pseudo || '—';
         o.textContent = label;
         sel.appendChild(o);
       });
-      if (!ordered.includes(spaceId) || !SPACES[spaceId]) spaceId = ordered[0];
+      if (!ordered.includes(spaceId) || !SPACES[spaceId]) setActiveSpace(ordered[0]);
       sel.value = spaceId;
-      updateInviteGardenPseudo();
     }
-    const selSpace = $("#spaceSel"); selSpace.addEventListener('change', () => { spaceId = selSpace.value; renderCards(); showHome(); updateInviteGardenPseudo(); });
+    const selSpace = $("#spaceSel"); selSpace.addEventListener('change', () => { setActiveSpace(selSpace.value); renderCards(); showHome(); });
     $("#openSpace").onclick = () => {
       const isSpaceActive = !!$("#space")?.classList.contains('active');
       if (isSpaceActive) {
@@ -5230,15 +5971,11 @@
     $("#backFromSpace").onclick = showHome;
 
     /* Modales */
-    const mAdd = $("#modalAdd"), mHabit = $("#modalHabit"), mInvite = $("#modalInvite"), mGarden = $("#modalGarden"), mJoin = $("#modalJoin"), mProfileSetup = $("#modalProfileSetup");
-    const joinNameInput = $("#joinName");
-    const joinPseudoInput = $("#joinPseudo");
-    const joinStatus = $("#joinStatus");
-    const joinSpaceBtn = $("#joinSpaceBtn");
-    const inviteGardenPseudo = $("#inviteGardenPseudo");
+    const mAdd = $("#modalAdd"), mHabit = $("#modalHabit"), mProfileSetup = $("#modalProfileSetup");
     const habitBackBtn = mHabit?.querySelector('.menu-back');
     const closeHabitBtn = $("#closeHabit");
     const deleteAccountBtn = $("#deleteAccountBtn");
+    const installAppOpt = $("#installApp");
     const profileModeSelector = $("#profileModeSelector");
     const profileNameField = $("#profileNameField");
     const profileNameInput = $("#profileNameInput");
@@ -5271,21 +6008,12 @@
       step1();
       open(mHabit);
     }
-    inviteGardenPseudo?.addEventListener('click', () => {
-      if (!inviteGardenPseudo.value) return;
-      inviteGardenPseudo.select();
-      copyText(inviteGardenPseudo.value);
-    });
     $("#addBtn").onclick = () => { maybeTogglePrivateAdd(true); };
     $("#closeAdd").onclick = () => {
       if (allowedSpaces.length === 0) return;
-      pendingAddModalTarget = null;
       close(mAdd);
     };
     async function maybeTogglePrivateAdd(forceOpen = false) {
-      if (currentProfile?.email && !currentProfile?.guest) {
-        await refreshOwnedSpaces(currentProfile);
-      }
       if (!spacesInitialized && !forceOpen) return;
       if (forceOpen) {
         open(mAdd);
@@ -5295,17 +6023,6 @@
     document.querySelectorAll('.menu-back').forEach(btn => {
       btn.addEventListener('click', () => {
         const modal = btn.closest('.modal');
-        if (modal === mHabit) {
-          if (habitWizardStep === 2) {
-            step1();
-            return;
-          }
-          if (habitModalContext === 'creation') {
-            close(mHabit);
-            open(mGarden);
-            return;
-          }
-        }
         if (modal) close(modal);
         maybeTogglePrivateAdd(true);
       });
@@ -5325,84 +6042,13 @@
       }
     }
     $("#addHabit").onclick = () => { close(mAdd); openHabitFlow('menu'); }
-    $("#inviteFriend").onclick = () => {
-      if (!requireAdmin('inviter un jardinier')) return;
-      close(mAdd);
-      openInvite();
-    };
-    function openInvite() { updateInviteGardenPseudo(); renderInviteList(); open(mInvite); }
-    async function updateInviteGardenPseudo() {
-      if (!inviteGardenPseudo) return;
-      const targetSpace = spaceId;
-      if (!targetSpace) {
-        inviteGardenPseudo.value = '';
-        return;
-      }
-      await ensureSpaceHasPseudo(targetSpace);
-      if (spaceId !== targetSpace) return;
-      const sp = getSpace();
-      inviteGardenPseudo.value = sp?.pseudo || '';
-    }
-    function openJoinModal() {
-      setJoinStatus('', false);
-      const defaultName = pendingInviteInfo?.invitedName || getLastMemberName() || currentProfile?.name || '';
-      if (joinNameInput) joinNameInput.value = defaultName;
-      if (joinPseudoInput) joinPseudoInput.value = '';
-      setJoinDescription('');
-      lastPreviewedPseudo = '';
-      open(mJoin);
-    }
-    function syncSpacePreferenceControls() {
-      if (prefsTipsSelect) {
-        prefsTipsSelect.value = getTipsDisplayMode();
-      }
-    }
-    prefsTipsSelect?.addEventListener('change', async () => {
-      const mode = prefsTipsSelect.value || 'auto';
-      await updateUserTipsDisplayMode(mode);
-      renderCards();
-    });
-    syncSpacePreferenceControls();
-    function setJoinStatus(message, isError = true) {
-      if (!joinStatus) return;
-      joinStatus.textContent = message;
-      joinStatus.style.color = isError ? '#d33' : '#2a7a57';
-    }
-    function setJoinDescription(text) {
-      if (!joinSpaceDesc) return;
-      joinSpaceDesc.textContent = text || '';
-    }
-    let lastPreviewedPseudo = '';
-    async function previewJoinSpace(pseudo) {
-      if (!pseudo) {
-        setJoinDescription('');
-        return;
-      }
-      lastPreviewedPseudo = pseudo;
-      const data = await findSpaceByPseudo(pseudo);
-      if (lastPreviewedPseudo !== pseudo) return;
-      setJoinDescription((data?.desc || data?.description || '').trim());
-    }
-    let pendingAddModalTarget = null;
-    const finishPendingAddModal = (target) => {
-      if (pendingAddModalTarget !== target) return;
-      pendingAddModalTarget = null;
-      if (target === 'join') {
-        openJoinModal();
-      } else if (target === 'create') {
-        openGardenFlow();
-      }
-    };
-    const requestAddModalTransition = (target) => {
-      pendingAddModalTarget = target;
-      close(mAdd);
-      setTimeout(() => finishPendingAddModal(target), 20);
-    };
+    const menuAddHabit = $("#addHabit");
+    const menuLoginOpt = $("#menuLogin");
+    const menuLogoutOpt = $("#menuLogout");
     const addModal = $("#modalAdd");
     addModal?.addEventListener('click', async (event) => {
       const opt = event.target.closest('.opt');
       if (!opt || opt.dataset.disabled === '1') return;
-      pendingAddModalTarget = null;
       if (opt.id === 'menuLogin') {
         close(mAdd);
         showAuthOverlay(true);
@@ -5414,49 +6060,12 @@
         close(mAdd);
         return;
       }
-      if (opt.id === 'createGarden') {
-        requestAddModalTransition('create');
-        return;
-      }
-      if (opt.id === 'joinGarden') {
-        requestAddModalTransition('join');
-      }
     });
-    const gardenNameInput = $("#gardenNameInput");
-    const createGardenBtn = $("#createGardenBtn");
-    const gardenStatus = $("#gardenStatus");
-    const gardenPseudoInput = $("#gardenPseudoInput");
-    const authMessage = $("#authMessage");
-    const inviteName = $("#inviteName");
-    const invitePseudoInput = $("#invitePseudo");
-    const inviteList = $("#inviteList");
-    const addMemberByPseudoBtn = $("#addMemberByPseudo");
-    const authSpaceDesc = $("#authSpaceDesc");
-    const joinSpaceDesc = $("#joinSpaceDesc");
-    const installAppOpt = $("#installApp");
-    const menuAddHabit = $("#addHabit");
-    const menuInviteFriend = $("#inviteFriend");
-    const menuCreateGarden = $("#createGarden");
-    const menuLoginOpt = $("#menuLogin");
-    const menuLogoutOpt = $("#menuLogout");
     function updateAddModalOptions() {
       const hasSpaces = allowedSpaces.length > 0;
       const isAuthenticated = !!currentProfile?.email;
-      const ownedCount = countOwnedGardens(currentProfile);
-      const showSupportOptions = hasSpaces;
-      const currentSpace = getSpace();
-      const hideInviteForIndividual = !!currentSpace && isPersonalSpaceType(currentSpace);
-      if (menuCreateGarden) {
-        const subtitle = menuCreateGarden.querySelector('.subtitle');
-        if (subtitle) {
-          subtitle.textContent = 'Nouvel espace partagé';
-        }
-      }
       if (menuAddHabit) {
-        menuAddHabit.classList.toggle('hide', !showSupportOptions);
-      }
-      if (menuInviteFriend) {
-        menuInviteFriend.classList.toggle('hide', !showSupportOptions || hideInviteForIndividual);
+        menuAddHabit.classList.toggle('hide', !hasSpaces);
       }
       if (menuLoginOpt) {
         menuLoginOpt.classList.toggle('hide', isAuthenticated);
@@ -5503,7 +6112,7 @@
             ...existingSpace,
             ch: SPACES[existingId]?.ch || []
           };
-          spaceId = existingId;
+          setActiveSpace(existingId);
           userName = ownerLabel;
           setLastMemberName(ownerLabel);
           allowedSpaces = [...new Set([...allowedSpaces, existingId])];
@@ -5540,7 +6149,7 @@
         pseudoNormalized: normalizeSpacePseudo(pseudo)
       };
       SPACES[id] = spaceEntry;
-      spaceId = id;
+      setActiveSpace(id);
       userName = ownerLabel;
       setLastMemberName(ownerLabel);
       allowedSpaces = [...new Set([...allowedSpaces, id])];
@@ -5582,13 +6191,12 @@
     function markProfileSetupDone() {
       safeStorageSet(STORAGE_PROFILE_SETUP_KEY, '1');
     }
-    function updateProfileSetupLocalOption() {
+    function updateProfileSetupModeOptions() {
       if (!profileModeSelector) return;
-      const localOption = profileModeSelector.querySelector('option[value="local"]');
-      if (!localOption) return;
-      const hideLocal = !!currentProfile?.email;
-      localOption.hidden = hideLocal;
-      localOption.disabled = hideLocal;
+      profileModeSelector.querySelectorAll('option').forEach(option => {
+        option.hidden = false;
+        option.disabled = false;
+      });
     }
     function updateProfileSetupFields() {
       if (!profileModeSelector) return;
@@ -5616,12 +6224,12 @@
       return candidate;
     }
     async function openProfileSetupModal() {
-      updateProfileSetupLocalOption();
       if (profileModeSelector) {
         profileModeSelector.value = getProfileMode();
       }
+      updateProfileSetupModeOptions();
       if (profileNameInput) {
-        profileNameInput.value = currentProfile?.name || '';
+        profileNameInput.value = '';
       }
       updateProfileSetupFields();
       await ensureProfilePseudoInput();
@@ -5642,7 +6250,7 @@
       if (profileSetupPromise) return profileSetupPromise;
       profileSetupPromise = new Promise(resolve => {
         profileSetupResolver = resolve;
-        openProfileSetupModal().catch(err => console.warn('openProfileSetupModal', err));
+        openProfileSetupModal().catch(() => { });
       });
       return profileSetupPromise;
     }
@@ -5697,7 +6305,6 @@
           await updateProfileMode(selectedMode);
           finalizeProfileSetup();
         } catch (err) {
-          console.warn('profile setup', err);
           showToast('Impossible de sauvegarder ton profil pour l’instant.', { type: 'error' });
         }
       });
@@ -5705,7 +6312,6 @@
     const installPromptBtn = $("#installPromptBtn");
     const installPromptClose = $("#installPromptClose");
     const installPromptHelp = $("#installPromptHelp");
-    const generateInviteBtn = $("#generateInvite");
     const deleteSpaceBtn = $("#deleteSpaceBtn");
     const habitGardenersBody = $("#habitGardenersBody");
     const habitGardenersEmpty = $("#habitGardenersEmpty");
@@ -5713,22 +6319,7 @@
     habitGardenersSortHeaders = habitGardenersHeader ? Array.from(habitGardenersHeader.querySelectorAll('th[data-sort]')) : [];
     habitGardenersSortHeaders.forEach(th => th.addEventListener('click', () => setHabitGardenersSort(th.dataset.sort)));
     updateHabitGardenersSortHeaders();
-    createGardenBtn.onclick = createGarden;
-    joinPseudoInput?.addEventListener('input', () => {
-      if (!joinPseudoInput) return;
-      const normalized = normalizeSpacePseudo(joinPseudoInput.value);
-      if (joinPseudoInput.value !== normalized) {
-        joinPseudoInput.value = normalized;
-      }
-      if (normalized.length >= 3) {
-        previewJoinSpace(normalized);
-      } else {
-        setJoinDescription('');
-      }
-    });
-    joinSpaceBtn?.addEventListener('click', joinGardenByPseudo);
-    generateInviteBtn.onclick = generateInviteLink;
-    addMemberByPseudoBtn?.addEventListener('click', addMemberByPseudo);
+    refreshGardenerTabVisibility();
     deleteSpaceBtn?.addEventListener('click', () => deleteCurrentSpace());
     deleteAccountBtn?.addEventListener('click', handleAccountDeletion);
     installAppOpt?.addEventListener('click', () => {
@@ -5746,368 +6337,14 @@
     updateInstallOptionVisibility();
 
     function updateAuthMessage() {
-      if (pendingInviteInfo) {
-        const spaceName = pendingInviteInfo.gardenLabel || pendingInviteInfo.label || 'ton jardin';
-        const ownerName = pendingInviteInfo.ownerName || 'un jardinier';
-        authMessage.textContent = `Connecte-toi pour retrouver le jardin "${spaceName}" de ${ownerName}.`;
-        if (authSpaceDesc) {
-          authSpaceDesc.textContent = (pendingInviteInfo.spaceDesc || '').trim();
-        }
-      } else {
-        authMessage.textContent = 'Connecte-toi pour retrouver tes habitudes';
-        if (authSpaceDesc) {
-          authSpaceDesc.textContent = '';
-        }
+      authMessage.textContent = 'Connecte-toi pour retrouver tes habitudes';
+      if (authSpaceDesc) {
+        authSpaceDesc.textContent = '';
       }
       updateAuthFormState();
     }
-    refreshPendingInviteInfo().then(updateAuthMessage);
 
-    async function refreshGardenPseudoPreview() {
-      if (!gardenStatus) return;
-      gardenStatus.textContent = 'Génération du pseudo du jardin…';
-      try {
-        const candidate = await generateUniqueGardenPseudo();
-        pendingGardenPseudo = candidate || '';
-        if (candidate) {
-          gardenStatus.textContent = `Pseudo du jardin : ${candidate}`;
-          if (gardenPseudoInput) {
-            gardenPseudoInput.value = candidate;
-          }
-        } else {
-          gardenStatus.textContent = 'Impossible de générer un pseudo pour l’instant.';
-        }
-      } catch (err) {
-        console.warn('refreshGardenPseudoPreview', err);
-        pendingGardenPseudo = '';
-        gardenStatus.textContent = 'Impossible de générer un pseudo pour l’instant.';
-      }
-    }
 
-    function openGardenFlow() {
-      gardenNameInput.value = '';
-      gardenStatus.textContent = '';
-      pendingGardenPseudo = '';
-      if (gardenPseudoInput) {
-        gardenPseudoInput.value = '';
-      }
-      refreshGardenPseudoPreview();
-      open(mGarden);
-    }
-
-    async function createGarden() {
-      if (!currentProfile) {
-        persistProfile({ name: userName || 'Moi', guest: true });
-      }
-      if (!currentProfile?.guest) {
-        await refreshOwnedSpaces(currentProfile);
-      }
-      const profile = GARDEN_TYPES[0];
-      const title = (gardenNameInput.value || profile.label).trim() || profile.label;
-      const habitMode = 'commun';
-      const id = generateSpaceId();
-      const ownerEmail = normalizeEmail(currentProfile?.email || '');
-      const ownerId = (currentProfile?.uid || '').trim();
-      const memberSet = new Set();
-      if (ownerEmail) memberSet.add(ownerEmail);
-      if (ownerId) memberSet.add(ownerId);
-      const memberList = sanitizeSpaceMembers(Array.from(memberSet));
-      const ownerLabel = (currentProfile?.name || userName || 'Moi').trim() || 'Moi';
-      const memberSettings = {};
-      if (ownerEmail) {
-        memberSettings[normalizeMemberKey(ownerEmail)] = { name: ownerLabel };
-      }
-      if (ownerId) {
-        memberSettings[normalizeMemberKey(ownerId)] = { name: ownerLabel };
-      }
-      let pseudo = '';
-      const requestedPseudoRaw = (gardenPseudoInput?.value || '').trim();
-      if (requestedPseudoRaw) {
-        const sanitizedRequest = normalizeSpacePseudo(requestedPseudoRaw);
-        if (sanitizedRequest) {
-          pseudo = sanitizedRequest;
-          if (gardenPseudoInput) {
-            gardenPseudoInput.value = sanitizedRequest;
-          }
-        }
-      }
-      if (!pseudo) {
-        pseudo = pendingGardenPseudo || await generateUniqueGardenPseudo();
-      }
-      if (!pseudo) {
-        const fallbackBase = normalizeSpacePseudo(title) || 'jardin';
-        pseudo = `${fallbackBase}${Math.floor(Math.random() * 90 + 10)}`;
-      }
-      const pseudoNormalized = normalizeSpacePseudo(pseudo) || pseudo;
-      pendingGardenPseudo = '';
-      if (gardenPseudoInput) {
-        gardenPseudoInput.value = pseudo;
-      }
-
-      SPACES[id] = {
-        emoji: profile.emoji,
-        label: title,
-        type: profile.type,
-        habitMode,
-        code: accessCode,
-        ch: [],
-        ownerId: ownerId || null,
-        members: memberList,
-        createdAt: new Date(),
-        editorRights: 'admin',
-        memberSettings,
-        pseudo,
-        pseudoNormalized
-      };
-      spaceId = id;
-      userName = ownerLabel;
-      setLastMemberName(ownerLabel);
-      allowedSpaces = [...new Set([...allowedSpaces, id])];
-      if (currentProfile?.guest) {
-        addGuestSpace(id);
-      }
-      const creationPayload = {
-        members: memberList,
-        createdBy: currentProfile?.email || null,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        memberSettings
-      };
-      gardenStatus.textContent = 'Ajoute quelques habitudes pour démarrer ton jardin.';
-      await persistSpaceDoc(id, creationPayload);
-      await loadActivitiesForSpace(id);
-      updSel();
-      renderCards();
-      close(mGarden);
-      openHabitFlow('creation');
-    }
-    function renderInviteList() {
-      inviteList.innerHTML = '';
-      const entries = Object.values(INVITE_CACHE).sort((a, b) => (b.created || 0) - (a.created || 0));
-      if (!entries.length) {
-        const help = document.createElement('div');
-        help.className = 'miniInfo';
-        help.textContent = 'Aucune invitation active pour l’instant.';
-        inviteList.appendChild(help);
-        return;
-      }
-      entries.forEach((invite) => {
-        const token = invite.token;
-        const row = document.createElement('div');
-        row.className = 'invite-row';
-        const nameEl = document.createElement('div');
-        nameEl.className = 'invite-name';
-        nameEl.textContent = invite.invitedName;
-        const link = `${inviteBaseUrl()}?invite=${token}`;
-        const linkWrapper = document.createElement('div');
-        linkWrapper.className = 'invite-link-row';
-        const icon = document.createElement('span');
-        icon.textContent = '🔗';
-        icon.style.userSelect = 'none';
-        icon.style.cursor = 'pointer';
-        const linkInput = document.createElement('input');
-        linkInput.type = 'text';
-        linkInput.value = link;
-        linkInput.readOnly = true;
-        linkInput.className = 'invite-link-input';
-        linkInput.addEventListener('click', () => {
-          linkInput.select();
-          copyText(link);
-        });
-        linkInput.addEventListener('focus', () => linkInput.select());
-        icon.addEventListener('click', () => {
-          linkInput.select();
-          copyText(link);
-        });
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'btn copyOnly';
-        removeBtn.title = 'Supprimer';
-        removeBtn.textContent = '🗑️';
-        removeBtn.onclick = async () => {
-          await deleteInviteDoc(token);
-          renderInviteList();
-          showToast('Invitation supprimée.', { type: 'info' });
-        };
-        linkWrapper.append(icon, linkInput, removeBtn);
-        row.append(nameEl, linkWrapper);
-        inviteList.appendChild(row);
-      });
-    }
-
-    async function findUserProfileByPseudo(pseudo) {
-      if (!HABITU_FIREBASE_DB || !pseudo) return null;
-      const sanitizedPseudo = sanitizePseudo(pseudo);
-      if (!sanitizedPseudo) return null;
-      const normalized = sanitizedPseudo.toLowerCase();
-      const queryBy = async (field, value) => {
-        try {
-          const snapshot = await HABITU_FIREBASE_DB.collection('users')
-            .where(field, '==', value)
-            .limit(1)
-            .get();
-          if (!snapshot || snapshot.empty) return null;
-          const doc = snapshot.docs[0];
-          return { uid: doc.id, ...doc.data() };
-        } catch (err) {
-          console.warn('findUserProfileByPseudo', field, err);
-          return null;
-        }
-      };
-      if (normalized) {
-        const normalizedMatch = await queryBy('pseudoNormalized', normalized);
-        if (normalizedMatch) return normalizedMatch;
-      }
-      return await queryBy('pseudo', sanitizedPseudo);
-    }
-
-    async function addMemberByPseudo() {
-      if (!requireAdmin('ajouter un jardinier')) return;
-      const rawPseudo = (invitePseudoInput?.value || '').trim();
-      if (!rawPseudo) { showToast('Entre le pseudo du jardinier.', { type: 'error' }); return; }
-      if (!spaceId) { showToast('Sélectionne d’abord un jardin.', { type: 'error' }); return; }
-      const sanitizedInput = sanitizePseudo(rawPseudo);
-      if (!sanitizedInput) { showToast('Ce pseudo n’est pas valide.', { type: 'error' }); return; }
-      if (addMemberByPseudoBtn) {
-        addMemberByPseudoBtn.disabled = true;
-      }
-      try {
-        const profile = await findUserProfileByPseudo(sanitizedInput);
-        if (!profile?.email) {
-          showToast('Aucun jardinier trouvé pour ce pseudo.', { type: 'error' });
-          return;
-        }
-        if (isMemberInSpace(spaceId, profile.email) || (profile.uid && isMemberInSpace(spaceId, profile.uid))) {
-          showToast('Ce jardinier fait déjà partie du jardin.', { type: 'info' });
-          return;
-        }
-        await joinSpace(spaceId, profile.email, { name: profile.name || profile.pseudo });
-        showToast('Jardinier ajouté !', { type: 'success' });
-        if (invitePseudoInput) {
-          invitePseudoInput.value = '';
-        }
-      } catch (err) {
-        console.warn('addMemberByPseudo', err);
-        showToast('Impossible d’ajouter ce jardinier pour l’instant.', { type: 'error' });
-      } finally {
-        if (addMemberByPseudoBtn) {
-          addMemberByPseudoBtn.disabled = false;
-        }
-      }
-    }
-
-    async function generateInviteLink() {
-      if (!requireAdmin('générer une invitation')) return;
-      const name = (inviteName.value || '').trim();
-      if (!name) { showToast('Entre un prénom.', { type: 'error' }); return; }
-      if (!spaceId) { showToast('Sélectionne d’abord un jardin.', { type: 'error' }); return; }
-      if (Object.values(INVITE_CACHE).some(inv => (inv.invitedName || '').toLowerCase() === name.toLowerCase())) {
-        showToast('Ce prénom est déjà utilisé pour une invitation.', { type: 'error' });
-        return;
-      }
-      await ensureSpaceHasPseudo(spaceId);
-      const token = genInviteToken();
-      const link = `${inviteBaseUrl()}?invite=${token}`;
-      const ownerName = currentProfile?.name || userName || 'Un jardinier';
-      const inviteData = {
-        ownerName,
-        invitedName: name,
-        spaceId,
-        spacePseudo: SPACES[spaceId]?.pseudo || '',
-        spaceDesc: (SPACES[spaceId]?.desc || '').trim(),
-        gardenLabel: SPACES[spaceId]?.label || 'ton jardin',
-        created: Date.now(),
-        ownerId: currentProfile?.uid
-      };
-      await persistInviteDoc(token, inviteData);
-      INVITE_CACHE[token] = { token, ...inviteData };
-      showToast('Lien généré !', { type: 'success' });
-      renderInviteList();
-      copyText(link);
-    }
-
-    async function findSpaceByPseudo(pseudo) {
-      if (!HABITU_FIREBASE_DB || !pseudo) return null;
-      const normalizedPseudo = normalizeSpacePseudo(pseudo);
-      const queryBy = async (field, value) => {
-        const snapshot = await HABITU_FIREBASE_DB.collection('spaces')
-          .where(field, '==', value)
-          .limit(1)
-          .get();
-        return snapshot.empty ? null : snapshot.docs[0];
-      };
-      try {
-        let doc = normalizedPseudo ? await queryBy('pseudoNormalized', normalizedPseudo) : null;
-        if (!doc) {
-          doc = await queryBy('pseudo', pseudo);
-        }
-        if (!doc) {
-          const fallbackCode = pseudo.toUpperCase();
-          doc = await queryBy('code', fallbackCode);
-        }
-        if (!doc) return null;
-        const raw = doc.data() || {};
-        const members = Array.isArray(raw.members) ? raw.members : [];
-        return {
-          id: doc.id,
-          ...raw,
-          members,
-          memberIdByEmail: raw.memberIdByEmail || {},
-          createdAt: timestampToDate(raw.createdAt)
-        };
-      } catch (err) {
-        console.warn('findSpaceByPseudo', err);
-        return null;
-      }
-    }
-
-    async function joinGardenByPseudo() {
-      if (!joinSpaceBtn) return;
-      const name = (joinNameInput?.value || '').trim();
-      if (!name) { setJoinStatus('Entre ton prénom.', true); return; }
-      const pseudo = normalizeSpacePseudo(joinPseudoInput?.value || '');
-      if (!pseudo) { setJoinStatus('Entre le pseudo du jardin.', true); return; }
-      joinSpaceBtn.disabled = true;
-      try {
-        const spaceData = await findSpaceByPseudo(pseudo);
-        if (!spaceData) { setJoinStatus('Aucun jardin ne correspond à ce pseudo.', true); return; }
-        if (allowedSpaces.includes(spaceData.id)) { setJoinStatus('Tu fais déjà partie de ce jardin.', true); return; }
-        SPACES[spaceData.id] = { ...(SPACES[spaceData.id] || {}), ...spaceData, members: spaceData.members || [] };
-        if (currentProfile?.email) {
-          await joinSpace(spaceData.id, currentProfile.email, { name });
-        } else {
-          addGuestSpace(spaceData.id);
-        }
-        allowedSpaces = [...new Set([...allowedSpaces, spaceData.id])];
-        spaceId = spaceData.id;
-        await Promise.all([loadHabitsForSpace(spaceId), loadActivitiesForSpace(spaceId)]);
-        await ensureSpaceHasPseudo(spaceId);
-        updateInviteGardenPseudo();
-        updAll();
-        showHome();
-        setJoinStatus('Jardin rejoint !', false);
-        setJoinDescription((spaceData.desc || spaceData.description || '').trim());
-        close(mJoin);
-      } catch (err) {
-        console.warn('joinGardenByPseudo', err);
-        setJoinStatus('Impossible de rejoindre ce jardin pour l’instant.', true);
-      } finally {
-        joinSpaceBtn.disabled = false;
-      }
-    }
-
-    function copyText(value) {
-      if (!value) return;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(value).then(() => {
-          showToast('Lien copié !', { type: 'success' });
-        }).catch(() => {
-          showToast('Copie manuelle : sélectionne et copie.', { type: 'error' });
-        });
-      } else {
-        showToast('Copie manuelle : sélectionne et copie.', { type: 'error' });
-      }
-    }
-
-    renderInviteList();
 
     /* Wizard bibliothèque multi-sélection */
     function matchesHabitContext(habit, contextTags) {
@@ -6267,7 +6504,7 @@
       infoWrapper.className = 'habit-actions__info';
       const label = document.createElement('span');
       label.className = 'habit-actions__label';
-      label.textContent = 'Jours :';
+      label.textContent = 'Choisir';
       const dayWrapper = document.createElement('div');
       dayWrapper.className = 'habit-actions__days';
       const selectedWeekDays = new Set();
@@ -6343,21 +6580,19 @@
         if (!selection.size) return;
         const sp = getSpace();
         const persistPromises = [];
-        const targetedDays = WEEKDAY_ORDER.filter(day => selectedWeekDays.has(day));
+        const selectedDays = WEEKDAY_ORDER.filter(day => selectedWeekDays.has(day));
+        const weekDays = selectedDays.length ? selectedDays.slice() : WEEKDAY_ORDER.slice();
         selection.forEach(hid => {
           if (!sp) return;
           const habitId = String(hid);
           if ((sp.ch || []).some(x => String(x.id) === habitId)) return;
           const habitSource = suggestionMap.get(hid) || LIBRARY_HABITS.find(x => x.id === hid);
           if (!habitSource) return;
-          const frequency = Number.isFinite(Number(habitSource.frequency)) ? Number(habitSource.frequency) : 1;
-          const schedule = chooseWeekDaysForFrequency(targetedDays, frequency, habitSource.id || habitId);
           const payload = buildHabitPayload(sp, habitSource, {
-            frequency,
             repeatConfig: {
               unit: 'week',
-              interval: schedule.interval,
-              weekDays: schedule.weekDays
+              interval: 1,
+              weekDays
             },
             addedBy: getProfileCanonicalId() || getCurrentOwnerKey()
           });
@@ -6374,50 +6609,9 @@
       });
     }
 
-    function chooseWeekDaysForFrequency(selectedDays, frequencyValue, habitId) {
-      const normalizedDays = WEEKDAY_ORDER.filter(day => (selectedDays || []).includes(day));
-      const days = normalizedDays.length ? normalizedDays : WEEKDAY_ORDER.slice();
-      const freqNum = Number.isFinite(Number(frequencyValue)) ? Number(frequencyValue) : 1;
-      if (freqNum <= 0) {
-        return { interval: 1, weekDays: days.slice() };
-      }
-      if (freqNum < 1) {
-        const interval = Math.max(1, Math.round(1 / freqNum));
-        const [singleDay] = pickRandomDay(days, habitId);
-        return { interval, weekDays: singleDay !== undefined ? [singleDay] : [days[0]] };
-      }
-      const times = Math.min(Math.max(1, Math.round(freqNum)), days.length);
-      const weekDays = pickSpacedDays(days, times);
-      if (!weekDays.length) {
-        return { interval: 1, weekDays: [days[0]] };
-      }
-      return { interval: 1, weekDays };
-    }
-
-    function pickSpacedDays(days, count) {
-      if (!days.length || count <= 0) return [];
-      const result = new Set();
-      const length = days.length;
-      for (let i = 0; i < count; i += 1) {
-        const idx = Math.floor((i * length) / count);
-        result.add(days[idx % length]);
-      }
-      return days.filter(day => result.has(day)).sort((a, b) => WEEKDAY_ORDER.indexOf(a) - WEEKDAY_ORDER.indexOf(b));
-    }
-
-    function pickRandomDay(days, seed) {
-      if (!days.length) return [];
-      const hash = Math.abs(hashStr(String(seed))) || 0;
-      const idx = hash % days.length;
-      return [days[idx]];
-    }
-
-
     closeHabitBtn?.addEventListener('click', () => {
       close(mHabit);
     });
-    $("#closeInvite").onclick = () => close(mInvite);
-
     /* Jour +/- */
     $("#prevDay").onclick = () => { dayOff = clampDayOff(dayOff - 1); renderCards(); renderDateBar(); };
     $("#nextDay").onclick = () => { dayOff = clampDayOff(dayOff + 1); renderCards(); renderDateBar(); };
@@ -6463,10 +6657,9 @@
     }
 
     function updateAuthFormState() {
-      const forceSignup = !!pendingInviteInfo;
       if (authLoginBtn) {
-        authLoginBtn.disabled = forceSignup;
-        authLoginBtn.title = forceSignup ? 'Tu dois créer un compte pour accepter cette invitation.' : '';
+        authLoginBtn.disabled = false;
+        authLoginBtn.title = '';
       }
     }
 
@@ -6475,11 +6668,10 @@
       event.preventDefault();
       authError.textContent = '';
       clearResetNotice();
-      const forceSignup = !!pendingInviteInfo;
       const submitterAction = event.submitter?.dataset?.action;
       const fallbackIntent = authForm.dataset.intent;
       const rawIntent = submitterAction || fallbackIntent || 'login';
-      const intent = forceSignup ? 'signup' : rawIntent;
+      const intent = rawIntent;
       authForm.dataset.intent = '';
 
       if (!authEmailInput || !isEmailValid(authEmailInput)) {
@@ -6573,13 +6765,6 @@
       }
     }
 
-    async function linkGuestSpacesToEmail(email) {
-      if (!email || guestSpaces.size === 0) return;
-      const spaces = Array.from(guestSpaces);
-      await Promise.all(spaces.map(id => joinSpace(id, email, { name: currentProfile?.name })));
-      clearGuestSpaces();
-    }
-
     async function ensureProfileName(defaultName = '') {
       const existing = (currentProfile?.name || '').trim();
       if (existing) return existing;
@@ -6592,7 +6777,6 @@
         try {
           await HABITU_FIREBASE_AUTH.currentUser.updateProfile({ displayName: finalName });
         } catch (err) {
-          console.warn('ensureProfileName updateProfile', err);
         }
       }
       if (updated.uid) {
@@ -6634,8 +6818,7 @@
       }
       const isGuest = user.isAnonymous;
       const email = (user.email || '').toLowerCase();
-      const inviteName = pendingInviteInfo?.invitedName || '';
-      const name = user.displayName || currentProfile?.name || inviteName || userName || 'Moi';
+      const name = user.displayName || currentProfile?.name || userName || 'Moi';
       const remoteProfile = await loadRemoteUserProfile(user.uid);
       const fallbackTips = currentProfile?.tipsDisplayMode;
       const tipsDisplayMode = remoteProfile?.tipsDisplayMode || fallbackTips || 'auto';
@@ -6644,7 +6827,10 @@
       const forgottenHabits = Array.isArray(remoteProfile?.forgottenHabits) ? remoteProfile?.forgottenHabits : [];
       const showFriendBadges = remoteProfile?.showFriendBadges !== false;
       const resolvedPseudo = remoteProfile?.pseudo || currentProfile?.pseudo || '';
-      const resolvedMode = remoteProfile?.profileMode || currentProfile?.profileMode || DEFAULT_PROFILE_MODE;
+      let resolvedMode = (remoteProfile?.profileMode || currentProfile?.profileMode || DEFAULT_PROFILE_MODE).toString().toLowerCase();
+      if (!PROFILE_MODE_INFO[resolvedMode]) {
+        resolvedMode = DEFAULT_PROFILE_MODE;
+      }
       const profile = {
         uid: user.uid,
         email,
@@ -6662,8 +6848,6 @@
       await persistUserProfile(profile);
       await ensureProfilePseudo();
       if (!isGuest) {
-        await linkGuestSpacesToEmail(email);
-        await acceptPendingInvite(email);
         hideAuthOverlay();
         showLoaderOverlay();
         try {
@@ -6671,7 +6855,7 @@
         } finally {
           hideLoaderOverlay();
         }
-        await ensureProfileName(inviteName || name);
+        await ensureProfileName(name);
         userName = currentProfile?.name || name;
         setLastMemberName(userName);
         updateAddModalOptions();
@@ -6697,33 +6881,50 @@
     });
 
     /* Tabs util */
-    let statsSortDirection = 'desc';
-    function sortSpaceStats(direction = 'desc') {
+
+    function updateSpaceStatsSortingHeaders() {
+      if (!statsSortHeaders.length) return;
+      statsSortHeaders.forEach(th => {
+        const key = th.dataset.sortable;
+        const isActive = key === statsSortKey;
+        th.classList.toggle('active', isActive);
+        th.dataset.direction = isActive ? (statsSortDirection === 'asc' ? '↑' : '↓') : '';
+      });
+    }
+
+    function sortSpaceStats(key = statsSortKey, direction = statsSortDirection) {
       const tbody = document.querySelector('#sstats table tbody');
       if (!tbody) return;
+      const resolvedKey = key || statsSortKey;
+      const resolvedDirection = direction === 'asc' ? 'asc' : 'desc';
+      const factor = resolvedDirection === 'asc' ? 1 : -1;
       const rows = Array.from(tbody.querySelectorAll('tr'));
-      const factor = direction === 'asc' ? 1 : -1;
       rows.sort((a, b) => {
-        const aVal = Number(a.dataset.streak) || 0;
-        const bVal = Number(b.dataset.streak) || 0;
-        return (aVal - bVal) * factor;
+        const aVal = Number(a.dataset?.[resolvedKey]);
+        const bVal = Number(b.dataset?.[resolvedKey]);
+        const aNum = Number.isFinite(aVal) ? aVal : 0;
+        const bNum = Number.isFinite(bVal) ? bVal : 0;
+        if (aNum === bNum) return 0;
+        return (aNum - bNum) * factor;
       });
       rows.forEach(row => tbody.appendChild(row));
-      const header = document.querySelector('#sstats th[data-sortable]');
-      if (header) {
-        header.dataset.direction = direction === 'asc' ? '↑' : '↓';
-      }
-      statsSortDirection = direction;
+      statsSortKey = resolvedKey;
+      statsSortDirection = resolvedDirection;
+      updateSpaceStatsSortingHeaders();
     }
+
     function setupSpaceStatsSorting() {
-      const header = document.querySelector('#sstats th[data-sortable]');
-      if (!header) return;
-      const toggleDirection = () => {
-        const next = statsSortDirection === 'asc' ? 'desc' : 'asc';
-        sortSpaceStats(next);
-      };
-      header.addEventListener('click', toggleDirection);
-      sortSpaceStats(statsSortDirection);
+      statsSortHeaders = Array.from(document.querySelectorAll('#sstats th[data-sortable]'));
+      if (!statsSortHeaders.length) return;
+      statsSortHeaders.forEach(th => {
+        th.addEventListener('click', () => {
+          const key = th.dataset.sortable;
+          if (!key) return;
+          const nextDirection = statsSortKey === key ? (statsSortDirection === 'asc' ? 'desc' : 'asc') : 'desc';
+          sortSpaceStats(key, nextDirection);
+        });
+      });
+      sortSpaceStats(statsSortKey, statsSortDirection);
     }
     function switchViews(btn, groupAttr, prefix) {
       const key = btn.getAttribute(groupAttr);
@@ -6738,8 +6939,10 @@
       if (prefix === 'space' && key === 'sparams') {
         syncSpacePreferenceControls();
       }
+      if (prefix === 'space' && key === 'sprofile') {
+        renderProfileStats();
+      }
       if (prefix === 'space' && key === 'sstats') {
-        sortSpaceStats(statsSortDirection);
         renderProfileStats();
       }
       if (key === 'shistory') { populateSpaceWho?.(); renderSpaceCalendar?.() }
@@ -6756,7 +6959,6 @@
         swRegistration = await navigator.serviceWorker.ready;
         return swRegistration;
       } catch (err) {
-        console.warn('ensureSwRegistration', err);
         return null;
       }
     }
@@ -6766,7 +6968,6 @@
         const keys = await caches.keys();
         await Promise.all(keys.map(key => caches.delete(key)));
       } catch (err) {
-        console.warn('clearAppCaches', err);
       }
     }
     async function handleAppUpdateRequest({ auto = false } = {}) {
@@ -6774,7 +6975,6 @@
         return;
       }
       if (!('serviceWorker' in navigator)) {
-        console.warn('Service worker indisponible.');
         return;
       }
       const loaderWasVisible = loaderOverlay && !loaderOverlay.classList.contains('hide');
@@ -6786,7 +6986,6 @@
         await clearAppCaches();
         const registration = await ensureSwRegistration();
         if (!registration) {
-          console.warn('Service worker introuvable.');
           return;
         }
         await registration.update();
@@ -6794,7 +6993,6 @@
           registration.waiting.postMessage({ type: 'SKIP_WAITING' });
         }
       } catch (err) {
-        console.warn('handleAppUpdateRequest', err);
       } finally {
         updateRequestInProgress = false;
         if (!loaderWasVisible) {
@@ -6825,7 +7023,6 @@
             });
           });
         } catch (err) {
-          console.warn('SW registration failed', err);
         }
       };
 
@@ -6838,6 +7035,10 @@
 
       window.addEventListener('load', registerServiceWorker);
     }
+    maybeSyncSpaceSnapshot();
+    refreshProfileStatsCache();
+    maybePushStatsSnapshot();
+    maybeFetchStatsSnapshot();
   </script>
 </body>
 
