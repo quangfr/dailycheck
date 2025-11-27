@@ -12,10 +12,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore-compat.js"></script>
   <script>
     const HABITU_FIREBASE_CONFIG = {
-      apiKey: "AIzaSyD_dzzwWVEE0_aCMIbmbjPoYAj9Lzgb8J4",
-      authDomain: "routine-buddy-2e6e5.firebaseapp.com",
-      projectId: "routine-buddy-2e6e5",
-      appId: "1:541875105784:web:cb5dc97a24afd05bae700d"
+      apiKey: "AIzaSyBN2s5rTD0CYtVUJEiye4mvy6ZXR2F4Emg",
+      authDomain: "habitube-app.firebaseapp.com",
+      projectId: "habitube-app",
+      storageBucket: "habitube-app.firebasestorage.app",
+      messagingSenderId: "1040542046300",
+      appId: "1:1040542046300:web:2377c6015d6dbd45d86e99"
     };
     if (!firebase.apps.length) {
       firebase.initializeApp(HABITU_FIREBASE_CONFIG);
@@ -61,19 +63,12 @@
       <div class="auth-forms">
         <form id="authForm">
           <input id="authEmail" type="email" required placeholder="Email" />
-          <input id="authPassword" type="password" required placeholder="Mot de passe" />
-          <div class="auth-link-row">
-            <span id="forgotPasswordLink" class="auth-link">Mot de passe oublié ?</span>
-          </div>
           <div class="auth-error" id="authError"></div>
           <div class="auth-actions">
-            <button type="submit" id="authLoginBtn" data-action="login" class="text-btn primary">Se connecter</button>
-            <button type="submit" id="authSignupBtn" data-action="signup" class="text-btn secondary">Créer mon
-              compte</button>
+            <button type="submit" id="authSendLinkBtn" class="text-btn primary">Se connecter</button>
           </div>
-
         </form>
-        <div class="auth-separator">
+        <div class="auth-separator" id="authSeparator">
           <span class="label">ou</span>
         </div>
         <button type="button" class="auth-guest-btn text-btn secondary" id="authGuestBtn">Se connecter avec mon
@@ -88,8 +83,7 @@
     <div class="top">
       <div class="brand" id="brand"><span class="logo">🌱</span>Habitube</div>
       <div class="spacer"></div>
-      <select id="spaceSel" class="select" title="Changer de jardin"></select>
-      <button class="navbtn" id="addBtn" title="Menu">☰</button>
+      <button class="navbtn" id="openSpace" title="Jardin">⛭</button>
     </div>
 
     <div class="daysWrap" id="daysWrap">
@@ -99,8 +93,8 @@
       </div>
       <div class="rightBtns">
         <button class="navbtn" id="nextDay">→</button>
-        <button class="navbtn" id="openSpace" title="Jardin">⛭</button>
 
+        <button class="navbtn" id="addBtn" title="Menu">☰</button>
       </div>
     </div>
 
@@ -140,7 +134,7 @@
                 <label><input type="radio" name="habitRecurrenceMode" value="weekly" checked /> Hebdomadaire</label>
                 <label><input type="radio" name="habitRecurrenceMode" value="interval" /> Toutes les
                   <select id="habitRecurrenceInterval" class="select recurrence-interval">
-                    <option value="">–</option>
+                    <option value="" disabled hidden>–</option>
                     <option value="2">2 semaines</option>
                     <option value="3">3 semaines</option>
                     <option value="4">4 semaines</option>
@@ -206,12 +200,12 @@
         <div class="spacer"></div>
       </div>
       <div class="tabs">
-        <button class="tab active" data-stab="sparams">⚙️ Réglages</button>
-        <button class="tab" data-stab="sprofile">👤 Profil</button>
+        <button class="tab active" data-stab="sprofile">👤 Profil</button>
         <button class="tab" data-stab="sstats">📊 Stats</button>
+        <button class="tab" data-stab="sparams">⚙️ Réglages</button>
       </div>
       <div class="section">
-        <div class="view" id="sprofile">
+        <div class="view active" id="sprofile">
           <div class="space-profile-visual">
             <div class="score-panel">
               <div class="score-title">Score hebdo</div>
@@ -261,20 +255,16 @@
             </div>
           </div>
         </div>
-        <div class="view active" id="sparams">
+        <div class="view" id="sparams">
           <div class="grid">
             <div class="field hide" id="spaceProfileModeField">
               <label><b>Profil</b></label>
               <div class="profile-mode-options" role="radiogroup" aria-label="Choisir le profil de votre jardin">
-                <button type="button" class="profile-mode-option" data-mode="local" aria-pressed="false">
-                  <div class="profile-mode-option__name">🕵️ Anonyme</div>
-
-                </button>
-                <button type="button" class="profile-mode-option" data-mode="minimal" aria-pressed="false">
+                <button type="button" class="profile-mode-option" data-mode="private" aria-pressed="false">
                   <div class="profile-mode-option__name">🔒 Privé</div>
 
                 </button>
-                <button type="button" class="profile-mode-option" data-mode="complet" aria-pressed="false">
+                <button type="button" class="profile-mode-option" data-mode="visible" aria-pressed="false">
                   <div class="profile-mode-option__name">🌍 Visible</div>
 
                 </button>
@@ -434,9 +424,8 @@
           <div class="field">
             <label><b>Profil</b></label>
             <select id="profileModeSelector" class="select">
-              <option value="local">Anonyme</option>
-              <option value="minimal">Privé</option>
-              <option value="complet">Public</option>
+              <option value="private">Privé</option>
+              <option value="visible">Visible</option>
             </select>
             <div class="subtitle" id="profileModeSetupHint"></div>
           </div>
@@ -569,7 +558,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.26.7';
+    const APP_VERSION = '0.11.27';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1316,6 +1305,8 @@
     let toastContainerEl = null;
     hydrateHabitListSnapshotCache();
 
+    const STORAGE_MAGIC_LINK_EMAIL_KEY = 'habitu-magic-link-email';
+
     function safeStorageGet(key) {
       try {
         return localStorage.getItem(key);
@@ -1327,6 +1318,17 @@
       try {
         localStorage.setItem(key, value);
       } catch (e) { }
+    }
+    function persistMagicLinkEmail(email) {
+      if (!email) return;
+      safeStorageSet(STORAGE_MAGIC_LINK_EMAIL_KEY, email);
+    }
+    function readMagicLinkEmail() {
+      return safeStorageGet(STORAGE_MAGIC_LINK_EMAIL_KEY) || '';
+    }
+    function clearMagicLinkEmail() {
+      if (typeof window === 'undefined') return;
+      localStorage.removeItem(STORAGE_MAGIC_LINK_EMAIL_KEY);
     }
     const HABIT_GARDENERS_LOCAL_KEY = 'habitu-habit-gardeners-cache';
     const HABIT_GARDENERS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
@@ -1459,7 +1461,7 @@
       return readSpaceTimestamp(SPACE_CHANGE_KEY);
     }
     function shouldQueueSpaceSnapshot() {
-      return Boolean(currentProfile && !isProfileModeLocal(currentProfile));
+      return Boolean(currentProfile && isProfileModeVisible(currentProfile));
     }
     function markSpaceDirty() {
       if (!shouldQueueSpaceSnapshot()) return;
@@ -2250,22 +2252,18 @@
       return Boolean(HABITU_FIREBASE_DB && (!IS_LOCAL_FILE_URL || FIRESTORE_ENABLED_LOCALLY));
     }
     const PROFILE_MODE_INFO = {
-      local: {
-        label: '👤 Anonyme',
-        summary: 'Données en locale. Pas de sauvegarde ni de partage.'
-      },
-      minimal: {
+      private: {
         label: '🔒 Privé',
-        summary: 'Données de base sauvegardées en ligne. Profil non visible.'
+        summary: 'Données stockées uniquement sur l’appareil.'
       },
-      complet: {
-        label: '🌍 Public',
-        summary: 'Données complètes sauvegardées en ligne. Profil visible.'
+      visible: {
+        label: '🌍 Visible',
+        summary: 'Données visibles et synchronisées dans le cloud.'
       }
     };
-    const DEFAULT_PROFILE_MODE = 'complet';
+    const DEFAULT_PROFILE_MODE = 'visible';
     function getAllowedProfileModesForProfile(profile = currentProfile) {
-      return ['local', 'minimal', 'complet'];
+      return ['private', 'visible'];
     }
     function getProfileMode(profile = currentProfile) {
       const candidate = (profile?.profileMode || '').toString().toLowerCase();
@@ -2274,21 +2272,17 @@
       }
       return DEFAULT_PROFILE_MODE;
     }
-    function isProfileModeLocal(profile = currentProfile) {
-      return getProfileMode(profile) === 'local';
+    function isProfileModePrivate(profile = currentProfile) {
+      return getProfileMode(profile) === 'private';
     }
-    function isProfileModeMinimal(profile = currentProfile) {
-      return getProfileMode(profile) === 'minimal';
-    }
-    function isProfileModeComplet(profile = currentProfile) {
-      return getProfileMode(profile) === 'complet';
+    function isProfileModeVisible(profile = currentProfile) {
+      return getProfileMode(profile) === 'visible';
     }
     function shouldWriteToFirestore(profile = currentProfile) {
-      return Boolean(canWriteFirestore() && !isProfileModeLocal(profile));
+      return Boolean(canWriteFirestore() && isProfileModeVisible(profile));
     }
     function shouldSyncActivities(profile = currentProfile) {
-      // Activities now stay local only; never push to Firestore.
-      return false;
+      return Boolean(shouldWriteToFirestore(profile) && isProfileModeVisible(profile));
     }
     function getLastActivitySyncTime() {
       if (typeof window === 'undefined' || !window.localStorage) return null;
@@ -2313,10 +2307,10 @@
       return Date.now() - lastSync >= ACTIVITY_SYNC_INTERVAL_MS;
     }
     function shouldRenderRankings() {
-      return isProfileModeComplet();
+      return isProfileModeVisible();
     }
     function shouldShowGardenerBadges() {
-      return !isProfileModeLocal();
+      return isProfileModeVisible();
     }
     async function updateProfileMode(mode = DEFAULT_PROFILE_MODE) {
       const normalized = PROFILE_MODE_INFO[mode] ? mode : DEFAULT_PROFILE_MODE;
@@ -2339,7 +2333,7 @@
       renderCards();
       renderSpaceRank();
       renderHabitGardeners();
-      if (normalized !== 'local') {
+      if (isProfileModeVisible(updated)) {
         await maybeSyncSpaceSnapshot({ force: true });
         await maybeFlushActivityBuffer({ force: true });
       }
@@ -2425,6 +2419,11 @@
       Object.keys(SPACES).forEach(k => delete SPACES[k]);
       setActiveSpace(null);
       spacesInitialized = false;
+    }
+    function hasLocalDataForImport() {
+      if (Object.keys(SPACES).length) return true;
+      if (Object.keys(ownerActivityStore).length) return true;
+      return false;
     }
     function normalizeEmail(email) {
       return String(email || '').trim().toLowerCase();
@@ -4226,7 +4225,7 @@
     function refreshGardenerTabVisibility() {
       const tab = document.querySelector('#detail .tabs [data-tab="gardeners"]');
       if (!tab) return;
-      tab.classList.toggle('hide', isProfileModeLocal());
+      tab.classList.toggle('hide', isProfileModePrivate());
     }
     /* ===== Calendriers ===== */
     /* ===== Navigation vues ===== */
@@ -4952,7 +4951,7 @@
       return Array.isArray(list) ? list.length : null;
     }
     function getHabitStreakCount(habitId) {
-      if (isProfileModeMinimal()) {
+      if (isProfileModePrivate()) {
         const privateCount = getPrivateHabitListLength();
         if (privateCount !== null) {
           return privateCount;
@@ -5070,7 +5069,7 @@
     }
     async function refreshAllHabitStatsFromServer({ force = false } = {}) {
       if (!spaceId || !shouldQueueSpaceSnapshot() || !HABITU_FIREBASE_DB) return;
-      if (!isProfileModeComplet()) return;
+      if (!isProfileModeVisible()) return;
       if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
       const space = getSpace();
       if (!space) return;
@@ -5081,7 +5080,7 @@
     }
     async function refreshPrivateHabitListFromServer({ force = false } = {}) {
       if (!spaceId || !HABITU_FIREBASE_DB) return;
-      if (!isProfileModeMinimal()) return;
+      if (!isProfileModePrivate()) return;
       if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
       try {
         const doc = await HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
@@ -5102,12 +5101,12 @@
       if (!force && !canPerformStatsOperation(STATS_SYNC_STORAGE_KEY, spaceId)) return;
       const space = getSpace();
       if (!space) return;
-      if (isProfileModeComplet()) {
+      if (isProfileModeVisible()) {
         await syncHabitStatsSnapshot(space);
         setStatsTimestamp(STATS_SYNC_STORAGE_KEY, spaceId);
         return;
       }
-      if (isProfileModeMinimal()) {
+      if (isProfileModePrivate()) {
         await persistSpaceHabitListSnapshot(space);
         setStatsTimestamp(STATS_SYNC_STORAGE_KEY, spaceId);
       }
@@ -5115,11 +5114,11 @@
     async function maybeFetchStatsSnapshot({ force = false } = {}) {
       if (!spaceId || !currentProfile || !HABITU_FIREBASE_DB) return;
       if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
-      if (isProfileModeComplet()) {
+      if (isProfileModeVisible()) {
         await refreshAllHabitStatsFromServer({ force: true });
         return;
       }
-      if (isProfileModeMinimal()) {
+      if (isProfileModePrivate()) {
         await refreshPrivateHabitListFromServer({ force: true });
       }
     }
@@ -5325,21 +5324,28 @@
             ...repeatConfig,
             weekDays: Array.isArray(repeatConfig.weekDays) ? repeatConfig.weekDays.slice() : []
           };
+          const selectedMode = getSelectedRecurrenceMode(recurrenceModeRadios);
+          if (selectedMode === 'interval' && !repeatConfigPayload.interval) {
+            showToast('Choisis une valeur pour "Toutes les x semaines".', { type: 'error' });
+            return;
+          }
+          if (selectedMode === 'weekly' && (!repeatConfigPayload.weekDays || !repeatConfigPayload.weekDays.length)) {
+            showToast('Selectionne au moins un jour pour la récurrence hebdomadaire.', { type: 'error' });
+            return;
+          }
           const previousRecurrence = normalizeRepeatConfig(it, storedRecurrence || {});
-          const normalizedPrev = JSON.stringify({
-            interval: previousRecurrence.interval,
-            unit: previousRecurrence.unit,
-            weekDays: previousRecurrence.weekDays || [],
-            startDate: previousRecurrence.startDate || '',
-            endDate: previousRecurrence.endDate || ''
-          });
-          const normalizedNext = JSON.stringify({
-            interval: repeatConfigPayload.interval,
-            unit: repeatConfigPayload.unit,
-            weekDays: repeatConfigPayload.weekDays || [],
-            startDate: repeatConfigPayload.startDate || '',
-            endDate: repeatConfigPayload.endDate || ''
-          });
+          const normalizeSection = config => {
+            const unit = (config.unit || 'week').toString().toLowerCase();
+            const interval = Number.isFinite(Number(config.interval)) ? Number(config.interval) : 1;
+            const weekDays = (Array.isArray(config.weekDays) ? config.weekDays : [])
+              .map(day => Number(day))
+              .filter(day => Number.isFinite(day))
+              .map(day => ((day % 7) + 7) % 7)
+              .sort((a, b) => a - b);
+            return JSON.stringify({ unit, interval, weekDays });
+          };
+          const normalizedPrev = normalizeSection(previousRecurrence);
+          const normalizedNext = normalizeSection(repeatConfigPayload);
           if (normalizedPrev !== normalizedNext) {
             const confirmText = 'Changer la récurrence réinitialisera les statistiques de cette habitude. Continuer ?';
             if (!window.confirm(confirmText)) {
@@ -5930,36 +5936,15 @@
       return list;
     }
 
-    /* Sélecteur d’espace */
+    /* Space label */
     function updSel() {
-      const sel = $("#spaceSel"); sel.innerHTML = '';
-      const ordered = getVisibleSpaces();
-      if (ordered.length === 0) {
-        const placeholder = document.createElement('option');
-        placeholder.value = ''; placeholder.textContent = '— Aucun jardin';
-        sel.appendChild(placeholder);
-        sel.disabled = true;
-        return;
+      const pseudoLabel = (currentProfile?.pseudo || '—').trim();
+      const openSpaceBtn = $("#openSpace");
+      if (openSpaceBtn) {
+        openSpaceBtn.textContent = pseudoLabel;
+        openSpaceBtn.title = pseudoLabel || 'Jardin';
       }
-      sel.disabled = false;
-      ordered.forEach(id => {
-        const o = document.createElement('option');
-        o.value = id;
-        const spaceEntry = SPACES[id];
-        const memberKey = getCurrentSpaceMemberKey(spaceEntry);
-        const memberName = getSpaceMemberLabel(spaceEntry, memberKey);
-        const displayName = ((isPersonalSpaceType(spaceEntry)
-          ? memberName
-          : (spaceEntry.label || '').trim() || memberName) || '').trim();
-        const pseudo = (currentProfile?.pseudo || spaceEntry.pseudo || '').trim();
-        const label = displayName || pseudo || '—';
-        o.textContent = label;
-        sel.appendChild(o);
-      });
-      if (!ordered.includes(spaceId) || !SPACES[spaceId]) setActiveSpace(ordered[0]);
-      sel.value = spaceId;
     }
-    const selSpace = $("#spaceSel"); selSpace.addEventListener('change', () => { setActiveSpace(selSpace.value); renderCards(); showHome(); });
     $("#openSpace").onclick = () => {
       const isSpaceActive = !!$("#space")?.classList.contains('active');
       if (isSpaceActive) {
@@ -6201,7 +6186,7 @@
     function updateProfileSetupFields() {
       if (!profileModeSelector) return;
       const mode = profileModeSelector.value || getProfileMode();
-      const showExtras = mode !== 'local';
+      const showExtras = mode === 'visible';
       if (profileNameField) profileNameField.classList.toggle('hide', !showExtras);
       if (profilePseudoField) profilePseudoField.classList.toggle('hide', !showExtras);
       if (profileModeSetupHint) {
@@ -6296,7 +6281,7 @@
             actualPseudo = await ensureProfilePseudoInput(true);
           }
           if (actualPseudo) {
-            if (selectedMode !== 'local') {
+            if (selectedMode === 'visible') {
               await updateUserPseudo(actualPseudo);
             } else {
               persistProfile({ pseudo: actualPseudo });
@@ -6622,23 +6607,29 @@
     const loaderOverlay = $("#loaderOverlay");
     const authOverlay = $("#authOverlay");
     const brand = $("#brand");
-    const forgotPasswordLink = $("#forgotPasswordLink");
     const authForm = $("#authForm");
     const authEmailInput = $("#authEmail");
-    const authPasswordInput = $("#authPassword");
-    const authLoginBtn = $("#authLoginBtn");
-    const authSignupBtn = $("#authSignupBtn");
+    const authSendLinkBtn = $("#authSendLinkBtn");
     const authGuestBtn = $("#authGuestBtn");
     const resetNotice = $("#resetNotice");
     const authError = $("#authError");
+    const authNoteElement = $("#authNote");
+    const authSeparator = $("#authSeparator");
+    const authNotification = $("#authNotification");
+    const authNotificationBack = $("#authNotificationBack");
     let loaderHabitTimer = null;
-    authLoginBtn?.addEventListener('click', () => { if (authForm) authForm.dataset.intent = 'login'; });
-    authSignupBtn?.addEventListener('click', () => { if (authForm) authForm.dataset.intent = 'signup'; });
     authGuestBtn?.addEventListener('click', () => startGuestSession());
-    authForm?.addEventListener('submit', handleAuthSubmit);
+    authForm?.addEventListener('submit', handleMagicLinkSubmit);
+    authNotificationBack?.addEventListener('click', () => {
+      resetMagicLinkNotification();
+      if (authEmailInput) {
+        authEmailInput.focus();
+      }
+    });
     updateAuthFormState();
     updateAuthMessage();
     showLoaderOverlay();
+    completeMagicLinkSignInIfNeeded();
 
     brand?.addEventListener('click', () => {
       dayOff = 0;
@@ -6656,46 +6647,149 @@
       return input.checkValidity();
     }
 
+    let magicLinkSignInPending = false;
+
+    function setAuthError(message = '') {
+      if (!authError) return;
+      authError.textContent = message;
+    }
+
     function updateAuthFormState() {
-      if (authLoginBtn) {
-        authLoginBtn.disabled = false;
-        authLoginBtn.title = '';
+      if (authNotification) {
+        authNotification.style.display = 'none';
+      }
+      if (authNoteElement) {
+        authNoteElement.textContent = 'Nous gardons tes jardins privés.\nAucune donnée n’est transmise à des tiers.';
+      }
+      setAuthError('');
+    }
+
+    function enterMagicLinkNotification(email) {
+      if (authNotification) {
+        authNotification.style.display = 'flex';
+      }
+      if (authEmailInput) {
+        authEmailInput.disabled = true;
+      }
+      if (authSendLinkBtn) {
+        authSendLinkBtn.disabled = true;
+      }
+      if (authNoteElement) {
+        authNoteElement.textContent = `Un lien de connexion a été envoyé à ${email}.`;
       }
     }
 
-    async function handleAuthSubmit(event) {
+    function resetMagicLinkNotification() {
+      if (authNotification) {
+        authNotification.style.display = 'none';
+      }
+      if (authEmailInput) {
+        authEmailInput.disabled = false;
+      }
+      if (authSendLinkBtn) {
+        authSendLinkBtn.disabled = false;
+      }
+      if (authNoteElement) {
+        authNoteElement.textContent = 'Nous gardons tes jardins privés.\nAucune donnée n’est transmise à des tiers.';
+      }
+    }
+
+    const MAGIC_LINK_COOLDOWN_MS = 30 * 1000;
+    let magicLinkCooldownEnd = 0;
+    let magicLinkCooldownInterval = null;
+
+    function updateMagicLinkCooldownState() {
+      const now = Date.now();
+      if (magicLinkCooldownInterval) {
+        clearInterval(magicLinkCooldownInterval);
+        magicLinkCooldownInterval = null;
+      }
+      if (!authSendLinkBtn) return;
+      const remaining = Math.max(0, Math.ceil((magicLinkCooldownEnd - now) / 1000));
+      if (remaining > 0) {
+        if (authSeparator) authSeparator.classList.add('hide');
+        if (authGuestBtn) authGuestBtn.classList.add('hide');
+        authSendLinkBtn.disabled = true;
+        authSendLinkBtn.classList.add('btn--disabled');
+        authSendLinkBtn.textContent = `Envoyer à nouveau (${remaining}s)`;
+        magicLinkCooldownInterval = setInterval(() => {
+          const nowInner = Date.now();
+          const countDown = Math.max(0, Math.ceil((magicLinkCooldownEnd - nowInner) / 1000));
+          if (countDown <= 0) {
+            updateMagicLinkCooldownState();
+            clearInterval(magicLinkCooldownInterval);
+            magicLinkCooldownInterval = null;
+            return;
+          }
+          if (authSendLinkBtn) {
+            authSendLinkBtn.textContent = `Envoyer à nouveau (${countDown}s)`;
+          }
+        }, 500);
+        return;
+      }
+      if (authSeparator) authSeparator.classList.remove('hide');
+      if (authGuestBtn) authGuestBtn.classList.remove('hide');
+      authSendLinkBtn.disabled = false;
+      authSendLinkBtn.classList.remove('btn--disabled');
+      authSendLinkBtn.textContent = 'Se connecter';
+      if (authNoteElement) {
+        authNoteElement.textContent = 'Nous gardons tes jardins privés.\nAucune donnée n’est transmise à des tiers.';
+      }
+    }
+
+    function startMagicLinkCooldown() {
+      magicLinkCooldownEnd = Date.now() + MAGIC_LINK_COOLDOWN_MS;
+      updateMagicLinkCooldownState();
+    }
+
+    updateMagicLinkCooldownState();
+
+    async function handleMagicLinkSubmit(event) {
       if (!authForm) return;
       event.preventDefault();
-      authError.textContent = '';
+      setAuthError('');
       clearResetNotice();
-      const submitterAction = event.submitter?.dataset?.action;
-      const fallbackIntent = authForm.dataset.intent;
-      const rawIntent = submitterAction || fallbackIntent || 'login';
-      const intent = rawIntent;
-      authForm.dataset.intent = '';
-
       if (!authEmailInput || !isEmailValid(authEmailInput)) {
-        authError.textContent = 'Entre un email valide.';
+        setAuthError('Entre un email valide.');
         return;
       }
       const email = (authEmailInput.value || '').trim().toLowerCase();
-      const password = (authPasswordInput?.value || '').trim();
-      if (!password) {
-        authError.textContent = intent === 'signup' ? 'Choisis un mot de passe.' : 'Entre ton mot de passe.';
-        return;
-      }
-      if (intent === 'signup') {
-        try {
-          await HABITU_FIREBASE_AUTH.createUserWithEmailAndPassword(email, password);
-        } catch (err) {
-          authError.textContent = err.message || 'Impossible de créer le compte.';
-        }
+      if (!HABITU_FIREBASE_AUTH || !HABITU_FIREBASE_AUTH.sendSignInLinkToEmail) {
+        setAuthError('Connexion indisponible pour le moment.');
         return;
       }
       try {
-        await HABITU_FIREBASE_AUTH.signInWithEmailAndPassword(email, password);
+        await HABITU_FIREBASE_AUTH.sendSignInLinkToEmail(email, {
+          url: `${window.location.origin}${window.location.pathname}`,
+          handleCodeInApp: true
+        });
+        persistMagicLinkEmail(email);
+        enterMagicLinkNotification(email);
+        startMagicLinkCooldown();
+        showToast('Lien envoyé !', { type: 'success' });
       } catch (err) {
-        authError.textContent = 'Mot de passe erroné.';
+        setAuthError(err?.message || 'Impossible d’envoyer le lien.');
+      }
+    }
+
+    async function completeMagicLinkSignInIfNeeded() {
+      if (!HABITU_FIREBASE_AUTH || !HABITU_FIREBASE_AUTH.isSignInWithEmailLink) return;
+      const url = window.location.href;
+      if (!HABITU_FIREBASE_AUTH.isSignInWithEmailLink(url)) return;
+      let email = readMagicLinkEmail();
+      if (!email) {
+        email = window.prompt('Confirme ton email pour terminer la connexion par lien');
+      }
+      if (!email) return;
+      try {
+        await HABITU_FIREBASE_AUTH.signInWithEmailLink(email, url);
+        magicLinkSignInPending = true;
+        clearMagicLinkEmail();
+        const cleanUrl = `${window.location.origin}${window.location.pathname}`;
+        window.history.replaceState({}, document.title, cleanUrl);
+      } catch (err) {
+        showToast('Impossible d’utiliser ce lien de connexion.', { type: 'error' });
+        clearMagicLinkEmail();
       }
     }
 
@@ -6721,27 +6815,11 @@
       stopLoaderAnimation();
     }
 
-    forgotPasswordLink?.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (!authEmailInput || !isEmailValid(authEmailInput)) {
-        resetNotice.textContent = 'Entre un email valide.';
-        return;
-      }
-      const email = (authEmailInput.value || '').trim().toLowerCase();
-      try {
-        await HABITU_FIREBASE_AUTH.sendPasswordResetEmail(email);
-      } catch (err) {
-        // Do not surface whether the account exists.
-      } finally {
-        resetNotice.textContent = 'Lien de réinitialisation envoyé !';
-      }
-    });
-
     function hideAuthOverlay() { authOverlay.classList.add('hide') }
     function showAuthOverlay(force = false) {
       hideLoaderOverlay();
       clearResetNotice();
-      if (authError) authError.textContent = '';
+      setAuthError('');
       authOverlay.classList.remove('hide');
     }
 
@@ -6851,9 +6929,18 @@
         hideAuthOverlay();
         showLoaderOverlay();
         try {
+          if (magicLinkSignInPending && hasLocalDataForImport()) {
+            const shouldImport = window.confirm('Tu as des données en local. Veux-tu les importer dans ce compte ?');
+            if (shouldImport) {
+              await maybeSyncSpaceSnapshot({ force: true });
+              await maybePushStatsSnapshot({ force: true });
+              clearLocalState();
+            }
+          }
           await resetFirestoreState(currentProfile);
         } finally {
           hideLoaderOverlay();
+          magicLinkSignInPending = false;
         }
         await ensureProfileName(name);
         userName = currentProfile?.name || name;
