@@ -722,7 +722,7 @@ const HABIT_TIPS = [
   {
     "id": 18,
     "title": "Maintenir un parfum léger"
-  }
+  },
   {
     "id": 19,
     "title": "Regrouper tous les produits au même endroit"
