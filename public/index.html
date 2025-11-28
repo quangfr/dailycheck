@@ -94,7 +94,7 @@
       <div class="rightBtns">
         <button class="navbtn" id="nextDay">→</button>
 
-        <button class="navbtn" id="addBtn" title="Menu">☰</button>
+        <button class="navbtn" id="addBtn" title="Menu">+</button>
       </div>
     </div>
 
@@ -198,6 +198,8 @@
         <button class="backMini" id="backFromSpace">←</button>
         <div class="detailTitle" id="spaceHeaderTitle"></div>
         <div class="spacer"></div>
+        <button class="btn mini hide" id="gardenerFollowBtn" type="button">⭐ Suivre</button>
+        <button class="btn danger mini hide" id="spaceLogoutBtn" type="button">🔓</button>
       </div>
       <div class="tabs">
         <button class="tab active" data-stab="sprofile">👤 Profil</button>
@@ -310,7 +312,6 @@
             <div class="field">
               <label><b>Afficher les astuces</b></label>
               <select id="prefsTipsDisplayMode" class="select">
-                <option value="auto">Auto</option>
                 <option value="oui">Oui</option>
                 <option value="non">Non</option>
               </select>
@@ -387,11 +388,11 @@
               <div class="subtitle">Retrouver ses jardins partagés en ligne</div>
             </div>
           </div>
-          <div class="opt auth-action hide" id="menuLogout">
-            <div class="emoji">🔓</div>
+          <div class="opt auth-action hide" id="menuMakeProfileVisible">
+            <div class="emoji">🌍</div>
             <div>
-              <b>Se déconnecter</b>
-              <div class="subtitle">Changer de compte</div>
+              <b>Rendre mon profil visible</b>
+              <div class="subtitle">Partager ton profil et les classements</div>
             </div>
           </div>
         </div>
@@ -409,6 +410,22 @@
       <div class="sheetBody">
         <div class="grid" id="step1"></div>
         <div class="grid hide" id="step2"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalSpotlight">
+    <div class="sheet">
+      <div class="sheetHeader">
+        <div>Découverte rapide</div>
+        <button class="closeX" id="closeSpotlight">⨉</button>
+      </div>
+      <div class="sheetBody">
+        <div class="spotlight-step" id="spotlightStepContent"></div>
+      </div>
+      <div class="spotlight-actions">
+        <button class="btn" id="spotlightPrev">Précédent</button>
+        <button class="btn primary" id="spotlightNext">Suivant</button>
       </div>
     </div>
   </div>
@@ -557,7 +574,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.28.1';
+    const APP_VERSION = '0.11.28.2';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1020,6 +1037,28 @@
     let personalActivityRefreshPromise = null;
     const PERSONAL_ACTIVITY_REFRESH_INTERVAL_MS = 3 * 60 * 1000;
     const LOADER_ROTATION_MS = 60000;
+    const SPOTLIGHT_STEPS = [
+      {
+        title: 'Bienvenue sur Habitube',
+        body: 'Habitube t’accompagne pour planter, suivre et célébrer de petites routines. Chaque jour, ton jardin évolue selon tes actions et celles de ton équipe.'
+      },
+      {
+        title: 'Actionner une habitude',
+        body: 'Clique (ou tape) sur une habitude pour la marquer comme réalisée, et fais un appui long (ou clic droit) pour d’autres actions utiles comme afficher les détails.'
+      },
+      {
+        title: 'Naviguer par jour',
+        body: 'Utilise les flèches au-dessus de la liste ou fais glisser vers la gauche/droite pour changer la date et voir les habitudes d’une autre journée.'
+      },
+      {
+        title: 'Ajouter de nouvelles habitudes',
+        body: 'Clique sur le bouton ☰ pour ouvrir le menu et planter de nouvelles habitudes depuis la bibliothèque.'
+      },
+      {
+        title: 'Consulter ton profil',
+        body: 'Clique sur ton nom “openspace” ou la section Profil pour afficher tes classements, ta régularité et tes préférences.'
+      }
+    ];
     const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
     const setLoaderVersion = () => {
       const versionEl = $('#loaderVersion');
@@ -2466,6 +2505,12 @@
     }
     let currentProfile = loadStoredProfile();
     let guestSpaces = loadGuestSpaces();
+    let selectedGardenerKey = null;
+    let selectedGardenerLabel = '';
+    let selectedGardenerEntry = null;
+    let selectedGardenerIsSelf = false;
+    let spotlightStepIndex = 0;
+    let spotlightCallback = null;
     const HABITU_FIREBASE_DB = window.HABITU_FIREBASE_DB;
     const ACTIVITY_BUFFER_MS = 3e3;
     const ACTIVITY_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
@@ -2626,6 +2671,12 @@
         return;
       }
       const nextProfile = { ...(currentProfile || {}), ...profile };
+      if (nextProfile.favoriteGardeners !== undefined) {
+        nextProfile.favoriteGardeners = normalizeFavoriteGardeners(nextProfile.favoriteGardeners);
+      }
+      if (nextProfile.tipsDisplayMode !== undefined) {
+        nextProfile.tipsDisplayMode = normalizeTipsDisplayMode(nextProfile.tipsDisplayMode);
+      }
       if (nextProfile.guest && !nextProfile.guestId) {
         nextProfile.guestId = nextProfile.uuid || getOrCreateGuestId();
       }
@@ -2635,6 +2686,61 @@
       currentProfile = nextProfile;
       setSessionCookie();
       updateAddModalOptions();
+      refreshSpaceHeaderControls();
+    }
+
+    function normalizeFavoriteGardeners(keys = []) {
+      if (!Array.isArray(keys)) return [];
+      const normalized = keys.map(normalizeGardenerKey).filter(Boolean);
+      return Array.from(new Set(normalized));
+    }
+
+    function normalizeGardenerKey(value) {
+      return normalizeOwnerLabel(value) || '';
+    }
+
+    function getFavoriteGardeners() {
+      return normalizeFavoriteGardeners(currentProfile?.favoriteGardeners || []);
+    }
+
+    function isFavoriteGardenerKey(value) {
+      const normalized = normalizeGardenerKey(value);
+      if (!normalized) return false;
+      return getFavoriteGardeners().includes(normalized);
+    }
+
+    async function persistFavoriteGardeners(keys = []) {
+      const normalized = normalizeFavoriteGardeners(keys);
+      const updated = { ...(currentProfile || {}), favoriteGardeners: normalized };
+      persistProfile(updated);
+      if (!shouldWriteToFirestore(updated)) return normalized;
+      await persistUserProfile({
+        uid: updated.uid,
+        email: updated.email,
+        name: updated.name,
+        pseudo: updated.pseudo,
+        tipsDisplayMode: updated.tipsDisplayMode,
+        pinnedHabits: updated.pinnedHabits,
+        postponedHabits: updated.postponedHabits,
+        forgottenHabits: updated.forgottenHabits,
+        showFriendBadges: updated.showFriendBadges,
+        favoriteGardeners: normalized
+      });
+      return normalized;
+    }
+
+    async function toggleFavoriteGardenerKey(value) {
+      const normalized = normalizeGardenerKey(value);
+      if (!normalized) return;
+      const favorites = new Set(getFavoriteGardeners());
+      if (favorites.has(normalized)) {
+        favorites.delete(normalized);
+      } else {
+        favorites.add(normalized);
+      }
+      await persistFavoriteGardeners(Array.from(favorites));
+      renderHabitGardeners();
+      refreshGardenerFollowButton();
     }
 
     if (currentProfile?.guest && !currentProfile?.guestId) {
@@ -2663,6 +2769,27 @@
         ownerActivityStore = {};
         persistOwnerActivityStore();
       }
+    }
+    function refreshGardenerFollowButton() {
+      const btn = $("#gardenerFollowBtn");
+      if (!btn) return;
+      if (!selectedGardenerKey || !currentProfile?.email || selectedGardenerIsSelf) {
+        btn.classList.add('hide');
+        return;
+      }
+      const text = isFavoriteGardenerKey(selectedGardenerKey) ? '⭐ Suivi' : '⭐ Suivre';
+      btn.textContent = text;
+      btn.classList.remove('hide');
+    }
+    function refreshSpaceLogoutVisibility() {
+      const btn = $("#spaceLogoutBtn");
+      if (!btn) return;
+      const isConnected = Boolean(currentProfile?.email);
+      btn.classList.toggle('hide', !isConnected);
+    }
+    function refreshSpaceHeaderControls() {
+      refreshGardenerFollowButton();
+      refreshSpaceLogoutVisibility();
     }
     function hasLocalDataForImport() {
       if (Object.keys(SPACES).length) return true;
@@ -2940,7 +3067,29 @@
       return isCurrentUserLabel(record.owner);
     }
     function resolveActiveProfileOwnerKey() {
-      return getCurrentOwnerKey();
+      return selectedGardenerKey || getCurrentOwnerKey();
+    }
+
+    function getGardenerKey(entry) {
+      if (!entry) return '';
+      return entry.ownerKey || entry.normalizedOwner || normalizeGardenerKey(entry.ownerLabel || entry.displayName || entry.pseudo || '');
+    }
+
+    function setSelectedGardener(entry) {
+      const key = getGardenerKey(entry);
+      if (!key) return;
+      selectedGardenerKey = key;
+      selectedGardenerLabel = formatGardenerLabel(entry);
+      selectedGardenerEntry = entry;
+      selectedGardenerIsSelf = isGardenerCurrentUser(entry);
+    }
+
+    function clearSelectedGardener() {
+      selectedGardenerKey = null;
+      selectedGardenerLabel = '';
+      selectedGardenerEntry = null;
+      selectedGardenerIsSelf = false;
+      refreshGardenerFollowButton();
     }
     function isCurrentUserLabel(label) {
       const normalized = normalizeOwnerLabel(label);
@@ -3079,6 +3228,9 @@
       if (profile.showFriendBadges !== undefined) {
         payload.showFriendBadges = profile.showFriendBadges;
       }
+      if (profile.favoriteGardeners !== undefined) {
+        payload.favoriteGardeners = normalizeFavoriteGardeners(profile.favoriteGardeners);
+      }
       if (profile.pseudo !== undefined) {
         payload.pseudo = profile.pseudo;
         const normalizedPseudo = sanitizePseudo(profile.pseudo);
@@ -3107,7 +3259,7 @@
 
     async function updateUserTipsDisplayMode(mode) {
       if (!currentProfile) return;
-      const normalized = ['auto', 'oui', 'non'].includes(mode) ? mode : 'auto';
+      const normalized = normalizeTipsDisplayMode(mode);
       const updated = { ...currentProfile, tipsDisplayMode: normalized };
       persistProfile(updated);
       await persistUserProfile({
@@ -3548,8 +3700,12 @@
       desc.classList.remove('open');
     }
 
+    function normalizeTipsDisplayMode(mode) {
+      const candidate = (mode || '').toString().toLowerCase();
+      return candidate === 'oui' ? 'oui' : 'non';
+    }
     function getTipsDisplayMode() {
-      return currentProfile?.tipsDisplayMode || 'auto';
+      return normalizeTipsDisplayMode(currentProfile?.tipsDisplayMode);
     }
     function shouldShowFriendBadges() {
       const sp = getSpace();
@@ -3689,11 +3845,8 @@
         setDescText(shortText);
       };
       if (!hasNote && tipText) {
-        if (tipsMode === 'oui') {
-          showTip();
-          return;
-        }
-        if (tipsMode === 'auto' && numericState === 1) {
+        const shouldShowTip = tipsMode === 'oui' && numericState === 0;
+        if (shouldShowTip) {
           showTip();
           return;
         }
@@ -4405,8 +4558,17 @@
         }));
       }
       if (empty) empty.classList.add('hide');
+      const favoriteKeys = new Set(getFavoriteGardeners());
       const sorter = HABIT_GARDENER_SORTERS[habitGardenersSortKey] || HABIT_GARDENER_SORTERS.streak;
       stats.sort((a, b) => {
+        const aKey = getGardenerKey(a);
+        const bKey = getGardenerKey(b);
+        const aSelf = isGardenerCurrentUser(a);
+        const bSelf = isGardenerCurrentUser(b);
+        if (aSelf !== bSelf) return aSelf ? -1 : 1;
+        const aFav = favoriteKeys.has(aKey);
+        const bFav = favoriteKeys.has(bKey);
+        if (aFav !== bFav) return aFav ? -1 : 1;
         const result = sorter(a, b);
         return habitGardenersSortDesc ? -result : result;
       });
@@ -4418,12 +4580,26 @@
         const rankCell = document.createElement('td');
         rankCell.textContent = String(index + 1);
         const ownerCell = document.createElement('td');
-        ownerCell.textContent = formatGardenerLabel(entry);
+        const ownerButton = document.createElement('button');
+        ownerButton.type = 'button';
+        ownerButton.className = 'profile-link profile-link--gardener';
+        ownerButton.textContent = formatGardenerLabel(entry);
+        ownerButton.addEventListener('click', () => {
+          if (!entry) return;
+          setSelectedGardener(entry);
+          openSpacePage({ preserveSelection: true });
+        });
+        ownerCell.appendChild(ownerButton);
         const streakCell = document.createElement('td');
         streakCell.textContent = String(entry.streak || 0);
         const totalCell = document.createElement('td');
         totalCell.textContent = String(entry.total || 0);
         row.append(rankCell, ownerCell, streakCell, totalCell);
+        const key = getGardenerKey(entry);
+        if (key) {
+          row.dataset.gardenerKey = key;
+          row.classList.toggle('gardener-row--favorite', favoriteKeys.has(key));
+        }
         tbody.appendChild(row);
       });
     }
@@ -4460,7 +4636,7 @@
     }
     /* ===== Calendriers ===== */
     /* ===== Navigation vues ===== */
-    function showHome() { hideAll(); $("#home").classList.add('active'); $("#daysWrap").classList.remove('hide') }
+    function showHome() { clearSelectedGardener(); hideAll(); $("#home").classList.add('active'); $("#daysWrap").classList.remove('hide') }
     function hideAll() { $$('#home,#detail,#space,#profile').forEach(v => v.classList.remove('active')) }
     $("#backHome").onclick = showHome;
 
@@ -5609,27 +5785,58 @@
     }
 
     /* ===== Espace ===== */
-    function openSpacePage() { hideAll(); $("#space").classList.add('active'); $("#daysWrap").classList.add('hide'); updSpaceHeader(); renderSpaceRank(); setupSpaceInfo(); populateSpaceWho(); renderSpaceCalendar(); maybeTogglePrivateAdd(); triggerPersonalActivityRefresh(); if (typeof window !== 'undefined') { window.scrollTo({ top: 0, behavior: 'auto' }); } }
+    function openSpacePage({ preserveSelection = false } = {}) {
+      if (!preserveSelection) {
+        clearSelectedGardener();
+      }
+      hideAll();
+      $("#space").classList.add('active');
+      $("#daysWrap").classList.add('hide');
+      updSpaceHeader();
+      renderSpaceRank();
+      renderSpaceRegularity();
+      renderProfileStats();
+      setupSpaceInfo();
+      populateSpaceWho();
+      renderSpaceCalendar();
+      maybeTogglePrivateAdd();
+      triggerPersonalActivityRefresh();
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      }
+    }
     function updSpaceHeader() {
       const sp = getSpace();
-      if (sp) {
-        const headerLabel = isPersonalSpaceType(sp)
+      let headerLabel = '';
+      if (selectedGardenerLabel) {
+        headerLabel = selectedGardenerLabel;
+      } else if (sp) {
+        headerLabel = isPersonalSpaceType(sp)
           ? (currentProfile?.pseudo || sp.pseudo || sp.label || '—')
           : (sp.label || '—');
-        $("#spaceHeaderTitle").textContent = headerLabel;
+      } else {
+        headerLabel = '';
+      }
+      $("#spaceHeaderTitle").textContent = headerLabel;
+      if (sp) {
         $("#paramSpaceLabel").value = sp.label || '';
       } else {
-        $("#spaceHeaderTitle").textContent = '';
         $("#paramSpaceLabel").value = '';
       }
       const currentMemberKey = getCurrentSpaceMemberKey(sp);
       const currentMemberName = getSpaceMemberLabel(sp, currentMemberKey);
       $("#paramName").value = currentMemberName || getLastMemberName() || '';
+      refreshSpaceHeaderControls();
     }
     function setupSpaceInfo() {
       const sp = getSpace();
       const descInput = $("#spaceDescInfo");
       const nameInput = $("#paramName");
+      const tipsSelect = $("#prefsTipsDisplayMode");
+      if (tipsSelect) {
+        tipsSelect.value = getTipsDisplayMode();
+        tipsSelect.onchange = () => updateUserTipsDisplayMode(tipsSelect.value);
+      }
       const descValue = SPACE_DESC_TXT[spaceId] ?? (sp?.desc || '');
       if (descInput) {
         descInput.value = descValue;
@@ -6184,7 +6391,7 @@
       }
       openSpacePage();
     };
-    $("#backFromSpace").onclick = showHome;
+    $("#backFromSpace").onclick = () => { clearSelectedGardener(); showHome(); };
 
     /* Modales */
     const mAdd = $("#modalAdd"), mHabit = $("#modalHabit"), mProfileSetup = $("#modalProfileSetup");
@@ -6224,7 +6431,35 @@
       step1();
       open(mHabit);
     }
-    $("#addBtn").onclick = () => { maybeTogglePrivateAdd(true); };
+    $("#addBtn").onclick = () => {
+      if (currentProfile?.email && isRunningAsPWA()) {
+        close(mAdd);
+        openHabitFlow('menu');
+        return;
+      }
+      maybeTogglePrivateAdd(true);
+    };
+    const spaceLogoutBtn = $("#spaceLogoutBtn");
+    if (spaceLogoutBtn) {
+      spaceLogoutBtn.addEventListener('click', async () => {
+        if (!currentProfile?.email) return;
+        if (HABITU_FIREBASE_AUTH?.signOut) {
+          try {
+            await HABITU_FIREBASE_AUTH.signOut();
+          } catch (err) {
+          }
+        }
+        persistProfile(null);
+        showHome();
+      });
+    }
+    const gardenerFollowBtn = $("#gardenerFollowBtn");
+    if (gardenerFollowBtn) {
+      gardenerFollowBtn.addEventListener('click', async () => {
+        if (!selectedGardenerKey) return;
+        await toggleFavoriteGardenerKey(selectedGardenerKey);
+      });
+    }
     $("#closeAdd").onclick = () => {
       if (allowedSpaces.length === 0) return;
       close(mAdd);
@@ -6264,7 +6499,7 @@
     $("#addHabit").onclick = () => { close(mAdd); openHabitFlow('menu'); }
     const menuAddHabit = $("#addHabit");
     const menuLoginOpt = $("#menuLogin");
-    const menuLogoutOpt = $("#menuLogout");
+    const menuVisibleProfile = $("#menuMakeProfileVisible");
     const addModal = $("#modalAdd");
     addModal?.addEventListener('click', async (event) => {
       const opt = event.target.closest('.opt');
@@ -6274,10 +6509,13 @@
         showAuthOverlay(true);
         return;
       }
-      if (opt.id === 'menuLogout') {
-        if (!currentProfile?.email) return;
-        await HABITU_FIREBASE_AUTH.signOut();
+      if (opt.id === 'menuMakeProfileVisible') {
         close(mAdd);
+        openSpacePage();
+        const settingsBtn = document.querySelector('#space .tabs [data-stab="sparams"]');
+        if (settingsBtn) {
+          switchViews(settingsBtn, 'data-stab', 'space');
+        }
         return;
       }
     });
@@ -6290,8 +6528,8 @@
       if (menuLoginOpt) {
         menuLoginOpt.classList.toggle('hide', isAuthenticated);
       }
-      if (menuLogoutOpt) {
-        menuLogoutOpt.classList.toggle('hide', !isAuthenticated);
+      if (menuVisibleProfile) {
+        menuVisibleProfile.classList.toggle('hide', !isAuthenticated || isProfileModeVisible());
       }
       const locked = !hasSpaces;
       document.body.classList.toggle('no-space', locked);
@@ -6395,9 +6633,9 @@
       renderCards();
       maybeTogglePrivateAdd();
       updateAddModalOptions();
-      if (pendingHabitModalAfterSetup) {
-        pendingHabitModalAfterSetup = false;
-        setTimeout(() => openHabitFlow('creation'), 32);
+      if (pendingSpotlightAfterSetup) {
+        pendingSpotlightAfterSetup = false;
+        openSpotlightTour(() => setTimeout(() => openHabitFlow('creation'), 32));
       }
       showHome();
     }
@@ -6462,7 +6700,7 @@
         close(mProfileSetup);
       }
     }
-    let pendingHabitModalAfterSetup = false;
+    let pendingSpotlightAfterSetup = false;
 
     async function ensureProfileSetup() {
       if (!shouldPromptProfileSetup()) return;
@@ -6476,7 +6714,7 @@
     }
     function finalizeProfileSetup() {
       markProfileSetupDone();
-      pendingHabitModalAfterSetup = true;
+      pendingSpotlightAfterSetup = true;
       if (profileSetupResolver) {
         profileSetupResolver();
         profileSetupResolver = null;
@@ -6484,6 +6722,52 @@
       profileSetupPromise = null;
       closeProfileSetupModal();
     }
+    function openSpotlightTour(callback) {
+      const modal = $("#modalSpotlight");
+      const content = $("#spotlightStepContent");
+      if (!modal || !content || !SPOTLIGHT_STEPS.length) {
+        if (typeof callback === 'function') callback();
+        return;
+      }
+      spotlightStepIndex = 0;
+      spotlightCallback = callback;
+      updateSpotlightStep();
+      open(modal);
+    }
+    function updateSpotlightStep() {
+      const content = $("#spotlightStepContent");
+      const prevBtn = $("#spotlightPrev");
+      const nextBtn = $("#spotlightNext");
+      const modal = $("#modalSpotlight");
+      if (!content || !nextBtn || !prevBtn || !modal) return;
+      const step = SPOTLIGHT_STEPS[Math.min(Math.max(spotlightStepIndex, 0), SPOTLIGHT_STEPS.length - 1)];
+      content.innerHTML = `<h3>${step.title}</h3><p>${step.body}</p>`;
+      prevBtn.disabled = spotlightStepIndex === 0;
+      nextBtn.textContent = spotlightStepIndex === SPOTLIGHT_STEPS.length - 1 ? 'Commencer' : 'Suivant';
+    }
+    function closeSpotlightTour({ proceed = false } = {}) {
+      const modal = $("#modalSpotlight");
+      if (modal) close(modal);
+      const callback = spotlightCallback;
+      spotlightCallback = null;
+      if (proceed && typeof callback === 'function') {
+        callback();
+      }
+    }
+    $("#spotlightNext")?.addEventListener('click', () => {
+      if (spotlightStepIndex >= SPOTLIGHT_STEPS.length - 1) {
+        closeSpotlightTour({ proceed: true });
+        return;
+      }
+      spotlightStepIndex += 1;
+      updateSpotlightStep();
+    });
+    $("#spotlightPrev")?.addEventListener('click', () => {
+      if (spotlightStepIndex <= 0) return;
+      spotlightStepIndex -= 1;
+      updateSpotlightStep();
+    });
+    $("#closeSpotlight")?.addEventListener('click', () => closeSpotlightTour({ proceed: true }));
     if (profileModeSelector && !profileModeSelector.dataset.bound) {
       profileModeSelector.addEventListener('change', updateProfileSetupFields);
       profileModeSelector.dataset.bound = '1';
@@ -6840,20 +7124,21 @@
     $("#prevDay").onclick = () => changeDayOffset(-1);
     $("#nextDay").onclick = () => changeDayOffset(1);
     function setupDaySwipeNavigation() {
-      const container = $("#cards");
-      if (!container || container.dataset.swipeBound) return;
+      const surface = $("#app") || document.body;
+      if (!surface || surface.dataset.swipeBound) return;
       let startX = 0;
       let startY = 0;
       let tracking = false;
       const threshold = 40;
-      container.addEventListener('touchstart', (event) => {
+      const captureTarget = surface;
+      captureTarget.addEventListener('touchstart', (event) => {
         if (event.touches.length !== 1) return;
         const touch = event.touches[0];
         startX = touch.clientX;
         startY = touch.clientY;
         tracking = true;
       }, { passive: true });
-      container.addEventListener('touchend', (event) => {
+      captureTarget.addEventListener('touchend', (event) => {
         if (!tracking) return;
         tracking = false;
         const touch = event.changedTouches?.[0];
@@ -6867,12 +7152,26 @@
           changeDayOffset(-1);
         }
       }, { passive: true });
-      container.addEventListener('touchcancel', () => {
+      captureTarget.addEventListener('touchcancel', () => {
         tracking = false;
       });
-      container.dataset.swipeBound = '1';
+      surface.dataset.swipeBound = '1';
     }
     setupDaySwipeNavigation();
+    document.addEventListener('contextmenu', event => {
+      const target = event.target;
+      const hasClosest = target && typeof target.closest === 'function';
+      if (hasClosest && (target.closest('#cards') || target.closest('.card') || target.closest('#cardContextMenu'))) {
+        event.preventDefault();
+      }
+    });
+    document.addEventListener('selectstart', event => {
+      const target = event.target;
+      const hasClosest = target && typeof target.closest === 'function';
+      if (hasClosest && (target.closest('#cards') || target.closest('.card'))) {
+        event.preventDefault();
+      }
+    });
 
     /* Lancement */
     let dayInit = false; function renderDateOnce() { if (!dayInit) { dayOff = 0; renderDateBar(); dayInit = true } }
@@ -7172,7 +7471,7 @@
       const name = user.displayName || currentProfile?.name || userName || 'Moi';
       const remoteProfile = await loadRemoteUserProfile(user.uid);
       const fallbackTips = currentProfile?.tipsDisplayMode;
-      const tipsDisplayMode = remoteProfile?.tipsDisplayMode || fallbackTips || 'auto';
+      const tipsDisplayMode = normalizeTipsDisplayMode(remoteProfile?.tipsDisplayMode || fallbackTips);
       const pinnedHabits = Array.isArray(remoteProfile?.pinnedHabits) ? remoteProfile.pinnedHabits : [];
       const postponedHabits = normalizePostponedMap(remoteProfile?.postponedHabits);
       const forgottenHabits = Array.isArray(remoteProfile?.forgottenHabits) ? remoteProfile?.forgottenHabits : [];
@@ -7273,6 +7572,14 @@
       updateSpaceStatsSortingHeaders();
     }
 
+    function syncSpacePreferenceControls() {
+      const rightsSelect = $("#spaceEditorRights");
+      if (rightsSelect) {
+        const selected = rightsSelect.value;
+        rightsSelect.dataset.synced = selected;
+      }
+    }
+
     function setupSpaceStatsSorting() {
       statsSortHeaders = Array.from(document.querySelectorAll('#sstats th[data-sortable]'));
       if (!statsSortHeaders.length) return;
@@ -7300,6 +7607,8 @@
         syncSpacePreferenceControls();
       }
       if (prefix === 'space' && key === 'sprofile') {
+        renderSpaceRank();
+        renderSpaceRegularity();
         renderProfileStats();
       }
       if (prefix === 'space' && key === 'sstats') {

@@ -62,16 +62,34 @@ button,
   background: var(--card)
 }
 
+button,
+.btn,
+.navbtn,
+.tab,
+.stab,
+.score-goal-btn {
+  transition: transform 0.16s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.25s ease;
+}
+
+button:active,
+.btn:active,
+.navbtn:active,
+.tab:active,
+.stab:active,
+.score-goal-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+}
+
 .btn.primary {
   background: var(--green);
   color: #fff;
-  border-color: transparent
+  border-color: transparent;
+  font-size:14px
 }
 
 .btn.danger {
-  border-color: #d99;
   color: #600;
-  background: #fff5f5
 }
 .btn--disabled {
   background: #ebe7f0;
@@ -402,9 +420,8 @@ button,
 }
 
 .space-footer .btn.danger.reduced {
-  background: transparent;
   border-color: var(--border);
-  color: #6b0d0d;
+   color: #600;
   opacity: 0.7;
 }
 
@@ -796,6 +813,18 @@ button,
 .habit-gardeners-table tbody tr.self {
   background: rgba(42, 122, 87, 0.12);
   font-weight: 600;
+}
+
+.habit-gardeners-table tbody tr.gardener-row--favorite {
+  background: rgba(255, 235, 179, 0.5);
+}
+
+.habit-gardeners-table tbody tr.gardener-row--favorite .profile-link--gardener {
+  font-weight: 600;
+}
+
+.habit-gardeners-table tbody tr.self.gardener-row--favorite {
+  background: rgba(42, 122, 87, 0.12);
 }
 
 .habit-gardeners-table td {
@@ -1699,6 +1728,24 @@ textarea#habitDesc {
   background: var(--card)
 }
 
+.spotlight-step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.spotlight-step h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.spotlight-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(30, 31, 26, 0.1);
+  background: var(--card);
+}
+
 .sheetHeader {
   position: sticky;
   top: 0;
@@ -1856,7 +1903,7 @@ textarea#habitDesc {
   border-radius: 4px;
   padding: 6px 10px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text);
   transition: border-color .2s, color .2s, background .2s;
 }
@@ -1886,7 +1933,7 @@ textarea#habitDesc {
 .habit-btn {
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 2px 4px;
+  padding: 4px 6px;
   background: var(--card);
   color: var(--text);
   display: inline-flex;
@@ -2331,7 +2378,7 @@ textarea#habitDesc {
 }
 
 .btn.mini {
-  padding: 4px 10px;
+  padding: 4px 6px;
   font-size: 12px;
 }
 
