@@ -764,6 +764,13 @@ button,
   width: 40px;
 }
 
+.habit-gardeners-table th:nth-child(3),
+.habit-gardeners-table th:nth-child(4),
+.habit-gardeners-table td:nth-child(3),
+.habit-gardeners-table td:nth-child(4) {
+  text-align: right;
+}
+
 .habit-gardeners-table th {
   font-weight: 600;
   color: var(--text);
@@ -1082,8 +1089,12 @@ button,
 }
 .space-stats-table td:nth-child(2),
 .space-stats-table td:nth-child(3) {
-  text-align: center;
+  text-align: right;
   white-space: nowrap;
+}
+.space-stats-table th:nth-child(2),
+.space-stats-table th:nth-child(3) {
+  text-align: right;
 }
 .space-stats-table th[data-sortable] {
   cursor: pointer;
@@ -1881,7 +1892,7 @@ textarea#habitDesc {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  font-size: 11px;
+  font-size: 14px;
   cursor: pointer;
   transition: border-color .2s, color .2s, background .2s;
 }

@@ -485,39 +485,43 @@ const HABIT_TIPS = [
   },
   {
     "id": 13,
-    "title": "Utiliser un minuteur ou une chanson"
+    "title": "Prévoir ton verre à l’avance"
   },
   {
     "id": 13,
-    "title": "Passer sur toutes les faces de dents"
+    "title": "Choisir un verre que tu savoureras"
   },
   {
     "id": 13,
-    "title": "Changer de brosse tous les trois mois"
+    "title": "Alterner avec un grand verre d’eau"
   },
   {
     "id": 13,
-    "title": "Utiliser une petite quantité de dentifrice"
+    "title": "Décider de ton limite avant la soirée"
   },
   {
     "id": 13,
-    "title": "Ne pas rincer trop fort après"
+    "title": "Boire lentement pour apprécier plus"
   },
   {
     "id": 13,
-    "title": "Se brosser avant de se coucher"
+    "title": "Éviter les tournées collectives"
   },
   {
     "id": 13,
-    "title": "Éviter de manger juste après"
+    "title": "Dire non simplement et clairement"
   },
   {
     "id": 13,
-    "title": "Ranger la brosse tête en haut"
+    "title": "Demander du sans-alcool en alternance"
   },
   {
     "id": 13,
-    "title": "Nettoyer le verre à dents régulièrement"
+    "title": "Rester connecté à ton ressenti"
+  },
+  {
+    "id": 13,
+    "title": "Penser à ton lendemain tranquille"
   },
   {
     "id": 14,
@@ -681,44 +685,44 @@ const HABIT_TIPS = [
   },
   {
     "id": 18,
-    "title": "Préparer gant et produit avant"
+    "title": "Aérer les sanitaires régulièrement"
   },
   {
     "id": 18,
-    "title": "Mettre le produit dans la cuvette en premier"
+    "title": "Nettoyer les surfaces chaque jour"
   },
   {
     "id": 18,
-    "title": "Nettoyer la lunette et autour"
+    "title": "Changer les serviettes fréquemment"
   },
   {
     "id": 18,
-    "title": "Essuyer la poignée de porte"
+    "title": "Désinfecter poignées et robinets"
   },
   {
     "id": 18,
-    "title": "Changer ou vérifier le rouleau de papier"
+    "title": "Éliminer l’humidité après la douche"
   },
   {
     "id": 18,
-    "title": "Jeter l’éponge usée si nécessaire"
+    "title": "Vider la poubelle des sanitaires"
   },
   {
     "id": 18,
-    "title": "Laisser agir le produit quelques minutes"
+    "title": "Entretenir siphons et canalisations"
   },
   {
     "id": 18,
-    "title": "Tirer la chasse après brossage"
+    "title": "Vérifier savon et papier dispos"
   },
   {
     "id": 18,
-    "title": "Aérer la pièce ensuite"
+    "title": "Nettoyer régulièrement miroir et lavabo"
   },
   {
     "id": 18,
-    "title": "Se laver les mains soigneusement"
-  },
+    "title": "Maintenir un parfum léger"
+  }
   {
     "id": 19,
     "title": "Regrouper tous les produits au même endroit"

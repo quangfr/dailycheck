@@ -181,7 +181,7 @@
                     <th>#</th>
                     <th class="sortable" data-sort="owner" title="Trier par jardinier">Jardinier</th>
                     <th class="sortable" data-sort="streak" title="Trier par streak actuel">Streak</th>
-                    <th class="sortable" data-sort="total" title="Trier par les 30 derniers jours">30 jours</th>
+                    <th class="sortable" data-sort="total" title="Trier par les 28 derniers jours">28 jours</th>
                   </tr>
                 </thead>
                 <tbody id="habitGardenersBody"></tbody>
@@ -231,10 +231,10 @@
             </div>
             <div class="regularity-grid">
               <div class="regularity-card">
-                <div class="regularity-card__label">7 jours glissants</div>
+                <div class="regularity-card__label">7 jours</div>
                 <div class="regularity-visual">
-                  <div class="regularity-pie" id="regularityPie7" role="img"
-                    aria-label="Régularité sur 7 jours glissants : 0 %"></div>
+                  <div class="regularity-pie" id="regularityPie7" role="img" aria-label="Régularité sur 7 jours : 0 %">
+                  </div>
                   <div class="regularity-pie-center">
                     <span class="regularity-pie__value" id="regularityPercent7">-</span>
                   </div>
@@ -242,15 +242,15 @@
                 <div class="regularity-delta neutral" id="regularityDelta7">0 pts vs période précédente</div>
               </div>
               <div class="regularity-card">
-                <div class="regularity-card__label">30 jours glissants</div>
+                <div class="regularity-card__label">28 jours</div>
                 <div class="regularity-visual">
-                  <div class="regularity-pie" id="regularityPie30" role="img"
-                    aria-label="Régularité sur 30 jours glissants : 0 %"></div>
+                  <div class="regularity-pie" id="regularityPie28" role="img"
+                    aria-label="Régularité sur 28 jours glissants : 0 %"></div>
                   <div class="regularity-pie-center">
-                    <span class="regularity-pie__value" id="regularityPercent30">-</span>
+                    <span class="regularity-pie__value" id="regularityPercent28">-</span>
                   </div>
                 </div>
-                <div class="regularity-delta neutral" id="regularityDelta30">0 pts vs période précédente</div>
+                <div class="regularity-delta neutral" id="regularityDelta28">0 pts vs période précédente</div>
               </div>
             </div>
           </div>
@@ -279,7 +279,6 @@
                   ⟳
                 </button>
               </div>
-              <div class="subtitle">Ton pseudo est visible dans ton espace individuel.</div>
             </div>
             <div class="field"><label><b>Nom affiché</b></label><input id="paramName" type="text" placeholder="" />
             </div>
@@ -330,7 +329,7 @@
                 <tr>
                   <th>Habitude</th>
                   <th data-sortable="streak" title="Trier par streak actuel">Streak</th>
-                  <th data-sortable="total" title="30 derniers jours">30 jours</th>
+                  <th data-sortable="total" title="28 derniers jours">28 jours</th>
                 </tr>
               </thead>
               <tbody id="spaceStatsBody"></tbody>
@@ -558,7 +557,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.28';
+    const APP_VERSION = '0.11.28.1';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1000,7 +999,9 @@
       "Partage ton avancée avec un proche motivant."
     ];
     const DEFAULT_DURATION = 15;
-    const DEFAULT_GARDENER_WINDOW_DAYS = 30;
+    const DEFAULT_GARDENER_WINDOW_DAYS = 28;
+    const DAY_VIEW_LOOKBACK_DAYS = 28;
+    const DAY_VIEW_MIN_OFFSET = -(DAY_VIEW_LOOKBACK_DAYS - 1);
     const STATS_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
     const STATS_SYNC_STORAGE_KEY = 'habitu-last-stats-sync';
     const STATS_FETCH_STORAGE_KEY = 'habitu-last-stats-fetch';
@@ -1657,30 +1658,265 @@
       } catch (err) {
       }
     }
+
+    const ACTIVITY_SYNC_COLLECTION = 'activities';
+    const ACTIVITY_SYNC_CHUNK_SIZE = 200;
+
+    function sanitizeActivityDocSegment(value) {
+      const segment = String(value || '').trim();
+      if (!segment) return '__';
+      return segment.replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 64);
+    }
+
+    function buildActivityDocId(entry) {
+      if (!entry) return '';
+      const parts = [
+        sanitizeActivityDocSegment(entry.ownerId),
+        sanitizeActivityDocSegment(entry.spaceId),
+        sanitizeActivityDocSegment(entry.habitId),
+        sanitizeActivityDocSegment(entry.dayKey)
+      ].filter(Boolean);
+      if (!parts.length) return '';
+      return `act-${parts.join('_')}`;
+    }
+
+    function getRemoteTimestampValue(value) {
+      const date = timestampToDate(value);
+      return date ? date.getTime() : 0;
+    }
+
+    function getStoredActivityEntries({ spaceId, since } = {}) {
+      return Object.values(ownerActivityStore).filter(entry => {
+        if (!entry) return false;
+        if (spaceId && entry.spaceId !== spaceId) return false;
+        if (since) {
+          const recordedDate = timestampToDate(entry.recordedAt);
+          if (!recordedDate || recordedDate < since) return false;
+        }
+        return true;
+      });
+    }
+
+    function buildActivityPayload(entry, recordedDate, loggedDate) {
+      const ownerLabelValue = entry.ownerLabel || getOwnerNameFromEvent(entry) || '';
+      return {
+        ownerId: entry.ownerId || null,
+        ownerLabel: ownerLabelValue,
+        spaceId: entry.spaceId,
+        habitId: entry.habitId,
+        dayKey: entry.dayKey,
+        state: Number.isFinite(Number(entry.state)) ? Number(entry.state) : 0,
+        recordedAt: firebase.firestore.Timestamp.fromDate(recordedDate),
+        loggedAt: firebase.firestore.Timestamp.fromDate(loggedDate),
+        activityDate: entry.activityDate || entry.dayKey,
+        userEmail: entry.userEmail || null,
+        userId: entry.userId || null,
+        actorName: entry.actorName || null,
+        actorPseudo: entry.actorPseudo || null,
+        spaceType: entry.spaceType || null,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+    }
+
+    async function pushLocalActivitiesToFirestore(spaceId, since = null) {
+      if (!spaceId || !HABITU_FIREBASE_DB) return 0;
+      const entries = getStoredActivityEntries({ spaceId, since });
+      const unsynced = entries.filter(entry => {
+        const remoteUpdatedAt = Number(entry.remoteUpdatedAt || 0);
+        const localUpdatedAt = Number(entry.updatedAt || 0);
+        return Boolean(entry.pendingSync) || localUpdatedAt > remoteUpdatedAt;
+      });
+      if (!unsynced.length) return 0;
+      const batches = [];
+      for (let i = 0; i < unsynced.length; i += ACTIVITY_SYNC_CHUNK_SIZE) {
+        const chunk = unsynced.slice(i, i + ACTIVITY_SYNC_CHUNK_SIZE);
+        const batch = HABITU_FIREBASE_DB.batch();
+        chunk.forEach(entry => {
+          const docId = buildActivityDocId(entry);
+          if (!docId) return;
+          const docRef = HABITU_FIREBASE_DB.collection('spaces').doc(spaceId).collection(ACTIVITY_SYNC_COLLECTION).doc(docId);
+          const recordedDate = timestampToDate(entry.recordedAt) || new Date();
+          const loggedDate = timestampToDate(entry.loggedAt) || recordedDate;
+          batch.set(docRef, buildActivityPayload(entry, recordedDate, loggedDate), { merge: true });
+        });
+        batches.push(batch.commit());
+      }
+      await Promise.all(batches);
+      const now = Date.now();
+      unsynced.forEach(entry => {
+        entry.pendingSync = false;
+        entry.remoteUpdatedAt = now;
+      });
+      persistOwnerActivityStore();
+      return unsynced.length;
+    }
+
+    function parseRemoteActivityDoc(doc, spaceId) {
+      if (!doc) return null;
+      const data = doc.data() || {};
+      const recordedDate = timestampToDate(data.recordedAt) || new Date();
+      const loggedDate = timestampToDate(data.loggedAt) || recordedDate;
+      const dayKeyValue = data.dayKey || dayKeyFromDate(recordedDate);
+      const ownerIdValue = normalizeMemberKey(data.ownerId || data.userId || data.ownerLabel || '');
+      return {
+        ownerId: ownerIdValue,
+        ownerLabel: data.ownerLabel || '',
+        spaceId,
+        habitId: String(data.habitId || ''),
+        dayKey: dayKeyValue,
+        state: Number.isFinite(Number(data.state)) ? Number(data.state) : 0,
+        recordedAtIso: recordedDate.toISOString(),
+        loggedAtIso: loggedDate.toISOString(),
+        activityDate: data.activityDate || dayKeyValue,
+        userEmail: data.userEmail ? normalizeEmail(data.userEmail) : '',
+        userId: data.userId ? normalizeMemberKey(data.userId) : '',
+        actorName: data.actorName || '',
+        actorPseudo: data.actorPseudo || '',
+        spaceType: data.spaceType || '',
+        updatedAt: getRemoteTimestampValue(data.updatedAt)
+      };
+    }
+
+    async function fetchRemoteActivities(spaceId, since = null) {
+      if (!spaceId || !HABITU_FIREBASE_DB) return [];
+      try {
+        let query = HABITU_FIREBASE_DB.collection('spaces').doc(spaceId).collection(ACTIVITY_SYNC_COLLECTION);
+        if (since) {
+          const sinceTimestamp = firebase.firestore.Timestamp.fromDate(since);
+          query = query.where('recordedAt', '>=', sinceTimestamp);
+        }
+        const snapshot = await query.get();
+        const records = [];
+        snapshot.forEach(doc => {
+          const record = parseRemoteActivityDoc(doc, spaceId);
+          if (record) {
+            records.push(record);
+          }
+        });
+        return records;
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function mergeRemoteActivityRecord(remote) {
+      if (!remote || !remote.ownerId) return false;
+      const key = activityRecordKey(remote.ownerId, remote.spaceId, remote.habitId, remote.dayKey);
+      if (!key) return false;
+      const previous = ownerActivityStore[key] || {};
+      const remoteUpdatedAt = Number(remote.updatedAt || Date.now());
+      const shouldReplace = !previous || remoteUpdatedAt >= (previous.updatedAt || 0);
+      if (shouldReplace) {
+        ownerActivityStore[key] = {
+          ownerId: remote.ownerId,
+          ownerLabel: remote.ownerLabel || previous.ownerLabel || getCurrentOwnerLabel(),
+          spaceId: remote.spaceId,
+          habitId: remote.habitId,
+          dayKey: remote.dayKey,
+          state: remote.state,
+          recordedAt: remote.recordedAtIso,
+          loggedAt: remote.loggedAtIso,
+          activityDate: remote.activityDate,
+          actorName: remote.actorName,
+          actorPseudo: remote.actorPseudo,
+          spaceType: remote.spaceType,
+          userEmail: remote.userEmail || previous.userEmail || '',
+          userId: remote.userId || previous.userId || '',
+          updatedAt: remoteUpdatedAt,
+          pendingSync: false,
+          remoteUpdatedAt
+        };
+        return true;
+      }
+      if (remoteUpdatedAt > (previous.remoteUpdatedAt || 0)) {
+        previous.remoteUpdatedAt = remoteUpdatedAt;
+        return true;
+      }
+      return false;
+    }
+
+    async function syncActivitiesForSpace(spaceId, { sinceDays = DEFAULT_GARDENER_WINDOW_DAYS } = {}) {
+      if (!shouldSyncActivities() || !spaceId || !HABITU_FIREBASE_DB) return false;
+      const sinceDate = sinceDays ? addDays(curDate(), -sinceDays) : null;
+      let mutated = false;
+      const remoteRecords = await fetchRemoteActivities(spaceId, sinceDate);
+      remoteRecords.forEach(record => {
+        if (mergeRemoteActivityRecord(record)) {
+          mutated = true;
+        }
+      });
+      if (mutated) {
+        persistOwnerActivityStore();
+      }
+      const pushed = await pushLocalActivitiesToFirestore(spaceId, sinceDate);
+      return mutated || pushed > 0;
+    }
+
+    async function syncActivitiesAcrossSpaces({ sinceDays = DEFAULT_GARDENER_WINDOW_DAYS } = {}) {
+      if (!shouldSyncActivities()) return false;
+      const spaceIds = Array.from(new Set(allowedSpaces)).filter(Boolean);
+      if (!spaceIds.length) return false;
+      let updated = false;
+      for (const spaceIdValue of spaceIds) {
+        const changed = await syncActivitiesForSpace(spaceIdValue, { sinceDays });
+        if (changed) {
+          updated = true;
+        }
+      }
+      return updated;
+    }
     function activityRecordKey(ownerId, spaceId, habitId, dayKey) {
       if (!ownerId || !spaceId || !habitId || !dayKey) return '';
       return `${ownerId}:${spaceId}:${habitId}:${dayKey}`;
     }
-    function upsertOwnerActivityRecord({ ownerId, ownerLabel, spaceId, habitId, dayKey, state, recordedAt, userEmail, userId }) {
+    function upsertOwnerActivityRecord({
+      ownerId,
+      ownerLabel,
+      spaceId,
+      habitId,
+      dayKey,
+      state,
+      recordedAt,
+      userEmail,
+      userId,
+      activityDate,
+      loggedAt,
+      actorName,
+      actorPseudo,
+      spaceType
+    }) {
       const key = activityRecordKey(ownerId, spaceId, habitId, dayKey);
       if (!key) return null;
       const timestamp = recordedAt ? timestampToDate(recordedAt) : new Date();
+      const previous = ownerActivityStore[key] || {};
+      const loggedDate = timestampToDate(loggedAt) || timestampToDate(previous.loggedAt) || timestamp;
       const entry = {
         ownerId,
-        ownerLabel: ownerLabel || getCurrentOwnerLabel(),
+        ownerLabel: ownerLabel || previous.ownerLabel || getCurrentOwnerLabel(),
         spaceId,
         habitId,
         dayKey,
         state: Number.isFinite(Number(state)) ? Number(state) : 0,
         recordedAt: timestamp.toISOString(),
-        updatedAt: Date.now()
+        updatedAt: Date.now(),
+        activityDate: activityDate || previous.activityDate || dayKey,
+        loggedAt: loggedDate.toISOString(),
+        actorName: actorName ?? previous.actorName ?? '',
+        actorPseudo: actorPseudo ?? previous.actorPseudo ?? '',
+        spaceType: spaceType || previous.spaceType || ''
       };
       if (userEmail) {
         entry.userEmail = normalizeEmail(userEmail);
+      } else if (previous.userEmail) {
+        entry.userEmail = previous.userEmail;
       }
       if (userId) {
         entry.userId = normalizeMemberKey(userId);
+      } else if (previous.userId) {
+        entry.userId = previous.userId;
       }
+      entry.pendingSync = true;
+      entry.remoteUpdatedAt = previous.remoteUpdatedAt || 0;
       ownerActivityStore[key] = entry;
       persistOwnerActivityStore();
       return entry;
@@ -2128,7 +2364,7 @@
     const STORAGE_LAST_SPACE_ID_KEY = 'habitu-last-space-id';
     let spaceId = safeStorageGet(STORAGE_LAST_SPACE_ID_KEY) || 'D0PWE3', userName = '', dayOff = 0;
     let pendingSpacePseudo = null;
-    let profilePeriod = '30d', activeProfileName = null, activeProfileEmail = null, profileReturnView = 'detail';
+    let profilePeriod = '28d', activeProfileName = null, activeProfileEmail = null, profileReturnView = 'detail';
     let statsSortDirection = 'desc';
     let statsSortKey = 'streak';
     let statsSortHeaders = [];
@@ -2254,11 +2490,11 @@
     const PROFILE_MODE_INFO = {
       private: {
         label: '🔒 Privé',
-        summary: 'Données stockées uniquement sur l’appareil.'
+        summary: 'Aucun partage de ses informations'
       },
       visible: {
         label: '🌍 Visible',
-        summary: 'Données visibles et synchronisées dans le cloud.'
+        summary: 'Profil et statistiques partagées'
       }
     };
     const DEFAULT_PROFILE_MODE = 'visible';
@@ -2336,6 +2572,12 @@
       if (isProfileModeVisible(updated)) {
         await maybeSyncSpaceSnapshot({ force: true });
         await maybeFlushActivityBuffer({ force: true });
+        const synced = await syncActivitiesAcrossSpaces({ sinceDays: DEFAULT_GARDENER_WINDOW_DAYS });
+        if (synced) {
+          renderCards();
+          renderSpaceRank();
+          renderHabitGardeners();
+        }
       }
       refreshGardenerTabVisibility();
     }
@@ -2402,7 +2644,7 @@
     }
 
     function clearObject(obj) { Object.keys(obj).forEach(k => delete obj[k]); }
-    function clearLocalState() {
+    function clearLocalState({ clearActivities = false } = {}) {
       clearObject(HABIT_DESC);
       clearObject(HABIT_TITLE_CUSTOM);
       clearObject(SPACE_DESC_TXT);
@@ -2414,11 +2656,13 @@
       clearObject(HAS_DESC);
       DELETED_HABITS.clear();
       allowedSpaces = [];
-      ownerActivityStore = {};
-      persistOwnerActivityStore();
       Object.keys(SPACES).forEach(k => delete SPACES[k]);
       setActiveSpace(null);
       spacesInitialized = false;
+      if (clearActivities) {
+        ownerActivityStore = {};
+        persistOwnerActivityStore();
+      }
     }
     function hasLocalDataForImport() {
       if (Object.keys(SPACES).length) return true;
@@ -2746,7 +2990,12 @@
         state: event.state,
         recordedAt,
         userEmail: event.userEmail,
-        userId: event.userId
+        userId: event.userId,
+        activityDate: event.activityDate,
+        loggedAt: event.loggedAt,
+        actorName: event.actorName,
+        actorPseudo: event.actorPseudo,
+        spaceType: event.spaceType
       });
     }
     function computeActorCountsForEvent(event) {
@@ -2980,26 +3229,6 @@
         upsertLocalHabitActivity(localEvent);
         bumpHabitStreakCount(habitId);
       }
-      if (!shouldSyncActivities()) {
-        return;
-      }
-      const serverRecordedAt = targetRecordedAt
-        ? firebase.firestore.Timestamp.fromDate(targetRecordedAt)
-        : firebase.firestore.FieldValue.serverTimestamp();
-      const eventData = {
-        ...baseEvent,
-        recordedAt: serverRecordedAt,
-        loggedAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
-      if (remoteCounts) {
-        eventData.actor30DaysCount = remoteCounts.window;
-        eventData.actorTotalCount = remoteCounts.total;
-      }
-      const timer = setTimeout(() => {
-        sendActivityToServer(eventData);
-        activityQueue.delete(key);
-      }, ACTIVITY_BUFFER_MS);
-      activityQueue.set(key, timer);
     }
     function ensureHabitMetadata(habit) {
       if (!habit?.id) return;
@@ -3235,6 +3464,7 @@
       await Promise.all(allowedSpaces.map(id => ensureSpaceHasPseudo(id)));
       if (!spaceId && allowedSpaces.length) { setActiveSpace(allowedSpaces[0]); }
       if (spaceId && !allowedSpaces.includes(spaceId)) { setActiveSpace(allowedSpaces[0] || null); }
+      await syncActivitiesAcrossSpaces().catch(() => { });
       spacesInitialized = true;
       maybeTogglePrivateAdd();
       persistLocalSpaceState();
@@ -3540,7 +3770,8 @@
       return Math.round((earliest - today) / 86400000);
     }
     function clampDayOff(value) {
-      return Math.max(value, getEarliestDayOff());
+      const lookbackLimit = Math.max(getEarliestDayOff(), DAY_VIEW_MIN_OFFSET);
+      return Math.max(value, lookbackLimit);
     }
     function listChallenges() {
       const space = getSpace();
@@ -4249,7 +4480,7 @@
       if (!key || key === 'all') return { since: null, until: null };
       if (key === '1w') return getWeekRange(1);
       if (key === '4w') return getWeekRange(4);
-      if (key === '7d' || key === '30d') {
+      if (key === '7d' || key === '28d' || key === '30d') {
         const days = Number(key.replace('d', '')) || 0;
         if (!days) return { since: null, until: null };
         const since = new Date();
@@ -4263,7 +4494,7 @@
       const root = $("#rank");
       root.innerHTML = '';
       if (!spaceId || !activeId) return;
-      const range = resolvePeriodRange('30d');
+      const range = resolvePeriodRange('28d');
       const records = getHabitRecords(spaceId, activeId, range.since);
       const filtered = range.until ? records.filter(rec => rec.recordedAt <= range.until) : records;
       const totals = new Map();
@@ -4607,7 +4838,7 @@
         needs: needsSnapshot
       });
     }
-    const REGULARITY_WINDOWS = [7, 30];
+    const REGULARITY_WINDOWS = [7, 28];
     function renderSpaceRegularity() {
       REGULARITY_WINDOWS.forEach(days => {
         const currentRange = buildSlidingWindowRange(days);
@@ -5670,7 +5901,7 @@
       await deleteCurrentSpace();
       clearGuestSpaces();
       persistProfile(null);
-      clearLocalState();
+      clearLocalState({ clearActivities: true });
       if (HABITU_FIREBASE_AUTH?.signOut) {
         try {
           await HABITU_FIREBASE_AUTH.signOut();
@@ -5779,7 +6010,7 @@
       renderProfileStats();
       renderSpaceStats();
     }
-    let sPeriod = '30d';
+    let sPeriod = '28d';
     const sBtnP7 = $("#sBtnP7");
     if (sBtnP7) {
       sBtnP7.classList.add('hide');
@@ -6601,8 +6832,47 @@
       close(mHabit);
     });
     /* Jour +/- */
-    $("#prevDay").onclick = () => { dayOff = clampDayOff(dayOff - 1); renderCards(); renderDateBar(); };
-    $("#nextDay").onclick = () => { dayOff = clampDayOff(dayOff + 1); renderCards(); renderDateBar(); };
+    function changeDayOffset(delta) {
+      dayOff = clampDayOff(dayOff + delta);
+      renderCards();
+      renderDateBar();
+    }
+    $("#prevDay").onclick = () => changeDayOffset(-1);
+    $("#nextDay").onclick = () => changeDayOffset(1);
+    function setupDaySwipeNavigation() {
+      const container = $("#cards");
+      if (!container || container.dataset.swipeBound) return;
+      let startX = 0;
+      let startY = 0;
+      let tracking = false;
+      const threshold = 40;
+      container.addEventListener('touchstart', (event) => {
+        if (event.touches.length !== 1) return;
+        const touch = event.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        tracking = true;
+      }, { passive: true });
+      container.addEventListener('touchend', (event) => {
+        if (!tracking) return;
+        tracking = false;
+        const touch = event.changedTouches?.[0];
+        if (!touch) return;
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        if (Math.abs(dx) < threshold || Math.abs(dx) < Math.abs(dy)) return;
+        if (dx < 0) {
+          changeDayOffset(1);
+        } else {
+          changeDayOffset(-1);
+        }
+      }, { passive: true });
+      container.addEventListener('touchcancel', () => {
+        tracking = false;
+      });
+      container.dataset.swipeBound = '1';
+    }
+    setupDaySwipeNavigation();
 
     /* Lancement */
     let dayInit = false; function renderDateOnce() { if (!dayInit) { dayOff = 0; renderDateBar(); dayInit = true } }
