@@ -46,9 +46,9 @@ async function networkFirst(request) {
     }
     return response;
   } catch (err) {
-    const cached = await caches.match(request);
+    const cached = await caches.match(request) || await caches.match(request, { ignoreSearch: true });
     if (cached) return cached;
-    const fallback = await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
+    const fallback = await caches.match(request, { ignoreSearch: true }) || await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
     if (fallback) {
       notifyClientsAboutOffline(request.url, err);
       return fallback;
