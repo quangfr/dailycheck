@@ -30,11 +30,17 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+const NAVIGATION_FALLBACK = './index.html';
+
 self.addEventListener('fetch', event => {
-  if(event.request.method !== 'GET') return;
+  if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
-  if(url.origin !== location.origin) return;
-    event.respondWith(networkFirst(event.request));
+  if (url.origin !== location.origin) return;
+  if (event.request.mode === 'navigate') {
+    event.respondWith(networkFirstNavigation(event.request));
+    return;
+  }
+  event.respondWith(networkFirst(event.request));
 });
 
 async function networkFirst(request) {
@@ -58,18 +64,38 @@ async function networkFirst(request) {
   }
 }
 
+async function networkFirstNavigation(request) {
+  try {
+    const response = await fetch(request);
+    if (response && response.status === 200) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(NAVIGATION_FALLBACK, response.clone());
+    }
+    return response;
+  } catch (err) {
+    const fallback = await caches.match(NAVIGATION_FALLBACK) || await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
+    if (fallback) {
+      notifyClientsAboutOffline(request.url, err);
+      return fallback;
+    }
+    notifyClientsAboutOffline(request.url, err);
+    return new Response('Offline', { status: 503, statusText: 'Offline' });
+  }
+}
+
 async function notifyClientsAboutOffline(url, err) {
   if (offlineNotificationSent) return;
   offlineNotificationSent = true;
   const allClients = await self.clients.matchAll({ includeUncontrolled: true });
-  allClients.forEach(client => {
-    client.postMessage({
-      type: 'habitube-offline-shell',
-      url,
-      message: (err && err.message) || 'offline',
-      timestamp: Date.now()
-    });
-  });
+      allClients.forEach(client => {
+        client.postMessage({
+          type: 'habitube-offline-shell',
+          url,
+          message: (err && err.message) || 'offline',
+          timestamp: Date.now(),
+          reload: true
+        });
+      });
   self.setTimeout(() => {
     offlineNotificationSent = false;
   }, 30000);

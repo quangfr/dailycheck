@@ -626,7 +626,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.11.29.9';
+    const APP_VERSION = '2025.11.29.10';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -8140,6 +8140,12 @@
       navigator.serviceWorker.addEventListener('message', event => {
         const data = event?.data;
         if (data?.type === 'habitube-offline-shell') {
+          if (data.reload && !window.__habitubeOfflineReloaded) {
+            window.__habitubeOfflineReloaded = true;
+            window.setTimeout(() => {
+              window.location.reload();
+            }, 300);
+          }
           startGuestSession({ forceLocal: true }).catch(() => { });
         }
       });
