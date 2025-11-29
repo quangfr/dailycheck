@@ -1,10 +1,15 @@
-const CACHE_NAME = 'routine-buddy-v2';
+const CACHE_NAME = 'routine-buddy-v3';
 const OFFLINE_URLS = [
   './',
   './index.html',
+  './style.css',
+  './library.js',
+  './names.js',
+  './tips.js',
   './manifest.webmanifest',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './service-worker.js'
 ];
 
 self.addEventListener('install', event => {
@@ -27,7 +32,7 @@ self.addEventListener('fetch', event => {
   if(event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if(url.origin !== location.origin) return;
-  event.respondWith(networkFirst(event.request));
+    event.respondWith(networkFirst(event.request));
 });
 
 async function networkFirst(request) {
