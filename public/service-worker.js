@@ -1,4 +1,4 @@
-const ASSET_VERSION = '2025.11.29.15';
+const ASSET_VERSION = '2025.11.29.19';
 const CACHE_NAME = `habitube-app-${ASSET_VERSION}`;
 const ASSET_QUERY = `?v=${ASSET_VERSION}`;
 const OFFLINE_HTML = `/offline.html${ASSET_QUERY}`;
@@ -15,6 +15,7 @@ const OFFLINE_URLS = Array.from(new Set([
   OFFLINE_HTML
 ]));
 let offlineNotificationSent = false;
+const LOG_PREFIX = '[SW offline]';
 
 const NAVIGATION_FALLBACK = '/index.html';
 const NAVIGATION_FALLBACK_KEYS = [
@@ -67,6 +68,7 @@ async function networkFirst(request) {
     const cached = await caches.match(request) || await caches.match(request, { ignoreSearch: true });
     if (cached) return cached;
     const fallback = await matchNavigationFallback();
+    console.warn(`${LOG_PREFIX} networkFirst failed for ${request.url}, falling back to ${fallback ? 'cached navigation' : 'offline page'}`, err);
     if (fallback) {
       notifyClientsAboutOffline(request.url, err, false);
       return fallback;
@@ -109,6 +111,7 @@ async function networkFirstNavigation(request) {
   } catch (err) {
     const fallback = await matchNavigationFallback();
     const forcedReload = isForcedReload(request);
+    console.warn(`${LOG_PREFIX} navigation fetch failed for ${request.url}, forcedReload=${forcedReload}`, err);
     if (fallback) {
       notifyClientsAboutOffline(request.url, err, forcedReload);
       return fallback;
@@ -127,6 +130,7 @@ async function notifyClientsAboutOffline(url, err, pullToRefresh = false) {
   if (offlineNotificationSent) return;
   offlineNotificationSent = true;
   const allClients = await self.clients.matchAll({ includeUncontrolled: true });
+  console.warn(`${LOG_PREFIX} notifying clients due to ${url}`, err);
   allClients.forEach(client => {
     client.postMessage({
       type: 'habitube-offline-shell',
