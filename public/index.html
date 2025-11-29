@@ -47,12 +47,11 @@
   <div class="install-prompt" id="installPromptCard">
     <div class="install-card">
       <h3>Installer Habitube</h3>
-      <p>Ajoute Habitube à ton écran d’accueil et reste connecté à tes jardins partagés.</p>
+      <p>Ajoute Habitube à ton écran d’accueil pour accéder en mode hors-ligne</p>
       <div class="btn-row">
         <button class="btn primary" id="installPromptBtn">Installer</button>
         <button class="btn" id="installPromptClose">Plus tard</button>
       </div>
-      <div class="learn-more" id="installPromptHelp">Pourquoi installer ?</div>
     </div>
   </div>
   <div class="auth-overlay hide" id="authOverlay">
@@ -378,28 +377,28 @@
           <div class="opt" id="addHabit">
             <div class="emoji">🌱</div>
             <div><b>Ajouter des habitudes</b>
-              <div class="subtitle">Démarrer des nouvelles routines </div>
+              <div class="subtitle">Démarre des nouvelles routines avec d'autres</div>
             </div>
           </div>
           <div class="opt" id="addCustomHabit">
             <div class="emoji">✨</div>
             <div>
               <b>Créer une habitude personnalisée</b>
-              <div class="subtitle">Définis ton rituel et sa récurrence sur le jour affiché.</div>
+              <div class="subtitle">Suis tes propres routines.</div>
             </div>
           </div>
           <div class="opt" id="installApp">
             <div class="emoji">📱</div>
             <div>
               <b>Installer l'application mobile</b>
-              <div class="subtitle">Profite d'un accès plus rapide et confortable</div>
+              <div class="subtitle">Profite d'un accès plus confortable et hors-ligne</div>
             </div>
           </div>
           <div class="opt" id="menuFeedback">
             <div class="emoji">📝</div>
             <div>
               <b>Donner mon avis</b>
-              <div class="subtitle">Parle-nous de ton expérience et de tes envies</div>
+              <div class="subtitle">Parle de ton expérience sur l'application</div>
             </div>
           </div>
 
@@ -455,7 +454,8 @@
           </div>
           <div class="field message-field">
             <label><b>Message</b></label>
-            <textarea id="feedbackMessage" rows="8" placeholder="Raconte-nous ce que tu veux partager..." required></textarea>
+            <textarea id="feedbackMessage" rows="8" placeholder="Raconte-nous ce que tu veux partager..."
+              required></textarea>
           </div>
           <div class="detail-actions">
             <button type="button" class="btn" id="feedbackCancel">Annuler</button>
@@ -6849,8 +6849,8 @@
           updSel();
           renderCards();
           maybeTogglePrivateAdd();
-      return existingId;
-    }
+          return existingId;
+        }
       }
       const id = generateSpaceId();
       const { spaceEntry, defaultHabit } = buildDefaultPersonalSpaceEntry({
