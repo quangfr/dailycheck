@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.11.29.14" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.11.29.15" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.11.29.14" />
+  <link rel="stylesheet" href="style.css?v=2025.11.29.15" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.11.29.14" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.11.29.15" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -557,9 +557,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.11.29.14"></script>
-  <script src="library.js?v=2025.11.29.14"></script>
-  <script src="tips.js?v=2025.11.29.14"></script>
+  <script src="names.js?v=2025.11.29.15"></script>
+  <script src="library.js?v=2025.11.29.15"></script>
+  <script src="tips.js?v=2025.11.29.15"></script>
   <script>
     /* ===== Données ===== */
 
@@ -633,7 +633,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.11.29.14';
+    const APP_VERSION = '2025.11.29.15';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -7591,7 +7591,50 @@
     const authNotification = $("#authNotification");
     const authNotificationBack = $("#authNotificationBack");
     let loaderHabitTimer = null;
-    let offlineGuestTimer = null;
+    const offlineController = (() => {
+      let guestTimer = null;
+      let reloadPending = false;
+
+      const schedule = () => {
+        if (guestTimer) return;
+        guestTimer = window.setTimeout(() => {
+          guestTimer = null;
+          startGuestSession({ forceLocal: true }).catch(() => { });
+        }, 900);
+      };
+
+      const cancel = () => {
+        if (!guestTimer) return;
+        window.clearTimeout(guestTimer);
+        guestTimer = null;
+      };
+
+      const handleServiceWorkerMessage = event => {
+        const data = event?.data;
+        if (data?.type !== 'habitube-offline-shell') return;
+        if (data.reload && !reloadPending) {
+          reloadPending = true;
+          window.setTimeout(() => {
+            window.location.reload();
+          }, 300);
+        }
+        startGuestSession({ forceLocal: true }).catch(() => { });
+        schedule();
+      };
+
+      return {
+        schedule,
+        cancel,
+        init() {
+          if (typeof window === 'undefined') return;
+          window.addEventListener('offline', schedule);
+          window.addEventListener('online', () => { });
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', handleServiceWorkerMessage);
+          }
+        }
+      };
+    })();
     authGuestBtn?.addEventListener('click', () => startGuestSession());
     authForm?.addEventListener('submit', handleMagicLinkSubmit);
     authNotificationBack?.addEventListener('click', () => {
@@ -7600,19 +7643,6 @@
         authEmailInput.focus();
       }
     });
-    const scheduleOfflineGuestFlow = () => {
-      if (offlineGuestTimer) return;
-      offlineGuestTimer = window.setTimeout(() => {
-        offlineGuestTimer = null;
-        startGuestSession({ forceLocal: true }).catch(() => { });
-      }, 900);
-    };
-    const cancelOfflineGuestFlow = () => {
-      if (offlineGuestTimer) {
-        window.clearTimeout(offlineGuestTimer);
-        offlineGuestTimer = null;
-      }
-    };
     updateAuthFormState();
     updateAuthMessage();
     showLoaderOverlay();
@@ -7620,13 +7650,6 @@
       startGuestSession({ forceLocal: true }).catch(() => { });
     }
     completeMagicLinkSignInIfNeeded();
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('offline', () => {
-        scheduleOfflineGuestFlow();
-      });
-      window.addEventListener('online', () => { });
-    }
 
     brand?.addEventListener('click', () => {
       dayOff = 0;
@@ -7805,14 +7828,14 @@
       if (!loaderOverlay) return;
       loaderOverlay.classList.remove('hide');
       startLoaderAnimation();
-      scheduleOfflineGuestFlow();
+      offlineController.schedule();
       refreshStatsForVisibleProfile();
     }
     function hideLoaderOverlay() {
       if (!loaderOverlay) return;
       loaderOverlay.classList.add('hide');
       stopLoaderAnimation();
-      cancelOfflineGuestFlow();
+      offlineController.cancel();
     }
 
     function hideAuthOverlay() {
@@ -8145,21 +8168,9 @@
         window.location.reload();
       });
 
-      navigator.serviceWorker.addEventListener('message', event => {
-        const data = event?.data;
-        if (data?.type === 'habitube-offline-shell') {
-          if (data.reload && !window.__habitubeOfflineReloaded) {
-            window.__habitubeOfflineReloaded = true;
-            window.setTimeout(() => {
-              window.location.reload();
-            }, 300);
-          }
-          startGuestSession({ forceLocal: true }).catch(() => { });
-        }
-      });
-
       window.addEventListener('load', registerServiceWorker);
     }
+    offlineController.init();
     maybeSyncSpaceSnapshot();
     refreshProfileStatsCache();
     maybePushStatsSnapshot();
