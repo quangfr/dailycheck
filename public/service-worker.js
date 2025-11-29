@@ -1,6 +1,7 @@
-const ASSET_VERSION = '2025.11.29.7';
+const ASSET_VERSION = '2025.11.29.13';
 const CACHE_NAME = `habitube-app-${ASSET_VERSION}`;
 const ASSET_QUERY = `?v=${ASSET_VERSION}`;
+const OFFLINE_HTML = `./offline.html${ASSET_QUERY}`;
 const OFFLINE_URLS = Array.from(new Set([
   './',
   './index.html',
@@ -10,13 +11,16 @@ const OFFLINE_URLS = Array.from(new Set([
   `./tips.js${ASSET_QUERY}`,
   `./manifest.webmanifest${ASSET_QUERY}`,
   `./icon-192.png${ASSET_QUERY}`,
-  `./icon-512.png${ASSET_QUERY}`
+  `./icon-512.png${ASSET_QUERY}`,
+  OFFLINE_HTML
 ]));
 let offlineNotificationSent = false;
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(OFFLINE_URLS))
+    caches.open(CACHE_NAME).then(cache => {
+      return Promise.all(OFFLINE_URLS.map(url => cache.add(url).catch(() => null)));
+    })
   );
   self.skipWaiting();
 });
@@ -29,8 +33,6 @@ self.addEventListener('activate', event => {
   );
   self.clients.claim();
 });
-
-const NAVIGATION_FALLBACK = './index.html';
 
 const NAVIGATION_FALLBACK = './index.html';
 
@@ -61,6 +63,11 @@ async function networkFirst(request) {
       notifyClientsAboutOffline(request.url, err, false);
       return fallback;
     }
+    const offlinePage = await caches.match(OFFLINE_HTML);
+    if (offlinePage) {
+      notifyClientsAboutOffline(request.url, err, true);
+      return offlinePage;
+    }
     notifyClientsAboutOffline(request.url, err, false);
     return new Response('Offline', { status: 503, statusText: 'Offline' });
   }
@@ -85,6 +92,11 @@ async function networkFirstNavigation(request) {
     if (fallback) {
       notifyClientsAboutOffline(request.url, err, forcedReload);
       return fallback;
+    }
+    const offlinePage = await caches.match(OFFLINE_HTML);
+    if (offlinePage) {
+      notifyClientsAboutOffline(request.url, err, forcedReload);
+      return offlinePage;
     }
     notifyClientsAboutOffline(request.url, err, forcedReload);
     return new Response('Offline', { status: 503, statusText: 'Offline' });
