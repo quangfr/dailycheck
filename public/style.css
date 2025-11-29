@@ -796,12 +796,8 @@ button:active,
 
 .habit-gardeners-table th.sortable {
   cursor: pointer;
-  padding-right: 26px;
+  padding-right: 10px;
   position: relative;
-}
-
-*.habit-gardeners-table th.sortable::after {
-  content: none;
 }
 
 .habit-gardeners-table tbody tr.self {

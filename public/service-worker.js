@@ -32,6 +32,8 @@ self.addEventListener('activate', event => {
 
 const NAVIGATION_FALLBACK = './index.html';
 
+const NAVIGATION_FALLBACK = './index.html';
+
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
@@ -56,12 +58,17 @@ async function networkFirst(request) {
     if (cached) return cached;
     const fallback = await caches.match(request, { ignoreSearch: true }) || await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
     if (fallback) {
-      notifyClientsAboutOffline(request.url, err);
+      notifyClientsAboutOffline(request.url, err, false);
       return fallback;
     }
-    notifyClientsAboutOffline(request.url, err);
+    notifyClientsAboutOffline(request.url, err, false);
     return new Response('Offline', { status: 503, statusText: 'Offline' });
   }
+}
+
+function isForcedReload(request) {
+  const cacheControl = request.headers.get('cache-control') || '';
+  return /max-age=0|no-cache|no-store/i.test(cacheControl);
 }
 
 async function networkFirstNavigation(request) {
@@ -74,28 +81,30 @@ async function networkFirstNavigation(request) {
     return response;
   } catch (err) {
     const fallback = await caches.match(NAVIGATION_FALLBACK) || await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
+    const forcedReload = isForcedReload(request);
     if (fallback) {
-      notifyClientsAboutOffline(request.url, err);
+      notifyClientsAboutOffline(request.url, err, forcedReload);
       return fallback;
     }
-    notifyClientsAboutOffline(request.url, err);
+    notifyClientsAboutOffline(request.url, err, forcedReload);
     return new Response('Offline', { status: 503, statusText: 'Offline' });
   }
 }
 
-async function notifyClientsAboutOffline(url, err) {
+async function notifyClientsAboutOffline(url, err, pullToRefresh = false) {
   if (offlineNotificationSent) return;
   offlineNotificationSent = true;
   const allClients = await self.clients.matchAll({ includeUncontrolled: true });
-      allClients.forEach(client => {
-        client.postMessage({
-          type: 'habitube-offline-shell',
-          url,
-          message: (err && err.message) || 'offline',
-          timestamp: Date.now(),
-          reload: true
-        });
-      });
+  allClients.forEach(client => {
+    client.postMessage({
+      type: 'habitube-offline-shell',
+      url,
+      message: (err && err.message) || 'offline',
+      timestamp: Date.now(),
+      reload: true,
+      pullToRefresh
+    });
+  });
   self.setTimeout(() => {
     offlineNotificationSent = false;
   }, 30000);
