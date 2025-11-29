@@ -1,17 +1,18 @@
-const CACHE_NAME = 'routine-buddy-v3';
-const OFFLINE_URLS = [
+const ASSET_VERSION = '2025.11.29.7';
+const CACHE_NAME = `habitube-app-${ASSET_VERSION}`;
+const ASSET_QUERY = `?v=${ASSET_VERSION}`;
+const OFFLINE_URLS = Array.from(new Set([
   './',
-  '/',
   './index.html',
-  './style.css',
-  './library.js',
-  './names.js',
-  './tips.js',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
-  './service-worker.js'
-];
+  `./style.css${ASSET_QUERY}`,
+  `./library.js${ASSET_QUERY}`,
+  `./names.js${ASSET_QUERY}`,
+  `./tips.js${ASSET_QUERY}`,
+  `./manifest.webmanifest${ASSET_QUERY}`,
+  `./icon-192.png${ASSET_QUERY}`,
+  `./icon-512.png${ASSET_QUERY}`
+]));
+let offlineNotificationSent = false;
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -48,9 +49,30 @@ async function networkFirst(request) {
     const cached = await caches.match(request);
     if (cached) return cached;
     const fallback = await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
-    if (fallback) return fallback;
+    if (fallback) {
+      notifyClientsAboutOffline(request.url, err);
+      return fallback;
+    }
+    notifyClientsAboutOffline(request.url, err);
     return new Response('Offline', { status: 503, statusText: 'Offline' });
   }
+}
+
+async function notifyClientsAboutOffline(url, err) {
+  if (offlineNotificationSent) return;
+  offlineNotificationSent = true;
+  const allClients = await self.clients.matchAll({ includeUncontrolled: true });
+  allClients.forEach(client => {
+    client.postMessage({
+      type: 'habitube-offline-shell',
+      url,
+      message: (err && err.message) || 'offline',
+      timestamp: Date.now()
+    });
+  });
+  self.setTimeout(() => {
+    offlineNotificationSent = false;
+  }, 30000);
 }
 
 self.addEventListener('message', event => {

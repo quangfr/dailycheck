@@ -759,13 +759,14 @@ button:active,
 
 .habit-gardeners-table {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 .habit-gardeners-table table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  min-width: 0;
 }
 
 .habit-gardeners-table th,
@@ -799,15 +800,8 @@ button:active,
   position: relative;
 }
 
-.habit-gardeners-table th.sortable::after {
-  content: attr(data-order);
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 11px;
-  color: var(--text);
-  opacity: 0.5;
+*.habit-gardeners-table th.sortable::after {
+  content: none;
 }
 
 .habit-gardeners-table tbody tr.self {
@@ -829,7 +823,7 @@ button:active,
 
 .habit-gardeners-table td {
   color: #5c5c5c;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .weekly-progress__block--today {

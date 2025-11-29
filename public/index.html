@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.11.29.7" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -26,7 +26,7 @@
     HABITU_FIREBASE_AUTH.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     window.HABITU_FIREBASE_DB = firebase.firestore();
   </script>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=2025.11.29.7" />
 
 </head>
 
@@ -56,7 +56,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.11.29.7" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -108,7 +108,7 @@
         <div class="detailTitle" id="detailTitle"></div>
       </div>
       <div class="tabs">
-        <button class="tab" data-tab="gardeners">🧑‍🌾 Jardiniers</button>
+        <button class="tab" data-tab="gardeners">🎖️ Palmarès</button>
         <button class="tab active" data-tab="settings">✏️ Edition</button>
       </div>
       <div class="section">
@@ -188,7 +188,7 @@
                     <th>#</th>
                     <th class="sortable" data-sort="owner" title="Trier par jardinier">Jardinier</th>
                     <th class="sortable" data-sort="streak" title="Trier par streak actuel">Streak</th>
-                    <th class="sortable" data-sort="total" title="Trier par les 28 derniers jours">28 jours</th>
+                    <th class="sortable" data-sort="total" title="Trier par les 28 derniers jours">28 j</th>
                   </tr>
                 </thead>
                 <tbody id="habitGardenersBody"></tbody>
@@ -337,7 +337,7 @@
                 <tr>
                   <th>Habitude</th>
                   <th data-sortable="streak" title="Trier par streak actuel">Streak</th>
-                  <th data-sortable="total" title="28 derniers jours">28 jours</th>
+                  <th data-sortable="total" title="28 derniers jours">28 j</th>
                 </tr>
               </thead>
               <tbody id="spaceStatsBody"></tbody>
@@ -377,7 +377,7 @@
           <div class="opt" id="addHabit">
             <div class="emoji">🌱</div>
             <div><b>Ajouter des habitudes</b>
-              <div class="subtitle">Démarre des nouvelles routines avec d'autres</div>
+              <div class="subtitle">Démarre des nouvelles routines avec les autres</div>
             </div>
           </div>
           <div class="opt" id="addCustomHabit">
@@ -391,7 +391,7 @@
             <div class="emoji">📱</div>
             <div>
               <b>Installer l'application mobile</b>
-              <div class="subtitle">Profite d'un accès plus confortable et hors-ligne</div>
+              <div class="subtitle">Profite d'un accès confortable et hors-ligne</div>
             </div>
           </div>
           <div class="opt" id="menuFeedback">
@@ -407,14 +407,14 @@
             <div class="emoji">🔐</div>
             <div>
               <b>Se connecter à un compte</b>
-              <div class="subtitle">Retrouver ses jardins partagés en ligne</div>
+              <div class="subtitle">Retrouve l'accès </div>
             </div>
           </div>
           <div class="opt auth-action hide" id="menuMakeProfileVisible">
             <div class="emoji">🌍</div>
             <div>
               <b>Rendre mon profil visible</b>
-              <div class="subtitle">Partager ton profil et les classements</div>
+              <div class="subtitle">Partage mon profil et voir les palmarès</div>
             </div>
           </div>
         </div>
@@ -550,9 +550,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js"></script>
-  <script src="library.js"></script>
-  <script src="tips.js"></script>
+  <script src="names.js?v=2025.11.29.7"></script>
+  <script src="library.js?v=2025.11.29.7"></script>
+  <script src="tips.js?v=2025.11.29.7"></script>
   <script>
     /* ===== Données ===== */
 
@@ -626,7 +626,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.11.29.6';
+    const APP_VERSION = '2025.11.29.8';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1482,11 +1482,11 @@
       } catch (err) {
       }
     }
-    function canPerformStatsOperation(storageKey, targetSpaceId) {
+    function canPerformStatsOperation(storageKey, targetSpaceId, intervalMs = STATS_SYNC_INTERVAL_MS) {
       if (!targetSpaceId) return false;
       const last = getStatsTimestamp(storageKey, targetSpaceId);
       if (!last) return true;
-      return Date.now() - last >= STATS_SYNC_INTERVAL_MS;
+      return Date.now() - last >= intervalMs;
     }
     let habitListSnapshot = { spaceId: '', ts: 0, habits: [] };
     function hydrateHabitListSnapshotCache() {
@@ -1527,10 +1527,37 @@
     const SPACE_SYNC_KEY = 'habitu-space-last-sync';
     const SPACE_CHANGE_KEY = 'habitu-space-last-change';
     const SPACE_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
+    const STATS_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
+    const SPACE_HABITS_COLLECTION = 'spaceHabits';
+    const SPACE_HABITS_SUBCOLL = 'habits';
     const HABIT_STATS_COLLECTION = 'habitStats';
     const HABIT_STATS_OWNER_SUBCOLL = 'owners';
     const HABIT_STREAK_COUNTS_COLLECTION = 'habitStreakCounts';
     let spaceSyncTimer = null;
+
+    function getSpaceHabitsCollection(spaceId) {
+      if (!HABITU_FIREBASE_DB || !spaceId) return null;
+      return HABITU_FIREBASE_DB.collection(SPACE_HABITS_COLLECTION).doc(spaceId).collection(SPACE_HABITS_SUBCOLL);
+    }
+    function getSpaceStatsRoot(spaceId) {
+      if (!HABITU_FIREBASE_DB || !spaceId) return null;
+      return HABITU_FIREBASE_DB.collection(HABIT_STATS_COLLECTION).doc(spaceId);
+    }
+    function getHabitsStatsCollection(spaceId) {
+      const root = getSpaceStatsRoot(spaceId);
+      if (!root) return null;
+      return root.collection(SPACE_HABITS_SUBCOLL);
+    }
+    function getHabitOwnersCollection(spaceId, habitId) {
+      const habits = getHabitsStatsCollection(spaceId);
+      if (!habits || !habitId) return null;
+      return habits.doc(String(habitId)).collection(HABIT_STATS_OWNER_SUBCOLL);
+    }
+    function getHabitStreakCountsCollection(spaceId) {
+      const root = getSpaceStatsRoot(spaceId);
+      if (!root) return null;
+      return root.collection(HABIT_STREAK_COUNTS_COLLECTION);
+    }
 
     function readSpaceTimestamp(keyName) {
       const raw = safeStorageGet(keyName);
@@ -3496,7 +3523,9 @@
       habitData.repeatConfig = normalizeRepeatConfig(habitData, habitData.repeatConfig || {});
       ensureHabitMetadata(habitData);
       const habitId = String(habitData.id);
-      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId).collection('habits').doc(habitId)
+      const collection = getSpaceHabitsCollection(spaceId);
+      if (!collection) return Promise.resolve();
+      return collection.doc(habitId)
         .set({ ...habitData, id: habitId, spaceId, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
         .then(() => {
           markFirstHabitCreated();
@@ -3634,7 +3663,9 @@
     async function loadHabitsForSpace(spaceId) {
       if (!HABITU_FIREBASE_DB || !spaceId) return [];
       try {
-        const snapshot = await HABITU_FIREBASE_DB.collection('spaces').doc(spaceId).collection('habits').get();
+        const collection = getSpaceHabitsCollection(spaceId);
+        if (!collection) return [];
+        const snapshot = await collection.get();
         const habits = snapshot.docs.map(doc => {
           const habit = { id: doc.id, ...doc.data() };
           if (habit.addedAt) habit.addedAt = timestampToDate(habit.addedAt);
@@ -4329,7 +4360,10 @@
           if (gardenerBadge) {
             gardenerBadge.dataset.habitId = String(it.id);
             gardenerBadge.dataset.fallbackCount = String(windowGardenersCount);
-            habitGardenerBadgeElements.set(String(it.id), gardenerBadge);
+            const habitId = String(it.id);
+            if (!habitGardenerBadgeElements.has(habitId)) {
+              habitGardenerBadgeElements.set(habitId, gardenerBadge);
+            }
             gardenerBadge.disabled = false;
             gardenerBadge.classList.toggle('gardener-badge--empty', windowGardenersCount === 0);
             updateGardenerBadge(it.id);
@@ -5269,16 +5303,17 @@
     }
     function persistHabitOwnerSnapshot(spaceId, habitId, ownerKey, payload) {
       if (!spaceId || !habitId || !ownerKey) return Promise.resolve();
-      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
-        .collection(HABIT_STATS_COLLECTION).doc(String(habitId))
-        .collection(HABIT_STATS_OWNER_SUBCOLL).doc(ownerKey)
+      const ownersRef = getHabitOwnersCollection(spaceId, habitId);
+      if (!ownersRef) return Promise.resolve();
+      return ownersRef.doc(ownerKey)
         .set({ ...payload, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
         .catch(() => { });
     }
     function persistHabitStreakCount(spaceId, habitId, count) {
       if (!spaceId || !habitId) return Promise.resolve();
-      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
-        .collection(HABIT_STREAK_COUNTS_COLLECTION).doc(String(habitId))
+      const countsRef = getHabitStreakCountsCollection(spaceId);
+      if (!countsRef) return Promise.resolve();
+      return countsRef.doc(String(habitId))
         .set({ count, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true })
         .catch(() => { });
     }
@@ -5348,6 +5383,8 @@
       if (!spaceId || !space || !HABITU_FIREBASE_DB) return;
       const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
       if (!habits.length) return;
+      const currentOwnerKey = getCurrentOwnerKey();
+      const currentOwnerLabel = canonicalOwnerLabel(getCurrentOwnerLabel());
       const habitMap = new Map(habits.map(habit => [String(habit.id), habit]));
       const records = getOwnerActivityRecords({ spaceId }).filter(rec => (rec.state || 0) >= 2);
       const statsByHabitOwner = new Map();
@@ -5355,6 +5392,9 @@
         const habitId = String(rec.habitId);
         const ownerKey = getRecordOwnerKey(rec);
         if (!ownerKey) return;
+        if (currentOwnerKey && ownerKey === currentOwnerKey) return;
+        const recordLabel = canonicalOwnerLabel(rec.owner || rec.ownerLabel || ownerKey);
+        if (recordLabel && recordLabel === currentOwnerLabel) return;
         const key = `${habitId}:${ownerKey}`;
         let entry = statsByHabitOwner.get(key);
         if (!entry) {
@@ -5447,8 +5487,6 @@
     }
     const habitStreakCountsCache = new Map();
     let habitStreakCountsPromise = null;
-    const habitStreakCountDeltas = new Map();
-    const habitStreakCountLastBump = new Map();
     const habitGardenerBadgeElements = new Map();
     const habitGardenerSnapshotCache = new Map();
     const habitGardenerSnapshotRequests = new Map();
@@ -5501,8 +5539,7 @@
       }
       const key = String(habitId);
       const base = habitStreakCountsCache.get(key) || 0;
-      const delta = habitStreakCountDeltas.get(key) || 0;
-      return base + delta;
+      return Math.max(1, base);
     }
     function updateGardenerBadge(habitId) {
       const key = String(habitId);
@@ -5519,16 +5556,8 @@
         updateGardenerBadge(habitId);
       });
     }
-    function bumpHabitStreakCount(habitId, delta = 1) {
-      if (!shouldShowGardenerBadges()) return;
-      if (!habitId) return;
-      const key = String(habitId);
-      const nowKey = dayKeyFromDate(curDate());
-      if (habitStreakCountLastBump.get(key) === nowKey) return;
-      habitStreakCountLastBump.set(key, nowKey);
-      const next = (habitStreakCountDeltas.get(key) || 0) + delta;
-      habitStreakCountDeltas.set(key, next);
-      updateGardenerBadge(key);
+    function bumpHabitStreakCount() {
+      // badge count is driven by server stats; no client increment required
     }
     function ensureHabitStreakCounts(force = false) {
       if (!shouldQueueSpaceSnapshot()) {
@@ -5549,8 +5578,12 @@
         habitStreakCountsPromise = Promise.resolve(habitStreakCountsCache);
         return habitStreakCountsPromise;
       }
-      habitStreakCountsPromise = HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
-        .collection(HABIT_STREAK_COUNTS_COLLECTION)
+      const countsRef = getHabitStreakCountsCollection(spaceId);
+      if (!countsRef) {
+        habitStreakCountsPromise = Promise.resolve(habitStreakCountsCache);
+        return habitStreakCountsPromise;
+      }
+      habitStreakCountsPromise = countsRef
         .get()
         .then(snapshot => {
           snapshot.docs.forEach(doc => {
@@ -5581,9 +5614,12 @@
       if (!spaceId || !HABITU_FIREBASE_DB) {
         return [];
       }
-      const promise = HABITU_FIREBASE_DB.collection('spaces').doc(spaceId)
-        .collection(HABIT_STATS_COLLECTION).doc(key)
-        .collection(HABIT_STATS_OWNER_SUBCOLL)
+      const ownersRef = getHabitOwnersCollection(spaceId, key);
+      if (!ownersRef) {
+        habitGardenerSnapshotRequests.delete(key);
+        return [];
+      }
+      const promise = ownersRef
         .get()
         .then(snapshot => {
           const list = snapshot.docs.map(doc => ({
@@ -5653,9 +5689,9 @@
         setStatsTimestamp(STATS_SYNC_STORAGE_KEY, spaceId);
       }
     }
-    async function maybeFetchStatsSnapshot({ force = false } = {}) {
+    async function maybeFetchStatsSnapshot({ force = false, intervalMs = STATS_SYNC_INTERVAL_MS } = {}) {
       if (!spaceId || !currentProfile || !HABITU_FIREBASE_DB) return;
-      if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
+      if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId, intervalMs)) return;
       if (isProfileModeVisible()) {
         await refreshAllHabitStatsFromServer({ force: true });
         return;
@@ -5663,6 +5699,11 @@
       if (isProfileModePrivate()) {
         await refreshPrivateHabitListFromServer({ force: true });
       }
+    }
+    function refreshStatsForVisibleProfile({ force = false } = {}) {
+      if (!spaceId || !currentProfile) return Promise.resolve();
+      if (!isProfileModeVisible()) return Promise.resolve();
+      return maybeFetchStatsSnapshot({ force, intervalMs: STATS_REFRESH_INTERVAL_MS });
     }
     function resolveProfileEmail(name) {
       const normalizedTarget = normalizeOwnerLabel(name);
@@ -6211,10 +6252,19 @@
       const target = spaceId;
       try {
         if (HABITU_FIREBASE_DB) {
-          const spaceRef = HABITU_FIREBASE_DB.collection('spaces').doc(target);
-          const habitsSnap = await spaceRef.collection('habits').get();
           const batch = HABITU_FIREBASE_DB.batch();
-          habitsSnap.docs.forEach(doc => batch.delete(doc.ref));
+          const habitCollection = getSpaceHabitsCollection(target);
+          if (habitCollection) {
+            const habitsSnap = await habitCollection.get();
+            habitsSnap.docs.forEach(doc => batch.delete(doc.ref));
+            const habitRoot = HABITU_FIREBASE_DB.collection(SPACE_HABITS_COLLECTION).doc(target);
+            batch.delete(habitRoot);
+          }
+          const statsRoot = getSpaceStatsRoot(target);
+          if (statsRoot) {
+            batch.delete(statsRoot);
+          }
+          const spaceRef = HABITU_FIREBASE_DB.collection('spaces').doc(target);
           batch.delete(spaceRef);
           await batch.commit();
         }
@@ -6278,7 +6328,7 @@
         if (root) {
           const placeholder = document.createElement('div');
           placeholder.className = 'miniInfo';
-          placeholder.textContent = 'Les classements sont désactivés pour ce profil.';
+          placeholder.textContent = 'Les palmarès sont désactivés en profil privé';
           root.appendChild(placeholder);
         }
         renderProfileStats();
@@ -7534,6 +7584,7 @@
     const authNotification = $("#authNotification");
     const authNotificationBack = $("#authNotificationBack");
     let loaderHabitTimer = null;
+    let offlineGuestTimer = null;
     authGuestBtn?.addEventListener('click', () => startGuestSession());
     authForm?.addEventListener('submit', handleMagicLinkSubmit);
     authNotificationBack?.addEventListener('click', () => {
@@ -7542,10 +7593,33 @@
         authEmailInput.focus();
       }
     });
+    const scheduleOfflineGuestFlow = () => {
+      if (offlineGuestTimer) return;
+      offlineGuestTimer = window.setTimeout(() => {
+        offlineGuestTimer = null;
+        startGuestSession({ forceLocal: true }).catch(() => { });
+      }, 900);
+    };
+    const cancelOfflineGuestFlow = () => {
+      if (offlineGuestTimer) {
+        window.clearTimeout(offlineGuestTimer);
+        offlineGuestTimer = null;
+      }
+    };
     updateAuthFormState();
     updateAuthMessage();
     showLoaderOverlay();
+    if (shouldSkipAuthOverlay()) {
+      startGuestSession({ forceLocal: true }).catch(() => { });
+    }
     completeMagicLinkSignInIfNeeded();
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('offline', () => {
+        scheduleOfflineGuestFlow();
+      });
+      window.addEventListener('online', () => { });
+    }
 
     brand?.addEventListener('click', () => {
       dayOff = 0;
@@ -7724,19 +7798,27 @@
       if (!loaderOverlay) return;
       loaderOverlay.classList.remove('hide');
       startLoaderAnimation();
+      scheduleOfflineGuestFlow();
+      refreshStatsForVisibleProfile();
     }
     function hideLoaderOverlay() {
       if (!loaderOverlay) return;
       loaderOverlay.classList.add('hide');
       stopLoaderAnimation();
+      cancelOfflineGuestFlow();
     }
 
-    function hideAuthOverlay() { authOverlay.classList.add('hide') }
+    function hideAuthOverlay() {
+      if (!authOverlay) return;
+      authOverlay.classList.add('hide');
+    }
     function showAuthOverlay(force = false) {
       hideLoaderOverlay();
       clearResetNotice();
       setAuthError('');
-      authOverlay.classList.remove('hide');
+      if (authOverlay) {
+        authOverlay.classList.remove('hide');
+      }
     }
 
     function shouldSkipAuthOverlay() {
@@ -7757,6 +7839,7 @@
       } finally {
         hideLoaderOverlay();
       }
+      updAll();
       showHome();
     }
 
@@ -8054,12 +8137,19 @@
         window.location.reload();
       });
 
+      navigator.serviceWorker.addEventListener('message', event => {
+        const data = event?.data;
+        if (data?.type === 'habitube-offline-shell') {
+          startGuestSession({ forceLocal: true }).catch(() => { });
+        }
+      });
+
       window.addEventListener('load', registerServiceWorker);
     }
     maybeSyncSpaceSnapshot();
     refreshProfileStatsCache();
     maybePushStatsSnapshot();
-    maybeFetchStatsSnapshot();
+    refreshStatsForVisibleProfile();
   </script>
 </body>
 
