@@ -626,7 +626,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.11.29.3';
+    const APP_VERSION = '2025.11.29.4';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -7739,22 +7739,43 @@
       authOverlay.classList.remove('hide');
     }
 
-    async function startGuestSession() {
-      if (currentProfile?.guest && HABITU_FIREBASE_AUTH?.currentUser?.isAnonymous) {
-        hideAuthOverlay();
-        updateAddModalOptions();
-        showLoaderOverlay();
-        try {
-          await loadLibraryData();
-        } finally {
-          hideLoaderOverlay();
-        }
-        showHome();
+    function shouldSkipAuthOverlay() {
+      if (typeof window === 'undefined') return false;
+      const isOffline = typeof navigator !== 'undefined' ? !navigator.onLine : false;
+      return window.location.protocol === 'file:' || isOffline;
+    }
+
+    async function runGuestFlow() {
+      if (!currentProfile?.guest) {
+        persistProfile({ guest: true });
+      }
+      hideAuthOverlay();
+      updateAddModalOptions();
+      showLoaderOverlay();
+      try {
+        await loadLibraryData();
+      } finally {
+        hideLoaderOverlay();
+      }
+      showHome();
+    }
+
+    async function startGuestSession({ forceLocal = false } = {}) {
+      if (!forceLocal && currentProfile?.guest && HABITU_FIREBASE_AUTH?.currentUser?.isAnonymous) {
+        await runGuestFlow();
+        return;
+      }
+      if (!HABITU_FIREBASE_AUTH || forceLocal || shouldSkipAuthOverlay()) {
+        await runGuestFlow();
         return;
       }
       try {
         await HABITU_FIREBASE_AUTH.signInAnonymously();
       } catch (err) {
+        if (shouldSkipAuthOverlay()) {
+          await runGuestFlow();
+          return;
+        }
         showToast('Impossible de démarrer une session invité.', { type: 'error' });
       }
     }
@@ -7789,16 +7810,11 @@
     HABITU_FIREBASE_AUTH.onAuthStateChanged(async user => {
       if (!user) {
         if (currentProfile?.guest) {
-          hideLoaderOverlay();
-          hideAuthOverlay();
-          updateAddModalOptions();
-          showLoaderOverlay();
-          try {
-            await loadLibraryData();
-          } finally {
-            hideLoaderOverlay();
-          }
-          showHome();
+          await runGuestFlow();
+          return;
+        }
+        if (shouldSkipAuthOverlay()) {
+          await startGuestSession({ forceLocal: true });
           return;
         }
         persistProfile(null);
