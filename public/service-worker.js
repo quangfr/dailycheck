@@ -1,20 +1,30 @@
-const ASSET_VERSION = '2025.11.29.13';
+const ASSET_VERSION = '2025.11.29.14';
 const CACHE_NAME = `habitube-app-${ASSET_VERSION}`;
 const ASSET_QUERY = `?v=${ASSET_VERSION}`;
-const OFFLINE_HTML = `./offline.html${ASSET_QUERY}`;
+const OFFLINE_HTML = `/offline.html${ASSET_QUERY}`;
 const OFFLINE_URLS = Array.from(new Set([
-  './',
-  './index.html',
-  `./style.css${ASSET_QUERY}`,
-  `./library.js${ASSET_QUERY}`,
-  `./names.js${ASSET_QUERY}`,
-  `./tips.js${ASSET_QUERY}`,
-  `./manifest.webmanifest${ASSET_QUERY}`,
-  `./icon-192.png${ASSET_QUERY}`,
-  `./icon-512.png${ASSET_QUERY}`,
+  '/',
+  '/index.html',
+  `/style.css${ASSET_QUERY}`,
+  `/library.js${ASSET_QUERY}`,
+  `/names.js${ASSET_QUERY}`,
+  `/tips.js${ASSET_QUERY}`,
+  `/manifest.webmanifest${ASSET_QUERY}`,
+  `/icon-192.png${ASSET_QUERY}`,
+  `/icon-512.png${ASSET_QUERY}`,
   OFFLINE_HTML
 ]));
 let offlineNotificationSent = false;
+
+const NAVIGATION_FALLBACK = '/index.html';
+const NAVIGATION_FALLBACK_KEYS = [
+  NAVIGATION_FALLBACK,
+  '/index.html',
+  './index.html',
+  '/',
+  './'
+];
+const NAVIGATION_MATCH_OPTIONS = { ignoreSearch: true };
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -33,8 +43,6 @@ self.addEventListener('activate', event => {
   );
   self.clients.claim();
 });
-
-const NAVIGATION_FALLBACK = './index.html';
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
@@ -58,7 +66,7 @@ async function networkFirst(request) {
   } catch (err) {
     const cached = await caches.match(request) || await caches.match(request, { ignoreSearch: true });
     if (cached) return cached;
-    const fallback = await caches.match(request, { ignoreSearch: true }) || await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
+    const fallback = await matchNavigationFallback();
     if (fallback) {
       notifyClientsAboutOffline(request.url, err, false);
       return fallback;
@@ -73,6 +81,14 @@ async function networkFirst(request) {
   }
 }
 
+async function matchNavigationFallback() {
+  for (const key of NAVIGATION_FALLBACK_KEYS) {
+    const cached = await caches.match(key, NAVIGATION_MATCH_OPTIONS);
+    if (cached) return cached;
+  }
+  return null;
+}
+
 function isForcedReload(request) {
   const cacheControl = request.headers.get('cache-control') || '';
   return /max-age=0|no-cache|no-store/i.test(cacheControl);
@@ -83,11 +99,15 @@ async function networkFirstNavigation(request) {
     const response = await fetch(request);
     if (response && response.status === 200) {
       const cache = await caches.open(CACHE_NAME);
-      cache.put(NAVIGATION_FALLBACK, response.clone());
+      await Promise.all([
+        cache.put(NAVIGATION_FALLBACK, response.clone()),
+        cache.put('/', response.clone()),
+        cache.put('./', response.clone())
+      ]);
     }
     return response;
   } catch (err) {
-    const fallback = await caches.match(NAVIGATION_FALLBACK) || await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
+    const fallback = await matchNavigationFallback();
     const forcedReload = isForcedReload(request);
     if (fallback) {
       notifyClientsAboutOffline(request.url, err, forcedReload);
