@@ -803,46 +803,16 @@ const HABIT_TIPS = [
     "id": 20,
     "title": "Prendre une inspiration profonde avant de sortir"
   },
-  {
-    "id": 21,
-    "title": "Définir une trousse ou une boîte personnelle"
-  },
-  {
-    "id": 21,
-    "title": "Garder le strict nécessaire accessible"
-  },
-  {
-    "id": 21,
-    "title": "Ranger les produits intimes hors de vue"
-  },
-  {
-    "id": 21,
-    "title": "Jeter les flacons presque vides"
-  },
-  {
-    "id": 21,
-    "title": "Regrouper brosse, peigne et accessoires"
-  },
-  {
-    "id": 21,
-    "title": "Essuyer les flacons collants"
-  },
-  {
-    "id": 21,
-    "title": "Mettre les petits objets dans un pot"
-  },
-  {
-    "id": 21,
-    "title": "Vérifier régulièrement dates de péremption"
-  },
-  {
-    "id": 21,
-    "title": "Reposer chaque objet à sa place après usage"
-  },
-  {
-    "id": 21,
-    "title": "Prévenir les autres de l’espace réservé"
-  },
+  { "id": 21, "title": "Respire trois fois lentement" },
+  { "id": 21, "title": "Observe l’émotion dominante" },
+  { "id": 21, "title": "Pose la main sur ton cœur" },
+  { "id": 21, "title": "Nommes ton besoin à voix basse" },
+  { "id": 21, "title": "Demande: qu’est-ce qui manque ici ?" },
+  { "id": 21, "title": "Écoute ce qui fait oui en toi" },
+  { "id": 21, "title": "Ralentis pour sentir plus finement" },
+  { "id": 21, "title": "Cherche la tension dans ton corps" },
+  { "id": 21, "title": "Note la première envie sincère" },
+  { "id": 21, "title": "Accueille sans te juger" },
   {
     "id": 22,
     "title": "Commencer par vider la surface principale"
@@ -1123,86 +1093,26 @@ const HABIT_TIPS = [
     "id": 28,
     "title": "Reculer d’un pas pour apprécier le résultat"
   },
-  {
-    "id": 29,
-    "title": "Regrouper clés, téléphone, portefeuille"
-  },
-  {
-    "id": 29,
-    "title": "Préparer sac ou cartable près de la porte"
-  },
-  {
-    "id": 29,
-    "title": "Vérifier horaires de transport"
-  },
-  {
-    "id": 29,
-    "title": "Choisir vêtements et chaussures à l’avance"
-  },
-  {
-    "id": 29,
-    "title": "Remplir gourde ou bouteille d’eau"
-  },
-  {
-    "id": 29,
-    "title": "Prendre un petit encas si besoin"
-  },
-  {
-    "id": 29,
-    "title": "Vérifier les documents importants"
-  },
-  {
-    "id": 29,
-    "title": "Prévoir dix minutes de marge"
-  },
-  {
-    "id": 29,
-    "title": "Éteindre lumières et appareils inutiles"
-  },
-  {
-    "id": 29,
-    "title": "Respirer calmement avant de sortir"
-  },
-  {
-    "id": 30,
-    "title": "Repérer un itinéraire alternatif simple"
-  },
-  {
-    "id": 30,
-    "title": "Prévoir un peu plus de temps"
-  },
-  {
-    "id": 30,
-    "title": "Regarder autour de soi en marchant"
-  },
-  {
-    "id": 30,
-    "title": "Couper la musique quelques minutes"
-  },
-  {
-    "id": 30,
-    "title": "Chercher un nouveau détail agréable"
-  },
-  {
-    "id": 30,
-    "title": "Tester un chemin plus calme"
-  },
-  {
-    "id": 30,
-    "title": "Éviter les rues trop bruyantes"
-  },
-  {
-    "id": 30,
-    "title": "Noter mentalement ce qui change"
-  },
-  {
-    "id": 30,
-    "title": "Revenir au trajet habituel si stressant"
-  },
-  {
-    "id": 30,
-    "title": "Garder l’expérience comme un jeu"
-  },
+  { "id": 29, "title": "Ouvre les rideaux dès le réveil" },
+  { "id": 29, "title": "Pose un pied au sol immédiatement" },
+  { "id": 29, "title": "Compte jusqu’à trois et lève-toi" },
+  { "id": 29, "title": "Attrape ta gourde et bois" },
+  { "id": 29, "title": "Mets une musique douce" },
+  { "id": 29, "title": "Évite de reprendre ton téléphone" },
+  { "id": 29, "title": "Assois-toi avant de te lever" },
+  { "id": 29, "title": "Rappelle-toi la première mission du jour" },
+  { "id": 29, "title": "Place ton réveil hors du lit" },
+  { "id": 29, "title": "Étire-toi deux secondes" },
+  { "id": 30, "title": "Prépare ton vélo la veille" },
+  { "id": 30, "title": "Commence par cinq minutes tranquilles" },
+  { "id": 30, "title": "Choisis un itinéraire agréable" },
+  { "id": 30, "title": "Ajuste ta selle rapidement" },
+  { "id": 30, "title": "Emporte juste l’essentiel" },
+  { "id": 30, "title": "Respire le vent en démarrant" },
+  { "id": 30, "title": "Observe la ville différemment" },
+  { "id": 30, "title": "Roule à ton rythme" },
+  { "id": 30, "title": "Écoute ton souffle" },
+  { "id": 30, "title": "Célèbre l’arrivée" },
   {
     "id": 31,
     "title": "Choisir un seul problème à la fois"
@@ -2203,86 +2113,26 @@ const HABIT_TIPS = [
     "id": 55,
     "title": "Se féliciter à chaque fois qu’on retient"
   },
-  {
-    "id": 56,
-    "title": "Fermer les yeux quelques instants"
-  },
-  {
-    "id": 56,
-    "title": "Choisir un souvenir simple et doux"
-  },
-  {
-    "id": 56,
-    "title": "Revivre une scène précise"
-  },
-  {
-    "id": 56,
-    "title": "Se rappeler les sensations du corps"
-  },
-  {
-    "id": 56,
-    "title": "Respirer calmement pendant la pensée"
-  },
-  {
-    "id": 56,
-    "title": "Laisser venir un sourire intérieur"
-  },
-  {
-    "id": 56,
-    "title": "Revenir doucement au présent"
-  },
-  {
-    "id": 56,
-    "title": "Choisir un souvenir différent chaque jour"
-  },
-  {
-    "id": 56,
-    "title": "Ne pas forcer si rien ne vient"
-  },
-  {
-    "id": 56,
-    "title": "Noter parfois ces moments dans un carnet"
-  },
-  {
-    "id": 57,
-    "title": "S’installer dans une position confortable"
-  },
-  {
-    "id": 57,
-    "title": "Choisir un souvenir où l’on se sentait bien"
-  },
-  {
-    "id": 57,
-    "title": "Regarder les détails comme dans un film"
-  },
-  {
-    "id": 57,
-    "title": "Se rappeler une odeur ou un son"
-  },
-  {
-    "id": 57,
-    "title": "Sentir la détente dans le corps"
-  },
-  {
-    "id": 57,
-    "title": "Accepter que des émotions arrivent"
-  },
-  {
-    "id": 57,
-    "title": "Rester quelques secondes dans ce souvenir"
-  },
-  {
-    "id": 57,
-    "title": "Laisser revenir le présent doucement"
-  },
-  {
-    "id": 57,
-    "title": "Utiliser ce souvenir avant de dormir"
-  },
-  {
-    "id": 57,
-    "title": "Garder un sourire intérieur en souvenir"
-  },
+  { "id": 56, "title": "Relis mentalement trois moments clés" },
+  { "id": 56, "title": "Note une petite victoire" },
+  { "id": 56, "title": "Libère une pensée en la écrivant" },
+  { "id": 56, "title": "Observe ton humeur sans juger" },
+  { "id": 56, "title": "Respire lentement pour atterrir" },
+  { "id": 56, "title": "Ferme une boucle restée ouverte" },
+  { "id": 56, "title": "Dis merci pour un détail" },
+  { "id": 56, "title": "Laisse aller ce qui pèse" },
+  { "id": 56, "title": "Choisis ton intention pour demain" },
+  { "id": 56, "title": "Dépose ton téléphone hors lit" },
+  { "id": 57, "title": "Choisis un mot qui guide" },
+  { "id": 57, "title": "Décide d’une énergie à cultiver" },
+  { "id": 57, "title": "Note l’intention en une phrase" },
+  { "id": 57, "title": "Rappelle-toi ce qui compte vraiment" },
+  { "id": 57, "title": "Relie ton intention à un besoin" },
+  { "id": 57, "title": "Imagine ton premier geste aligné" },
+  { "id": 57, "title": "Évite d’en choisir trop" },
+  { "id": 57, "title": "Formule-la simplement et clairement" },
+  { "id": 57, "title": "Choisis une intention réaliste" },
+  { "id": 57, "title": "Pose-la avant de te coucher" },
   {
     "id": 58,
     "title": "Prévenir les autres en avance"
@@ -2403,50 +2253,16 @@ const HABIT_TIPS = [
     "id": 60,
     "title": "Se féliciter pour chaque soirée réussie"
   },
-  {
-    "id": 61,
-    "title": "Baisser la lumière principale"
-  },
-  {
-    "id": 61,
-    "title": "Allumer une lampe douce ou une bougie"
-  },
-  {
-    "id": 61,
-    "title": "Mettre une musique calme à faible volume"
-  },
-  {
-    "id": 61,
-    "title": "Ranger deux ou trois objets visibles"
-  },
-  {
-    "id": 61,
-    "title": "Ouvrir la fenêtre quelques minutes"
-  },
-  {
-    "id": 61,
-    "title": "Choisir une odeur agréable si on aime"
-  },
-  {
-    "id": 61,
-    "title": "Couper les sons agressifs de fond"
-  },
-  {
-    "id": 61,
-    "title": "S’asseoir quelques instants pour ressentir"
-  },
-  {
-    "id": 61,
-    "title": "Éviter de lancer une grosse tâche juste après"
-  },
-  {
-    "id": 61,
-    "title": "Garder cette ambiance pour un moment précis"
-  },
-  {
-    "id": 62,
-    "title": "Mettre un réveil 15 à 25 minutes"
-  },
+  { "id": 61, "title": "Éteins toutes les notifications" },
+  { "id": 61, "title": "Prépare une boisson chaude" },
+  { "id": 61, "title": "Choisis un coin confortable" },
+  { "id": 61, "title": "Respire profondément trente secondes" },
+  { "id": 61, "title": "Écoute un son apaisant" },
+  { "id": 61, "title": "Ferme les yeux un instant" },
+  { "id": 61, "title": "Étire doucement ton dos" },
+  { "id": 61, "title": "Mets une lumière tamisée" },
+  { "id": 61, "title": "Laisse ton téléphone au loin" },
+  { "id": 61, "title": "Accorde-toi cinq minutes pour rien" },
   {
     "id": 62,
     "title": "S’allonger si possible ou s’asseoir confortablement"

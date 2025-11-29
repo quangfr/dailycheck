@@ -138,6 +138,14 @@
                     <option value="2">2 semaines</option>
                     <option value="3">3 semaines</option>
                     <option value="4">4 semaines</option>
+                    <option value="5">5 semaines</option>
+                    <option value="6">6 semaines</option>
+                    <option value="7">7 semaines</option>
+                    <option value="8">8 semaines</option>
+                    <option value="9">9 semaines</option>
+                    <option value="10">10 semaines</option>
+                    <option value="11">11 semaines</option>
+                    <option value="12">12 semaines</option>
                   </select>
                 </label>
               </div>
@@ -369,8 +377,15 @@
         <div class="grid">
           <div class="opt" id="addHabit">
             <div class="emoji">🌱</div>
-            <div><b>Planter des habitudes</b>
-              <div class="subtitle">Démarrer des nouvelles routines</div>
+            <div><b>Ajouter des habitudes</b>
+              <div class="subtitle">Démarrer des nouvelles routines </div>
+            </div>
+          </div>
+          <div class="opt" id="addCustomHabit">
+            <div class="emoji">✨</div>
+            <div>
+              <b>Créer une habitude personnalisée</b>
+              <div class="subtitle">Définis ton rituel et sa récurrence sur le jour affiché.</div>
             </div>
           </div>
           <div class="opt" id="installApp">
@@ -380,6 +395,14 @@
               <div class="subtitle">Profite d'un accès plus rapide et confortable</div>
             </div>
           </div>
+          <div class="opt" id="menuFeedback">
+            <div class="emoji">📝</div>
+            <div>
+              <b>Donner mon avis</b>
+              <div class="subtitle">Parle-nous de ton expérience et de tes envies</div>
+            </div>
+          </div>
+
 
           <div class="opt auth-action hide" id="menuLogin">
             <div class="emoji">🔐</div>
@@ -414,10 +437,39 @@
     </div>
   </div>
 
-  <div class="modal" id="modalSpotlight">
+  <div class="modal feedback" id="modalFeedback">
     <div class="sheet">
       <div class="sheetHeader">
-        <div>Découverte rapide</div>
+        <button type="button" class="backMini menu-back">←</button>
+        <div id="feedbackTitle">Donner son avis</div><button class="closeX" id="closeFeedback">⨉</button>
+      </div>
+      <div class="sheetBody">
+        <form id="feedbackForm" class="grid feedback-form">
+          <div class="field">
+            <label><b>Type</b></label>
+            <select id="feedbackType" required>
+              <option value="bug">Bug / blocage</option>
+              <option value="suggestion">Suggestion</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+          <div class="field message-field">
+            <label><b>Message</b></label>
+            <textarea id="feedbackMessage" rows="8" placeholder="Raconte-nous ce que tu veux partager..." required></textarea>
+          </div>
+          <div class="detail-actions">
+            <button type="button" class="btn" id="feedbackCancel">Annuler</button>
+            <button type="submit" class="btn primary" id="feedbackSend">Envoyer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal spotlight" id="modalSpotlight">
+    <div class="sheet">
+      <div class="sheetHeader">
+        <div>Tour guidé</div>
         <button class="closeX" id="closeSpotlight">⨉</button>
       </div>
       <div class="sheetBody">
@@ -574,7 +626,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '0.11.28.2';
+    const APP_VERSION = '2025.11.29';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1039,24 +1091,28 @@
     const LOADER_ROTATION_MS = 60000;
     const SPOTLIGHT_STEPS = [
       {
-        title: 'Bienvenue sur Habitube',
-        body: 'Habitube t’accompagne pour planter, suivre et célébrer de petites routines. Chaque jour, ton jardin évolue selon tes actions et celles de ton équipe.'
+        title: 'Bienvenue sur Habitube 🌱',
+        body: 'Plante, suis et célèbre tes petites routines partagées. Chaque geste nourrit ton jardin intérieur'
       },
       {
-        title: 'Actionner une habitude',
-        body: 'Clique (ou tape) sur une habitude pour la marquer comme réalisée, et fais un appui long (ou clic droit) pour d’autres actions utiles comme afficher les détails.'
+        title: 'Tes réalisations du jour ✨',
+        body: 'Appuie sur une habitude pour valider sa réalisation ou fais un appui long pour accéder à d’autres actions',
+        focusSelector: '#cards .card.s0'
       },
       {
-        title: 'Naviguer par jour',
-        body: 'Utilise les flèches au-dessus de la liste ou fais glisser vers la gauche/droite pour changer la date et voir les habitudes d’une autre journée.'
+        title: 'Changer de jour ↔️',
+        body: 'Utilise les flèches ou glisse la liste pour voir les habitudes d’un jour suivant ou précédant',
+        focusSelector: '#daysWrap'
       },
       {
-        title: 'Ajouter de nouvelles habitudes',
-        body: 'Clique sur le bouton ☰ pour ouvrir le menu et planter de nouvelles habitudes depuis la bibliothèque.'
+        title: 'Trouver des routines ➕',
+        body: 'Le bouton + ouvre le menu pour ajouter une nouvelle habitude.',
+        focusSelector: '#addBtn'
       },
       {
-        title: 'Consulter ton profil',
-        body: 'Clique sur ton nom “openspace” ou la section Profil pour afficher tes classements, ta régularité et tes préférences.'
+        title: 'Suivre ta performance ☀️',
+        body: 'Clique sur ton nom pour consulter ton profil, tes stats et suivre les autres.',
+        focusSelector: '#openSpace'
       }
     ];
     const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
@@ -1346,6 +1402,7 @@
     hydrateHabitListSnapshotCache();
 
     const STORAGE_MAGIC_LINK_EMAIL_KEY = 'habitu-magic-link-email';
+    const STORAGE_CUSTOM_HABIT_NOTICE_KEY = 'habitu-custom-habit-notice';
 
     function safeStorageGet(key) {
       try {
@@ -1369,6 +1426,11 @@
     function clearMagicLinkEmail() {
       if (typeof window === 'undefined') return;
       localStorage.removeItem(STORAGE_MAGIC_LINK_EMAIL_KEY);
+    }
+    function showCustomHabitNotice() {
+      if (safeStorageGet(STORAGE_CUSTOM_HABIT_NOTICE_KEY)) return;
+      safeStorageSet(STORAGE_CUSTOM_HABIT_NOTICE_KEY, '1');
+      window.confirm('Les stats ne comptent pas les habitudes personnalisées. Il est recommandé de modifier l’intitulé d’une habitude partagée proche.');
     }
     const HABIT_GARDENERS_LOCAL_KEY = 'habitu-habit-gardeners-cache';
     const HABIT_GARDENERS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
@@ -1501,7 +1563,7 @@
       return readSpaceTimestamp(SPACE_CHANGE_KEY);
     }
     function shouldQueueSpaceSnapshot() {
-      return Boolean(currentProfile && isProfileModeVisible(currentProfile));
+      return shouldPersistSpaceData();
     }
     function markSpaceDirty() {
       if (!shouldQueueSpaceSnapshot()) return;
@@ -2296,7 +2358,7 @@
     function readRecurrenceConfigFromForm(habit, { modeRadios, intervalSelect, startDateInput, endDateInput, dayInputs }) {
       const mode = getSelectedRecurrenceMode(modeRadios);
       const intervalWeeks = mode === 'interval'
-        ? Math.max(2, Math.min(4, Number(intervalSelect?.value) || 2))
+        ? Math.max(2, Math.min(12, Number(intervalSelect?.value) || 2))
         : 1;
       const startDateValue = startDateInput
         ? toIsoDateString(parseDateInput(startDateInput.value) || curDate())
@@ -2312,6 +2374,33 @@
         endDate: endDateValue,
         weekDays
       });
+    }
+
+    function normalizeRecurrenceForComparison(config) {
+      const safeUnit = (config?.unit || 'week').toString().toLowerCase();
+      const unit = safeUnit === 'week' ? 'week' : 'day';
+      const interval = Math.max(1, Number.isFinite(Number(config?.interval)) ? Number(config.interval) : 1);
+      const startDate = config?.startDate || '';
+      const endDate = config?.endDate || '';
+      const weekDays = normalizeDayList(config?.weekDays || []).sort((a, b) => a - b);
+      return { unit, interval, startDate, endDate, weekDays };
+    }
+
+    function areRecurrenceConfigsEqual(a, b) {
+      const left = normalizeRecurrenceForComparison(a);
+      const right = normalizeRecurrenceForComparison(b);
+      if (left.unit !== right.unit || left.interval !== right.interval || left.startDate !== right.startDate || left.endDate !== right.endDate) {
+        return false;
+      }
+      if (left.weekDays.length !== right.weekDays.length) {
+        return false;
+      }
+      for (let i = 0; i < left.weekDays.length; i += 1) {
+        if (left.weekDays[i] !== right.weekDays[i]) {
+          return false;
+        }
+      }
+      return true;
     }
 
 
@@ -2511,6 +2600,59 @@
     let selectedGardenerIsSelf = false;
     let spotlightStepIndex = 0;
     let spotlightCallback = null;
+    const SPOTLIGHT_FOCUS_PADDING = 8;
+    const spotlightFocusElement = (() => {
+      if (typeof document === 'undefined' || !document.body) return null;
+      const existing = document.getElementById('spotlightFocusZone');
+      if (existing) return existing;
+      const zone = document.createElement('div');
+      zone.id = 'spotlightFocusZone';
+      zone.className = 'spotlight-focus-zone';
+      zone.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(zone);
+      return zone;
+    })();
+    function updateSpotlightFocus() {
+      if (!spotlightFocusElement) return;
+      const modal = $("#modalSpotlight");
+      if (!modal || !modal.classList.contains('on')) {
+        spotlightFocusElement.classList.remove('visible');
+        return;
+      }
+      const step = SPOTLIGHT_STEPS[Math.min(Math.max(spotlightStepIndex, 0), SPOTLIGHT_STEPS.length - 1)];
+      const selector = step?.focusSelector;
+      if (!selector) {
+        spotlightFocusElement.classList.remove('visible');
+        return;
+      }
+      const target = document.querySelector(selector);
+      if (!target) {
+        spotlightFocusElement.classList.remove('visible');
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      if (!rect || (rect.width === 0 && rect.height === 0)) {
+        spotlightFocusElement.classList.remove('visible');
+        return;
+      }
+      const pad = SPOTLIGHT_FOCUS_PADDING;
+      const top = Math.max(rect.top - pad, 0);
+      const left = Math.max(rect.left - pad, 0);
+      spotlightFocusElement.style.width = `${Math.max(rect.width + pad * 2, 0)}px`;
+      spotlightFocusElement.style.height = `${Math.max(rect.height + pad * 2, 0)}px`;
+      spotlightFocusElement.style.top = `${top}px`;
+      spotlightFocusElement.style.left = `${left}px`;
+      spotlightFocusElement.classList.add('visible');
+    }
+    function hideSpotlightFocus() {
+      if (!spotlightFocusElement) return;
+      spotlightFocusElement.classList.remove('visible');
+    }
+    if (typeof window !== 'undefined') {
+      const spotlightRefresh = () => updateSpotlightFocus();
+      window.addEventListener('resize', spotlightRefresh);
+      window.addEventListener('scroll', spotlightRefresh, { passive: true });
+    }
     const HABITU_FIREBASE_DB = window.HABITU_FIREBASE_DB;
     const ACTIVITY_BUFFER_MS = 3e3;
     const ACTIVITY_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
@@ -2560,10 +2702,11 @@
       return getProfileMode(profile) === 'visible';
     }
     function shouldWriteToFirestore(profile = currentProfile) {
+      if (!profile || profile.guest) return false;
       return Boolean(canWriteFirestore() && isProfileModeVisible(profile));
     }
     function shouldSyncActivities(profile = currentProfile) {
-      return Boolean(shouldWriteToFirestore(profile) && isProfileModeVisible(profile));
+      return Boolean(shouldWriteToFirestore(profile));
     }
     function getLastActivitySyncTime() {
       if (typeof window === 'undefined' || !window.localStorage) return null;
@@ -2604,12 +2747,9 @@
           name: updated.name,
           pseudo: updated.pseudo,
           tipsDisplayMode: updated.tipsDisplayMode,
-          pinnedHabits: updated.pinnedHabits,
-          postponedHabits: updated.postponedHabits,
-          forgottenHabits: updated.forgottenHabits,
-          showFriendBadges: updated.showFriendBadges,
+          favoriteGardeners: updated.favoriteGardeners,
           profileMode: normalized
-        });
+        }, { force: true });
       }
       renderCards();
       renderSpaceRank();
@@ -2720,12 +2860,9 @@
         name: updated.name,
         pseudo: updated.pseudo,
         tipsDisplayMode: updated.tipsDisplayMode,
-        pinnedHabits: updated.pinnedHabits,
-        postponedHabits: updated.postponedHabits,
-        forgottenHabits: updated.forgottenHabits,
-        showFriendBadges: updated.showFriendBadges,
-        favoriteGardeners: normalized
-      });
+        favoriteGardeners: normalized,
+        profileMode: updated.profileMode
+      }, { force: true });
       return normalized;
     }
 
@@ -2790,6 +2927,10 @@
     function refreshSpaceHeaderControls() {
       refreshGardenerFollowButton();
       refreshSpaceLogoutVisibility();
+      const deleteAccountBtn = $("#deleteAccountBtn");
+      if (deleteAccountBtn) {
+        deleteAccountBtn.classList.toggle('hide', !currentProfile?.email);
+      }
     }
     function hasLocalDataForImport() {
       if (Object.keys(SPACES).length) return true;
@@ -3204,46 +3345,76 @@
     }
     function persistUserProfile(profile, { force = false, suppressErrors = true } = {}) {
       if (!profile?.uid) return Promise.resolve();
-      if (!force) {
+      const isGuest = Boolean(profile.guest);
+      if (!force && !isGuest) {
         markSpaceDirty();
         return Promise.resolve();
       }
+      if (!HABITU_FIREBASE_DB) return Promise.resolve();
       const payload = {
-        name: profile.name,
-        email: profile.email,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
-      if (profile.tipsDisplayMode !== undefined) {
-        payload.tipsDisplayMode = profile.tipsDisplayMode;
+      if (isGuest) {
+        payload.pseudo = profile.pseudo || '';
+      } else {
+        payload.name = profile.name;
+        payload.email = profile.email;
+        payload.pseudo = profile.pseudo || '';
+        payload.profileMode = profile.profileMode;
+        if (profile.tipsDisplayMode !== undefined) {
+          payload.tipsDisplayMode = normalizeTipsDisplayMode(profile.tipsDisplayMode);
+        }
+        if (profile.favoriteGardeners !== undefined) {
+          payload.favoriteGardeners = normalizeFavoriteGardeners(profile.favoriteGardeners);
+        }
       }
-      if (profile.pinnedHabits !== undefined) {
-        payload.pinnedHabits = normalizeHabitArray(profile.pinnedHabits);
-      }
-      if (profile.postponedHabits !== undefined) {
-        payload.postponedHabits = normalizePostponedMap(profile.postponedHabits);
-      }
-      if (profile.forgottenHabits !== undefined) {
-        payload.forgottenHabits = normalizeHabitArray(profile.forgottenHabits);
-      }
-      if (profile.showFriendBadges !== undefined) {
-        payload.showFriendBadges = profile.showFriendBadges;
-      }
-      if (profile.favoriteGardeners !== undefined) {
-        payload.favoriteGardeners = normalizeFavoriteGardeners(profile.favoriteGardeners);
-      }
-      if (profile.pseudo !== undefined) {
-        payload.pseudo = profile.pseudo;
-        const normalizedPseudo = sanitizePseudo(profile.pseudo);
+      if (payload.pseudo) {
+        const normalizedPseudo = sanitizePseudo(payload.pseudo);
         if (normalizedPseudo) {
           payload.pseudoNormalized = normalizedPseudo.toLowerCase();
         }
       }
-      if (profile.profileMode !== undefined) {
-        payload.profileMode = profile.profileMode;
-      }
       const op = HABITU_FIREBASE_DB.collection('users').doc(profile.uid)
         .set(payload, { merge: true });
       return suppressErrors ? op.catch(() => { }) : op;
+    }
+
+    const DEFAULT_SPACE_HABIT_SETTINGS = {
+      pinnedHabits: [],
+      postponedHabits: {},
+      hiddenHabits: []
+    };
+
+    function sanitizeSpaceHabitSettings(settings = {}) {
+      return {
+        pinnedHabits: normalizeHabitArray(settings.pinnedHabits),
+        postponedHabits: normalizePostponedMap(settings.postponedHabits),
+        hiddenHabits: normalizeHabitArray(settings.hiddenHabits)
+      };
+    }
+
+    function getSpaceHabitSettings(space = getSpace()) {
+      if (!space) return { ...DEFAULT_SPACE_HABIT_SETTINGS };
+      if (!space.habitSettings || typeof space.habitSettings !== 'object') {
+        space.habitSettings = { ...DEFAULT_SPACE_HABIT_SETTINGS };
+      } else {
+        space.habitSettings = {
+          ...DEFAULT_SPACE_HABIT_SETTINGS,
+          ...sanitizeSpaceHabitSettings(space.habitSettings)
+        };
+      }
+      return space.habitSettings;
+    }
+
+    function shouldPersistSpaceData(profile = currentProfile) {
+      return shouldWriteToFirestore(profile);
+    }
+
+    function persistCurrentSpaceSettings({ force = true } = {}) {
+      if (!spaceId || !shouldPersistSpaceData()) return Promise.resolve();
+      const space = getSpace();
+      if (!space) return Promise.resolve();
+      return persistSpaceDoc(spaceId, {}, { force, suppressErrors: false });
     }
 
     async function loadRemoteUserProfile(uid) {
@@ -3266,11 +3437,10 @@
         uid: updated.uid,
         email: updated.email,
         name: updated.name,
+        pseudo: updated.pseudo,
         tipsDisplayMode: normalized,
-        pinnedHabits: updated.pinnedHabits,
-        postponedHabits: updated.postponedHabits,
-        showFriendBadges: updated.showFriendBadges
-      });
+        profileMode: updated.profileMode
+      }, { force: true });
     }
     async function updateUserPseudo(newPseudo) {
       if (!currentProfile) return;
@@ -3285,14 +3455,11 @@
         name: updated.name,
         pseudo: normalized,
         tipsDisplayMode: updated.tipsDisplayMode,
-        pinnedHabits: updated.pinnedHabits,
-        postponedHabits: updated.postponedHabits,
-        forgottenHabits: updated.forgottenHabits,
-        showFriendBadges: updated.showFriendBadges
+        profileMode: updated.profileMode
       }, { force: forceWrite });
     }
     function persistSpaceDoc(spaceId, data = {}, { force = false, suppressErrors = true } = {}) {
-      if (!spaceId) return Promise.resolve();
+      if (!spaceId || !shouldPersistSpaceData()) return Promise.resolve();
       if (!force) {
         markSpaceDirty();
         return Promise.resolve();
@@ -3302,11 +3469,15 @@
       const members = sanitizeSpaceMembers(space.members);
       const memberSettings = ensureSpaceMemberSettings(space);
       const normalizedPseudo = normalizeSpacePseudo(space.pseudo || '');
+      const habitSettings = getSpaceHabitSettings(space);
       const payload = {
         ownerId: space.ownerId || null,
         pseudo: space.pseudo || '',
         pseudoNormalized: normalizedPseudo,
         type: space.type || 'individual',
+        members,
+        memberSettings,
+        habitSettings,
         ...(data || {}),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
@@ -3316,6 +3487,7 @@
 
     function persistHabit(spaceId, habitData, { force = false } = {}) {
       if (!spaceId || !habitData?.id) return Promise.resolve();
+      if (!shouldPersistSpaceData()) return Promise.resolve();
       if (!force) {
         markSpaceDirty();
         markFirstHabitCreated();
@@ -3738,51 +3910,19 @@
       });
       return trimmed;
     }
-    function getProfileHabitArray(field) {
-      return normalizeHabitArray(currentProfile?.[field]);
-    }
     function getPinnedHabitIds() {
-      return getProfileHabitArray('pinnedHabits');
+      return getSpaceHabitSettings().pinnedHabits;
     }
     function isHabitPinned(habitId) {
       if (!habitId) return false;
       return getPinnedHabitIds().includes(String(habitId));
     }
     function getHiddenHabits() {
-      return normalizeHabitArray(currentProfile?.forgottenHabits);
+      return getSpaceHabitSettings().hiddenHabits;
     }
     function isHabitHidden(habitId) {
       if (!habitId) return false;
       return getHiddenHabits().includes(String(habitId));
-    }
-    async function persistHabitProfileFields(fields = {}) {
-      const payloadFields = {};
-      let hasField = false;
-      if (fields.pinnedHabits !== undefined) {
-        payloadFields.pinnedHabits = normalizeHabitArray(fields.pinnedHabits);
-        hasField = true;
-      }
-      if (fields.postponedHabits !== undefined) {
-        payloadFields.postponedHabits = normalizePostponedMap(fields.postponedHabits);
-        hasField = true;
-      }
-      if (fields.forgottenHabits !== undefined) {
-        payloadFields.forgottenHabits = normalizeHabitArray(fields.forgottenHabits);
-        hasField = true;
-      }
-      if (!hasField) return;
-      const updated = { ...(currentProfile || {}), ...payloadFields };
-      persistProfile(updated);
-      await persistUserProfile({
-        uid: updated.uid,
-        email: updated.email,
-        name: updated.name,
-        tipsDisplayMode: updated.tipsDisplayMode,
-        pinnedHabits: updated.pinnedHabits,
-        postponedHabits: updated.postponedHabits,
-        forgottenHabits: updated.forgottenHabits,
-        showFriendBadges: updated.showFriendBadges
-      });
     }
 
     function getDescTipSeed(baseDate = curDate()) {
@@ -3844,14 +3984,7 @@
         desc.classList.add('hidden');
         setDescText(shortText);
       };
-      if (!hasNote && tipText) {
-        const shouldShowTip = tipsMode === 'oui' && numericState === 0;
-        if (shouldShowTip) {
-          showTip();
-          return;
-        }
-      }
-      if (hasNote && numericState === 1) {
+      if (hasNote) {
         showFull();
         return;
       }
@@ -3874,36 +4007,38 @@
     function hideHabit(habitId) {
       if (!habitId) return;
       const normalizedId = String(habitId);
-      const hidden = getHiddenHabits();
-      if (hidden.includes(normalizedId)) return;
-      const next = [...hidden, normalizedId];
-      persistHabitProfileFields({ forgottenHabits: next }).catch(() => { });
+      const settings = getSpaceHabitSettings();
+      if (settings.hiddenHabits.includes(normalizedId)) return;
+      settings.hiddenHabits = normalizeHabitArray([...settings.hiddenHabits, normalizedId]);
+      persistCurrentSpaceSettings();
       showToast('Habitude cachée.');
       renderCards();
     }
     function showHabit(habitId) {
       if (!habitId) return;
       const normalizedId = String(habitId);
-      const next = getHiddenHabits().filter(id => id !== normalizedId);
-      persistHabitProfileFields({ forgottenHabits: next }).catch(() => { });
+      const settings = getSpaceHabitSettings();
+      settings.hiddenHabits = settings.hiddenHabits.filter(id => id !== normalizedId);
+      persistCurrentSpaceSettings();
       showToast('Habitude affichée.');
       renderCards();
     }
     function pinHabitAction(habitId) {
       if (!habitId) return;
       const normalizedId = String(habitId);
-      const pinned = getPinnedHabitIds();
-      if (pinned.includes(normalizedId)) return;
-      const nextPinned = [...pinned, normalizedId];
-      persistHabitProfileFields({ pinnedHabits: nextPinned }).catch(() => { });
+      const settings = getSpaceHabitSettings();
+      if (settings.pinnedHabits.includes(normalizedId)) return;
+      settings.pinnedHabits = normalizeHabitArray([...settings.pinnedHabits, normalizedId]);
+      persistCurrentSpaceSettings();
       showToast('Habitude épinglée en haut.');
       renderCards();
     }
     function unpinHabitAction(habitId) {
       if (!habitId) return;
       const normalizedId = String(habitId);
-      const nextPinned = getPinnedHabitIds().filter(id => id !== normalizedId);
-      persistHabitProfileFields({ pinnedHabits: nextPinned }).catch(() => { });
+      const settings = getSpaceHabitSettings();
+      settings.pinnedHabits = settings.pinnedHabits.filter(id => id !== normalizedId);
+      persistCurrentSpaceSettings();
       showToast('Habitude détachée.');
       renderCards();
     }
@@ -4636,7 +4771,7 @@
     }
     /* ===== Calendriers ===== */
     /* ===== Navigation vues ===== */
-    function showHome() { clearSelectedGardener(); hideAll(); $("#home").classList.add('active'); $("#daysWrap").classList.remove('hide') }
+    function showHome() { cleanupPendingCustomHabit(); clearSelectedGardener(); hideAll(); $("#home").classList.add('active'); $("#daysWrap").classList.remove('hide') }
     function hideAll() { $$('#home,#detail,#space,#profile').forEach(v => v.classList.remove('active')) }
     $("#backHome").onclick = showHome;
 
@@ -5704,7 +5839,7 @@
           if (sp && Array.isArray(sp.ch)) {
             sp.ch = sp.ch.filter(habit => habit?.id !== activeId);
           }
-          persistHabit(spaceId, { id: activeId, deleted: true });
+          persistHabit(spaceId, { id: activeId, deleted: true }, { force: true });
           close(mHabit);
           activeId = null;
           showHome();
@@ -5740,20 +5875,9 @@
             showToast('Selectionne au moins un jour pour la récurrence hebdomadaire.', { type: 'error' });
             return;
           }
-          const previousRecurrence = normalizeRepeatConfig(it, storedRecurrence || {});
-          const normalizeSection = config => {
-            const unit = (config.unit || 'week').toString().toLowerCase();
-            const interval = Number.isFinite(Number(config.interval)) ? Number(config.interval) : 1;
-            const weekDays = (Array.isArray(config.weekDays) ? config.weekDays : [])
-              .map(day => Number(day))
-              .filter(day => Number.isFinite(day))
-              .map(day => ((day % 7) + 7) % 7)
-              .sort((a, b) => a - b);
-            return JSON.stringify({ unit, interval, weekDays });
-          };
-          const normalizedPrev = normalizeSection(previousRecurrence);
-          const normalizedNext = normalizeSection(repeatConfigPayload);
-          if (normalizedPrev !== normalizedNext) {
+          const previousRecurrence = getHabitRepeatConfig(it);
+          const recurrenceChanged = !areRecurrenceConfigsEqual(previousRecurrence, repeatConfigPayload);
+          if (recurrenceChanged) {
             const confirmText = 'Changer la récurrence réinitialisera les statistiques de cette habitude. Continuer ?';
             if (!window.confirm(confirmText)) {
               return;
@@ -5770,9 +5894,17 @@
           };
           if (it) {
             it.repeatConfig = { ...repeatConfigPayload };
+            it.deleted = false;
+            if (it.__customDraft) {
+              it.__customDraft = false;
+            }
             cacheRepeatConfigFromHabit(it);
           }
-          await persistHabit(spaceId, payload);
+          await persistHabit(spaceId, payload, { force: true });
+          persistLocalSpaceState();
+          if (activeId === pendingCustomHabitId) {
+            pendingCustomHabitId = null;
+          }
           activeId = null;
           renderCards();
           showHome();
@@ -6394,9 +6526,15 @@
     $("#backFromSpace").onclick = () => { clearSelectedGardener(); showHome(); };
 
     /* Modales */
-    const mAdd = $("#modalAdd"), mHabit = $("#modalHabit"), mProfileSetup = $("#modalProfileSetup");
+    const mAdd = $("#modalAdd"), mHabit = $("#modalHabit"), mProfileSetup = $("#modalProfileSetup"), mFeedback = $("#modalFeedback");
     const habitBackBtn = mHabit?.querySelector('.menu-back');
     const closeHabitBtn = $("#closeHabit");
+    const closeFeedbackBtn = $("#closeFeedback");
+    const feedbackCancelBtn = $("#feedbackCancel");
+    const feedbackForm = $("#feedbackForm");
+    const feedbackTypeSelect = $("#feedbackType");
+    const feedbackMessageInput = $("#feedbackMessage");
+    const feedbackSendBtn = $("#feedbackSend");
     const deleteAccountBtn = $("#deleteAccountBtn");
     const installAppOpt = $("#installApp");
     const profileModeSelector = $("#profileModeSelector");
@@ -6419,6 +6557,8 @@
     let habitWizardStep = 1;
     let pendingGardenPseudo = '';
     const prefsTipsSelect = $("#prefsTipsDisplayMode");
+    const FEEDBACK_TYPE_VALUES = ['bug', 'suggestion', 'autre'];
+    let feedbackSending = false;
     function updateHabitModalControls() {
       if (closeHabitBtn) {
         closeHabitBtn.classList.remove('hide');
@@ -6430,6 +6570,75 @@
       updateHabitModalControls();
       step1();
       open(mHabit);
+    }
+    function getFeedbackProfileName() {
+      return (currentProfile?.name || currentProfile?.pseudo || '').trim();
+    }
+    function getFeedbackProfileEmail() {
+      return currentProfile?.email || '';
+    }
+    function getFeedbackOwnerUuid() {
+      if (currentProfile?.uuid) return currentProfile.uuid;
+      if (currentProfile?.uid) return currentProfile.uid;
+      return getOrCreateGuestId();
+    }
+    function resetFeedbackForm() {
+      if (feedbackTypeSelect) {
+        feedbackTypeSelect.value = FEEDBACK_TYPE_VALUES[0];
+      }
+      if (feedbackMessageInput) {
+        feedbackMessageInput.value = '';
+      }
+    }
+    function openFeedbackModal() {
+      if (!mFeedback) return;
+      resetFeedbackForm();
+      open(mFeedback);
+    }
+    async function handleFeedbackSubmit(event) {
+      if (event) event.preventDefault();
+      if (feedbackSending) return;
+      if (!feedbackForm || !feedbackMessageInput || !feedbackTypeSelect) return;
+      const message = (feedbackMessageInput.value || '').trim();
+      if (!message) {
+        showToast('Décris ton message avant d’envoyer.', { type: 'error' });
+        return;
+      }
+      const type = feedbackTypeSelect.value;
+      if (!FEEDBACK_TYPE_VALUES.includes(type)) {
+        showToast('Choisis un type pour ton retour.', { type: 'error' });
+        return;
+      }
+      if (!HABITU_FIREBASE_DB) {
+        showToast('Impossible d’envoyer ton avis pour le moment.', { type: 'error' });
+        return;
+      }
+      feedbackSending = true;
+      if (feedbackSendBtn) {
+        feedbackSendBtn.disabled = true;
+      }
+      const payload = {
+        type,
+        message,
+        profileName: getFeedbackProfileName(),
+        profileEmail: getFeedbackProfileEmail(),
+        uuid: getFeedbackOwnerUuid(),
+        appVersion: APP_VERSION,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent || '' : '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      try {
+        await HABITU_FIREBASE_DB.collection('feedback').doc().set(payload);
+        close(mFeedback);
+        showToast('Avis envoyé', { type: 'success' });
+      } catch (err) {
+        showToast('Impossible d’envoyer ton avis pour le moment.', { type: 'error' });
+      } finally {
+        feedbackSending = false;
+        if (feedbackSendBtn) {
+          feedbackSendBtn.disabled = false;
+        }
+      }
     }
     $("#addBtn").onclick = () => {
       if (currentProfile?.email && isRunningAsPWA()) {
@@ -6498,6 +6707,7 @@
     }
     $("#addHabit").onclick = () => { close(mAdd); openHabitFlow('menu'); }
     const menuAddHabit = $("#addHabit");
+    const menuCustomHabit = $("#addCustomHabit");
     const menuLoginOpt = $("#menuLogin");
     const menuVisibleProfile = $("#menuMakeProfileVisible");
     const addModal = $("#modalAdd");
@@ -6507,6 +6717,16 @@
       if (opt.id === 'menuLogin') {
         close(mAdd);
         showAuthOverlay(true);
+        return;
+      }
+      if (opt.id === 'menuFeedback') {
+        close(mAdd);
+        openFeedbackModal();
+        return;
+      }
+      if (opt.id === 'addCustomHabit') {
+        close(mAdd);
+        await openCustomHabitCreator();
         return;
       }
       if (opt.id === 'menuMakeProfileVisible') {
@@ -6519,11 +6739,15 @@
         return;
       }
     });
+    feedbackForm?.addEventListener('submit', handleFeedbackSubmit);
     function updateAddModalOptions() {
       const hasSpaces = allowedSpaces.length > 0;
       const isAuthenticated = !!currentProfile?.email;
       if (menuAddHabit) {
         menuAddHabit.classList.toggle('hide', !hasSpaces);
+      }
+      if (menuCustomHabit) {
+        menuCustomHabit.classList.toggle('hide', !hasSpaces);
       }
       if (menuLoginOpt) {
         menuLoginOpt.classList.toggle('hide', isAuthenticated);
@@ -6553,6 +6777,48 @@
       if (currentProfile.pseudo) return currentProfile.pseudo;
       return regenerateProfilePseudo({ showNotification: false });
     }
+    function getLibraryHabitByIdBeforeLoad(id) {
+      if (LIBRARY_HABITS.length) {
+        return LIBRARY_HABITS.find(habit => String(habit.id) === String(id));
+      }
+      if (Array.isArray(window.LIBRARY_JSON_DATA)) {
+        return window.LIBRARY_JSON_DATA.find(habit => String(habit.id) === String(id));
+      }
+      return null;
+    }
+
+    function buildDefaultPersonalSpaceEntry({ pseudo, ownerId, ownerLabel, normalizedEmail }) {
+      const members = normalizedEmail ? [normalizedEmail] : [];
+      const memberSettings = {};
+      if (normalizedEmail) {
+        memberSettings[normalizeMemberKey(normalizedEmail)] = { name: ownerLabel };
+      }
+      const spaceEntry = {
+        emoji: '👤',
+        label: pseudo,
+        type: 'individual',
+        habitMode: 'libre',
+        ch: [],
+        ownerId: ownerId || null,
+        members,
+        createdAt: new Date(),
+        editorRights: 'admin',
+        memberSettings,
+        habitSettings: { ...DEFAULT_SPACE_HABIT_SETTINGS },
+        pseudo,
+        pseudoNormalized: normalizeSpacePseudo(pseudo)
+      };
+      const defaultHabitSource = getLibraryHabitByIdBeforeLoad(1);
+      // no-op
+      let defaultHabit = null;
+      if (defaultHabitSource) {
+        defaultHabit = buildHabitPayload(spaceEntry, defaultHabitSource);
+        spaceEntry.ch.push(defaultHabit);
+        // custom habit built
+      }
+      return { spaceEntry, defaultHabit };
+    }
+
     async function createPersonalSpace() {
       if (!currentProfile) return;
       await ensureProfileSetup();
@@ -6583,48 +6849,32 @@
           updSel();
           renderCards();
           maybeTogglePrivateAdd();
-          return existingId;
-        }
+      return existingId;
+    }
       }
       const id = generateSpaceId();
-      const members = normalizedEmail ? [normalizedEmail] : [];
-      const memberSettings = {};
-      if (normalizedEmail) {
-        memberSettings[normalizeMemberKey(normalizedEmail)] = { name: ownerLabel };
-      }
-      const spaceEntry = {
-        emoji: '👤',
-        label: pseudo,
-        type: 'individual',
-        habitMode: 'libre',
-        ch: [],
-        ownerId: ownerId || null,
-        members,
-        createdAt: new Date(),
-        editorRights: 'admin',
-        memberSettings,
+      const { spaceEntry, defaultHabit } = buildDefaultPersonalSpaceEntry({
         pseudo,
-        pseudoNormalized: normalizeSpacePseudo(pseudo)
-      };
+        ownerId,
+        ownerLabel,
+        normalizedEmail
+      });
       SPACES[id] = spaceEntry;
       setActiveSpace(id);
       userName = ownerLabel;
       setLastMemberName(ownerLabel);
       allowedSpaces = [...new Set([...allowedSpaces, id])];
-      const defaultHabitSource = LIBRARY_HABITS.find(habit => String(habit.id) === '1' || habit.id === 1);
-      let defaultHabit = null;
-      if (defaultHabitSource) {
-        defaultHabit = buildHabitPayload(spaceEntry, defaultHabitSource);
-        spaceEntry.ch.push(defaultHabit);
-      }
-      const payload = {
-        ...spaceEntry,
-        createdBy: normalizedEmail || null,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
-      await persistSpaceDoc(id, payload);
-      if (defaultHabit) {
-        await persistHabit(id, defaultHabit);
+      persistLocalSpaceState();
+      if (!currentProfile?.guest) {
+        const payload = {
+          ...spaceEntry,
+          createdBy: normalizedEmail || null,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        await persistSpaceDoc(id, payload, { force: true, suppressErrors: false });
+        if (defaultHabit) {
+          await persistHabit(id, defaultHabit, { force: true });
+        }
       }
       await loadHabitsForSpace(id);
       await loadActivitiesForSpace(id);
@@ -6638,6 +6888,7 @@
         openSpotlightTour(() => setTimeout(() => openHabitFlow('creation'), 32));
       }
       showHome();
+      persistLocalSpaceState();
     }
     let profileSetupPromise = null;
     let profileSetupResolver = null;
@@ -6701,6 +6952,58 @@
       }
     }
     let pendingSpotlightAfterSetup = false;
+    let pendingCustomHabitId = null;
+    let spotlightHabitAutoAdded = false;
+
+    function cleanupPendingCustomHabit() {
+      if (!pendingCustomHabitId) return;
+      const sp = getSpace();
+      if (sp && Array.isArray(sp.ch)) {
+        const idx = sp.ch.findIndex(habit => habit?.id === pendingCustomHabitId && habit.__customDraft && habit.deleted);
+        if (idx >= 0) {
+          sp.ch.splice(idx, 1);
+        }
+      }
+      pendingCustomHabitId = null;
+    }
+
+    async function openCustomHabitCreator() {
+      if (!requireAdmin('créer une habitude personnalisée')) return;
+      const sp = getSpace();
+      if (!sp) return;
+      if (!sp.ch) sp.ch = [];
+      cleanupPendingCustomHabit();
+      const habitId = `custom-${Date.now()}`;
+      const today = curDate();
+      const repeatConfig = normalizeRepeatConfig(null, {
+        unit: 'week',
+        interval: 1,
+        startDate: toIsoDateString(today),
+        weekDays: [today.getDay()]
+      });
+      const newHabit = {
+        id: habitId,
+        emoji: '✨',
+        titre: 'Nouvelle habitude',
+        desc: '',
+        note: '',
+        frequency: 1,
+        contexts: [],
+        needs: [],
+        spaces: [],
+        mode: isPersonalSpaceType(sp) ? { type: 'libre', n: 2 } : { type: 'commun', n: 2 },
+        repeatConfig,
+        addedAt: getWeekStart(new Date()),
+        deleted: true,
+        __customDraft: true
+      };
+      sp.ch.push(newHabit);
+      pendingCustomHabitId = habitId;
+      ensureHabit(habitId);
+      renderCards();
+      showCustomHabitNotice();
+      openDetail(habitId, null, 'settings');
+    }
 
     async function ensureProfileSetup() {
       if (!shouldPromptProfileSetup()) return;
@@ -6722,6 +7025,31 @@
       profileSetupPromise = null;
       closeProfileSetupModal();
     }
+    async function maybeEnsureHabitOneDuringSpotlight() {
+      if (spotlightHabitAutoAdded) return;
+      const sp = getSpace();
+      if (!sp || !spaceId) return;
+      const hasHabit1 = (sp.ch || []).some(h => String(h.id) === '1');
+      if (hasHabit1) {
+        spotlightHabitAutoAdded = true;
+        return;
+      }
+      const habitSource = getLibraryHabitById(1);
+      if (!habitSource) return;
+      const payload = buildHabitPayload(sp, habitSource, {
+        addedBy: getProfileCanonicalId() || getCurrentOwnerKey()
+      });
+      (sp.ch || (sp.ch = [])).push(payload);
+      persistLocalSpaceState();
+      if (!shouldPersistSpaceData()) {
+        markSpaceDirty();
+        markFirstHabitCreated();
+      }
+      await persistHabit(spaceId, payload, { force: shouldPersistSpaceData() });
+      spotlightHabitAutoAdded = true;
+      renderCards();
+    }
+
     function openSpotlightTour(callback) {
       const modal = $("#modalSpotlight");
       const content = $("#spotlightStepContent");
@@ -6741,13 +7069,19 @@
       const modal = $("#modalSpotlight");
       if (!content || !nextBtn || !prevBtn || !modal) return;
       const step = SPOTLIGHT_STEPS[Math.min(Math.max(spotlightStepIndex, 0), SPOTLIGHT_STEPS.length - 1)];
+      modal.classList.toggle('overlay', spotlightStepIndex === 0);
+      if (spotlightStepIndex === 0) {
+        maybeEnsureHabitOneDuringSpotlight();
+      }
       content.innerHTML = `<h3>${step.title}</h3><p>${step.body}</p>`;
       prevBtn.disabled = spotlightStepIndex === 0;
       nextBtn.textContent = spotlightStepIndex === SPOTLIGHT_STEPS.length - 1 ? 'Commencer' : 'Suivant';
+      updateSpotlightFocus();
     }
     function closeSpotlightTour({ proceed = false } = {}) {
       const modal = $("#modalSpotlight");
       if (modal) close(modal);
+      hideSpotlightFocus();
       const callback = spotlightCallback;
       spotlightCallback = null;
       if (proceed && typeof callback === 'function') {
@@ -6979,7 +7313,7 @@
       const contexts = Array.isArray(contextTags) ? contextTags.slice() : [];
       const needs = Array.isArray(needTags) ? needTags.slice() : [];
       if (titleEl) {
-        titleEl.textContent = 'Suggestions modifiables';
+        titleEl.textContent = 'Habitudes suggérées';
       }
       if (step1El) step1El.style.display = 'none';
       root.style.display = 'grid';
@@ -7011,13 +7345,17 @@
       heading.textContent = 'Choix des jours de la semaine';
       const dayWrapper = document.createElement('div');
       dayWrapper.className = 'habit-actions__days';
-      const selectedWeekDays = new Set();
+      const defaultWeekDay = curDate().getDay();
+      const selectedWeekDays = new Set([defaultWeekDay]);
       WEEKDAY_ORDER.forEach(day => {
         const dayBtn = document.createElement('button');
         dayBtn.type = 'button';
         dayBtn.className = 'habit-actions__day';
         dayBtn.textContent = WEEKDAY_SHORT_LABELS[day] || '';
         dayBtn.dataset.day = String(day);
+        if (selectedWeekDays.has(day)) {
+          dayBtn.classList.add('habit-actions__day--active');
+        }
         dayBtn.addEventListener('click', () => {
           if (selectedWeekDays.has(day)) {
             selectedWeekDays.delete(day);
@@ -7101,7 +7439,7 @@
           });
           (sp.ch || (sp.ch = [])).push(payload);
           ensureHabit(hid);
-          persistPromises.push(persistHabit(spaceId, payload));
+          persistPromises.push(persistHabit(spaceId, payload, { force: true }));
         });
         if (!persistPromises.length) return;
         const addedCount = persistPromises.length;
@@ -7114,6 +7452,12 @@
 
     closeHabitBtn?.addEventListener('click', () => {
       close(mHabit);
+    });
+    closeFeedbackBtn?.addEventListener('click', () => {
+      close(mFeedback);
+    });
+    feedbackCancelBtn?.addEventListener('click', () => {
+      close(mFeedback);
     });
     /* Jour +/- */
     function changeDayOffset(delta) {
@@ -7434,12 +7778,10 @@
           uid: updated.uid,
           email: updated.email,
           name: finalName,
+          pseudo: updated.pseudo,
           tipsDisplayMode: updated.tipsDisplayMode,
-          pinnedHabits: updated.pinnedHabits,
-          postponedHabits: updated.postponedHabits,
-          forgottenHabits: updated.forgottenHabits,
-          showFriendBadges: updated.showFriendBadges
-        });
+          profileMode: updated.profileMode
+        }, { force: true });
       }
       return finalName;
     }
@@ -7472,10 +7814,7 @@
       const remoteProfile = await loadRemoteUserProfile(user.uid);
       const fallbackTips = currentProfile?.tipsDisplayMode;
       const tipsDisplayMode = normalizeTipsDisplayMode(remoteProfile?.tipsDisplayMode || fallbackTips);
-      const pinnedHabits = Array.isArray(remoteProfile?.pinnedHabits) ? remoteProfile.pinnedHabits : [];
-      const postponedHabits = normalizePostponedMap(remoteProfile?.postponedHabits);
-      const forgottenHabits = Array.isArray(remoteProfile?.forgottenHabits) ? remoteProfile?.forgottenHabits : [];
-      const showFriendBadges = remoteProfile?.showFriendBadges !== false;
+      const favoriteGardeners = Array.isArray(remoteProfile?.favoriteGardeners) ? remoteProfile.favoriteGardeners : [];
       const resolvedPseudo = remoteProfile?.pseudo || currentProfile?.pseudo || '';
       let resolvedMode = (remoteProfile?.profileMode || currentProfile?.profileMode || DEFAULT_PROFILE_MODE).toString().toLowerCase();
       if (!PROFILE_MODE_INFO[resolvedMode]) {
@@ -7487,15 +7826,12 @@
         name,
         guest: isGuest,
         tipsDisplayMode,
-        pinnedHabits,
-        postponedHabits,
-        forgottenHabits,
-        showFriendBadges,
+        favoriteGardeners,
         pseudo: resolvedPseudo,
         profileMode: resolvedMode
       };
       persistProfile(profile);
-      await persistUserProfile(profile);
+      await persistUserProfile(profile, { force: !isGuest });
       await ensureProfilePseudo();
       if (!isGuest) {
         hideAuthOverlay();
