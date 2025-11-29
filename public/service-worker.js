@@ -1,6 +1,7 @@
 const CACHE_NAME = 'routine-buddy-v3';
 const OFFLINE_URLS = [
   './',
+  '/',
   './index.html',
   './style.css',
   './library.js',
@@ -46,7 +47,7 @@ async function networkFirst(request) {
   } catch (err) {
     const cached = await caches.match(request);
     if (cached) return cached;
-    const fallback = await caches.match('./index.html');
+    const fallback = await caches.match('/index.html') || await caches.match('./index.html') || await caches.match('/');
     if (fallback) return fallback;
     return new Response('Offline', { status: 503, statusText: 'Offline' });
   }
