@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.11.29.19" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.11.30.23" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.11.29.19" />
+  <link rel="stylesheet" href="style.css?v=2025.11.30.23" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.11.29.19" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.11.30.23" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -291,12 +291,7 @@
               <label><b>Pseudo</b></label>
               <div class="rowInline">
                 <input id="paramSpacePseudo" type="text" readonly placeholder="AloeCalme" />
-                <button type="button" class="btn mini refresh-btn" id="spacePseudoRefresh" title="Regénérer un pseudo">
-                  ⟳
-                </button>
               </div>
-            </div>
-            <div class="field"><label><b>Nom affiché</b></label><input id="paramName" type="text" placeholder="" />
             </div>
             <div class="field" id="spaceLabelField"><label><b>Nom du jardin</b></label><input id="paramSpaceLabel"
                 type="text" /></div>
@@ -384,7 +379,7 @@
           <div class="opt" id="addHabit">
             <div class="emoji">🌱</div>
             <div><b>Ajouter des habitudes</b>
-              <div class="subtitle">Démarre des nouvelles routines avec les autres</div>
+              <div class="subtitle">Démarre des nouvelles routines partagées</div>
             </div>
           </div>
           <div class="opt" id="addCustomHabit">
@@ -398,14 +393,14 @@
             <div class="emoji">📱</div>
             <div>
               <b>Installer l'application mobile</b>
-              <div class="subtitle">Profite d'un accès confortable et hors-ligne</div>
+              <div class="subtitle">Profite d'un accès rapide et hors-ligne</div>
             </div>
           </div>
           <div class="opt" id="menuFeedback">
             <div class="emoji">📝</div>
             <div>
               <b>Donner mon avis</b>
-              <div class="subtitle">Parle de ton expérience sur l'application</div>
+              <div class="subtitle">Signale un bug ou suggère une idée d'amélioration</div>
             </div>
           </div>
 
@@ -414,7 +409,7 @@
             <div class="emoji">🔐</div>
             <div>
               <b>Se connecter à un compte</b>
-              <div class="subtitle">Retrouve l'accès </div>
+              <div class="subtitle">Retrouve l'accès en cas de changement d'appareil</div>
             </div>
           </div>
           <div class="opt auth-action hide" id="menuMakeProfileVisible">
@@ -514,10 +509,6 @@
               </button>
             </div>
           </div>
-          <div class="field hide" id="profileNameField">
-            <label><b>Nom affiché</b></label>
-            <input id="profileNameInput" type="text" placeholder="" />
-          </div>
           <div class="detail-actions">
             <button class="btn primary" id="profileSetupContinue">Commencer</button>
           </div>
@@ -557,9 +548,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.11.29.19"></script>
-  <script src="library.js?v=2025.11.29.19"></script>
-  <script src="tips.js?v=2025.11.29.19"></script>
+  <script src="names.js?v=2025.11.30.23"></script>
+  <script src="library.js?v=2025.11.30.23"></script>
+  <script src="tips.js?v=2025.11.30.23"></script>
   <script>
     /* ===== Données ===== */
 
@@ -633,7 +624,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.11.29.19';
+    const APP_VERSION = '2025.11.30.23';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1437,7 +1428,7 @@
     function showCustomHabitNotice() {
       if (safeStorageGet(STORAGE_CUSTOM_HABIT_NOTICE_KEY)) return;
       safeStorageSet(STORAGE_CUSTOM_HABIT_NOTICE_KEY, '1');
-      window.confirm('Les stats ne comptent pas les habitudes personnalisées. Il est recommandé de modifier l’intitulé d’une habitude partagée proche.');
+      window.confirm('Une habitude personnalisée n’est pas visible par les autres. Il est recommandé de renommer une habitude partagée proche.');
     }
     const HABIT_GARDENERS_LOCAL_KEY = 'habitu-habit-gardeners-cache';
     const HABIT_GARDENERS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
@@ -2764,11 +2755,32 @@
       if (!lastSync) return true;
       return Date.now() - lastSync >= ACTIVITY_SYNC_INTERVAL_MS;
     }
+    function resolveHabitId(habitOrId) {
+      if (habitOrId === null || habitOrId === undefined) return '';
+      if (typeof habitOrId === 'object') {
+        return String(habitOrId.id ?? '');
+      }
+      return String(habitOrId);
+    }
+    function isCustomHabit(habitOrId) {
+      return resolveHabitId(habitOrId).startsWith('custom-');
+    }
     function shouldRenderRankings() {
       return isProfileModeVisible();
     }
-    function shouldShowGardenerBadges() {
-      return isProfileModeVisible();
+    function shouldShowGardenerBadges(habitOrId) {
+      if (!isProfileModeVisible()) return false;
+      if (habitOrId === null || habitOrId === undefined) return true;
+      return !isCustomHabit(habitOrId);
+    }
+    function getRecordHabitKey(record) {
+      if (!record) return '';
+      if (record.habitId) return String(record.habitId);
+      if (record.hid) return String(record.hid);
+      return '';
+    }
+    function shouldShowGardenerTab() {
+      return shouldShowGardenerBadges(activeId);
     }
     async function updateProfileMode(mode = DEFAULT_PROFILE_MODE) {
       const normalized = PROFILE_MODE_INFO[mode] ? mode : DEFAULT_PROFILE_MODE;
@@ -3912,7 +3924,7 @@
 
     function normalizeTipsDisplayMode(mode) {
       const candidate = (mode || '').toString().toLowerCase();
-      return candidate === 'oui' ? 'oui' : 'non';
+      return candidate === 'non' ? 'non' : 'oui';
     }
     function getTipsDisplayMode() {
       return normalizeTipsDisplayMode(currentProfile?.tipsDisplayMode);
@@ -4024,6 +4036,10 @@
       };
       if (hasNote) {
         showFull();
+        return;
+      }
+      if (numericState === 0 && tipsMode === 'oui' && tipText) {
+        showTip();
         return;
       }
       hideShort();
@@ -4306,7 +4322,7 @@
           const descText = document.createElement('span');
           descText.className = 'desc-text';
           desc.appendChild(descText);
-          const gardenerBadge = shouldShowGardenerBadges() ? document.createElement('button') : null;
+          const gardenerBadge = shouldShowGardenerBadges(it) ? document.createElement('button') : null;
           if (gardenerBadge) {
             gardenerBadge.type = 'button';
             gardenerBadge.className = 'gardener-badge';
@@ -4645,18 +4661,9 @@
     }
 
     function formatGardenerLabel(entry) {
-      const display = (entry.displayName || entry.firstName || '').trim();
+      if (!entry) return '—';
       const pseudo = (entry.pseudo || entry.ownerLabel || '').trim();
-      if (display) {
-        if (pseudo && pseudo !== display) {
-          return `${display} (${pseudo})`;
-        }
-        return display;
-      }
-      if (pseudo) {
-        return `(${pseudo})`;
-      }
-      return '—';
+      return pseudo || '—';
     }
 
     function isGardenerCurrentUser(entry) {
@@ -4808,7 +4815,7 @@
     function refreshGardenerTabVisibility() {
       const tab = document.querySelector('#detail .tabs [data-tab="gardeners"]');
       if (!tab) return;
-      tab.classList.toggle('hide', isProfileModePrivate());
+      tab.classList.toggle('hide', !shouldShowGardenerTab());
     }
     /* ===== Calendriers ===== */
     /* ===== Navigation vues ===== */
@@ -5159,7 +5166,8 @@
         return;
       }
       records.forEach(rec => {
-        const habitKey = String(rec.habitId);
+        const habitKey = getRecordHabitKey(rec);
+        if (!habitKey) return;
         if (!statsByHabit.has(habitKey)) {
           statsByHabit.set(habitKey, { habit: findAny(habitKey), total: 0, last: null });
         }
@@ -5215,11 +5223,33 @@
       const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
       return habits.reduce((total, habit) => total + countScheduledOccurrencesInRange(habit, range), 0);
     }
+    function computeRangeRegularity(range) {
+      if (!range) return { planned: 0, completed: 0 };
+      const space = getSpace();
+      if (!space) return { planned: 0, completed: 0 };
+      const completedRecords = collectSpaceRecordsInRange(range).filter(rec => (rec.state || 0) >= 2);
+      const realizedByHabit = new Map();
+      completedRecords.forEach(rec => {
+        const habitKey = getRecordHabitKey(rec);
+        if (!habitKey) return;
+        realizedByHabit.set(habitKey, (realizedByHabit.get(habitKey) || 0) + 1);
+      });
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
+      let planned = 0;
+      habits.forEach(habit => {
+        const habitKey = String(habit.id);
+        if (!habitKey) return;
+        const scheduled = countScheduledOccurrencesInRange(habit, range);
+        const realized = realizedByHabit.get(habitKey) || 0;
+        const effectivePlanned = (isCustomHabit(habitKey) && realized > scheduled) ? realized : scheduled;
+        planned += effectivePlanned;
+      });
+      return { planned, completed: completedRecords.length };
+    }
     function computeRegularityPercent(range) {
       if (!range) return 0;
-      const planned = countPlannedOccurrencesInRange(range);
+      const { planned, completed } = computeRangeRegularity(range);
       if (!planned) return 0;
-      const completed = collectSpaceRecordsInRange(range).filter(rec => (rec.state || 0) >= 2).length;
       const ratio = Math.min(1, Math.max(0, completed / planned));
       return Math.round(ratio * 100);
     }
@@ -5784,7 +5814,16 @@
 
     /* ===== Paramètres habitude ===== */
     let activeId = null, refBtn = null;
-    function openDetail(id, btnRef, targetTab = 'settings') {
+    function focusHabitTitleField() {
+      const titleInput = $("#habitTitleInput");
+      if (!titleInput) return;
+      titleInput.focus();
+      if (typeof titleInput.select === 'function') {
+        titleInput.select();
+      }
+    }
+
+    function openDetail(id, btnRef, targetTab = 'settings', options = {}) {
       const it = findAny(id);
       if (!it) {
         return;
@@ -5796,7 +5835,12 @@
       $("#daysWrap").classList.add('hide');
       $("#detailTitle").textContent = `${it.emoji} ${habitLabel(it)}`;
       renderHabitSettings();
-      activateDetailTab(targetTab);
+      refreshGardenerTabVisibility();
+      const resolvedTab = targetTab === 'gardeners' && !shouldShowGardenerTab() ? 'settings' : targetTab;
+      activateDetailTab(resolvedTab);
+      if (options.focusTitle && resolvedTab === 'settings') {
+        focusHabitTitleField();
+      }
     }
 
     function renderHabitSettings() {
@@ -6005,13 +6049,11 @@
       }
       const currentMemberKey = getCurrentSpaceMemberKey(sp);
       const currentMemberName = getSpaceMemberLabel(sp, currentMemberKey);
-      $("#paramName").value = currentMemberName || getLastMemberName() || '';
       refreshSpaceHeaderControls();
     }
     function setupSpaceInfo() {
       const sp = getSpace();
       const descInput = $("#spaceDescInfo");
-      const nameInput = $("#paramName");
       const tipsSelect = $("#prefsTipsDisplayMode");
       if (tipsSelect) {
         tipsSelect.value = getTipsDisplayMode();
@@ -6033,15 +6075,11 @@
         }
       }
       if (!sp) {
-        if (nameInput) {
-          nameInput.value = getLastMemberName() || '';
-        }
         return;
       }
       const spaceLabelField = $("#spaceLabelField");
       const spacePseudoField = $("#spacePseudoField");
       const pseudoInput = $("#paramSpacePseudo");
-      const spacePseudoRefresh = $("#spacePseudoRefresh");
       const profileModeField = $("#spaceProfileModeField");
       const profileModeHint = $("#profileModeHint");
       const deleteAccountBtn = $("#deleteAccountBtn");
@@ -6068,24 +6106,6 @@
           || currentProfile?.pseudo
           || sp?.pseudo
           || '';
-      }
-      if (spacePseudoRefresh) {
-        spacePseudoRefresh.disabled = !isOwner;
-        spacePseudoRefresh.onclick = async () => {
-          if (!isOwner) return;
-          if (!spaceId) return;
-          spacePseudoRefresh.disabled = true;
-          try {
-            const candidate = await ensureProfilePseudoInput(true);
-            if (!candidate) return;
-            pendingSpacePseudo = candidate;
-            if (pseudoInput) {
-              pseudoInput.value = candidate;
-            }
-          } finally {
-            spacePseudoRefresh.disabled = !isOwner;
-          }
-        };
       }
       if (profileModeField) {
         profileModeField.classList.toggle('hide', !isPersonal);
@@ -6164,15 +6184,6 @@
         saveSettingsBtn.onclick = async () => {
           if (!spaceId) return;
           const sp = getSpace();
-          const currentKey = getCurrentSpaceMemberKey(sp);
-          const customName = (nameInput?.value || '').trim();
-          if (currentKey) {
-            await updateSpaceMemberName(spaceId, currentKey, customName, { persist: false });
-          }
-          const ownerKey = sp ? normalizeMemberKey(sp.ownerId || '') : '';
-          if (ownerKey && ownerKey !== currentKey) {
-            await updateSpaceMemberName(spaceId, ownerKey, customName, { persist: false });
-          }
           let candidatePseudo = null;
           if (pendingSpacePseudo && sp) {
             candidatePseudo = pendingSpacePseudo;
@@ -6595,8 +6606,6 @@
     const deleteAccountBtn = $("#deleteAccountBtn");
     const installAppOpt = $("#installApp");
     const profileModeSelector = $("#profileModeSelector");
-    const profileNameField = $("#profileNameField");
-    const profileNameInput = $("#profileNameInput");
     const profilePseudoField = $("#profilePseudoField");
     const profilePseudoInput = $("#profilePseudoInput");
     const profilePseudoRefresh = $("#profilePseudoRefresh");
@@ -6968,7 +6977,6 @@
       if (!profileModeSelector) return;
       const mode = profileModeSelector.value || getProfileMode();
       const showExtras = mode === 'visible';
-      if (profileNameField) profileNameField.classList.toggle('hide', !showExtras);
       if (profilePseudoField) profilePseudoField.classList.toggle('hide', !showExtras);
       if (profileModeSetupHint) {
         const info = PROFILE_MODE_INFO[mode] || PROFILE_MODE_INFO[getProfileMode()];
@@ -6994,9 +7002,6 @@
         profileModeSelector.value = getProfileMode();
       }
       updateProfileSetupModeOptions();
-      if (profileNameInput) {
-        profileNameInput.value = '';
-      }
       updateProfileSetupFields();
       await ensureProfilePseudoInput();
       if (mProfileSetup) {
@@ -7059,7 +7064,7 @@
       ensureHabit(habitId);
       renderCards();
       showCustomHabitNotice();
-      openDetail(habitId, null, 'settings');
+      openDetail(habitId, null, 'settings', { focusTitle: true });
     }
 
     async function ensureProfileSetup() {
@@ -7180,12 +7185,8 @@
       profileSetupContinue.addEventListener('click', async () => {
         if (!profileModeSelector) return;
         const selectedMode = profileModeSelector.value || DEFAULT_PROFILE_MODE;
-        const nameValue = (profileNameInput?.value || '').trim();
         const pseudoValue = (profilePseudoField ? (profilePseudoInput?.value || '').trim() : '');
         try {
-          if (nameValue) {
-            persistProfile({ name: nameValue });
-          }
           let actualPseudo = pseudoValue;
           if (!actualPseudo) {
             actualPseudo = await ensureProfilePseudoInput(true);
@@ -7559,11 +7560,13 @@
       surface.dataset.swipeBound = '1';
     }
     setupDaySwipeNavigation();
+    const contextMenuBlockSelector = '#cards,.card,#cardContextMenu,input,textarea,[contenteditable],.desc,.needs-panel,.needs-list,.score-panel,.space-profile-visual,.space-profile-regularity,.regularity-card,.space-stats-table,.habit-grid,.tag-grid,.habit-actions,.miniInfo';
     document.addEventListener('contextmenu', event => {
       const target = event.target;
-      const hasClosest = target && typeof target.closest === 'function';
-      if (hasClosest && (target.closest('#cards') || target.closest('.card') || target.closest('#cardContextMenu'))) {
-        event.preventDefault();
+      if (target && typeof target.closest === 'function') {
+        if (target.closest(contextMenuBlockSelector)) {
+          event.preventDefault();
+        }
       }
     });
     document.addEventListener('selectstart', event => {
@@ -7597,7 +7600,6 @@
 
       const schedule = () => {
         if (guestTimer) return;
-        console.info('[offline-controller] scheduling guest session (offline detected)');
         guestTimer = window.setTimeout(() => {
           guestTimer = null;
           startGuestSession({ forceLocal: true }).catch(() => { });
@@ -7606,7 +7608,6 @@
 
       const cancel = () => {
         if (!guestTimer) return;
-        console.info('[offline-controller] canceling scheduled guest session');
         window.clearTimeout(guestTimer);
         guestTimer = null;
       };
@@ -7614,7 +7615,6 @@
       const handleServiceWorkerMessage = event => {
         const data = event?.data;
         if (data?.type !== 'habitube-offline-shell') return;
-        console.log('[offline-controller] falling back to offline shell', data);
         if (data.reload && !reloadPending) {
           reloadPending = true;
           window.setTimeout(() => {

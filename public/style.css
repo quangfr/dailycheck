@@ -27,6 +27,25 @@ body {
   background: var(--bg)
 }
 
+body,
+input,
+textarea,
+button,
+select,
+[contenteditable] {
+  -webkit-touch-callout: none;
+}
+
+.desc,
+.needs-list,
+.regularity-card,
+.space-stats-table,
+.habit-grid,
+.tag-grid,
+.miniInfo {
+  -webkit-touch-callout: none;
+}
+
 body.no-space {
   background: var(--card);
 }
@@ -488,7 +507,7 @@ button:active,
   border: 1px solid var(--border);
   background: var(--card);
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
   display: inline-flex;
@@ -1274,6 +1293,7 @@ button:active,
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-size: 13px;
 }
 
 .desc.open .desc-text {

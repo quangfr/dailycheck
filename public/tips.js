@@ -1,3424 +1,1081 @@
 const HABIT_TIPS = [
-  {
-    "id": 1,
-    "title": "Ouvrir l’app dès le réveil"
-  },
-  {
-    "id": 1,
-    "title": "Regarder une seule plante à la fois"
-  },
-  {
-    "id": 1,
-    "title": "Respirer avant de cliquer"
-  },
-  {
-    "id": 1,
-    "title": "Choisir une habitude simple d’abord"
-  },
-  {
-    "id": 1,
-    "title": "Ne pas scroller trop vite"
-  },
-  {
-    "id": 1,
-    "title": "Fermer l’app après une action"
-  },
-  {
-    "id": 1,
-    "title": "Revenir dans la journée"
-  },
-  {
-    "id": 1,
-    "title": "Cocher seulement ce qui est fait"
-  },
-  {
-    "id": 1,
-    "title": "Garder l’écran propre"
-  },
-  {
-    "id": 1,
-    "title": "Sourire à la première plante 🌿"
-  },
-  {
-    "id": 2,
-    "title": "Prévoir un élément sucré et salé"
-  },
-  {
-    "id": 2,
-    "title": "Mettre tout sur la table avant"
-  },
-  {
-    "id": 2,
-    "title": "Demander ce que chacun préfère"
-  },
-  {
-    "id": 2,
-    "title": "Couper des fruits à partager"
-  },
-  {
-    "id": 2,
-    "title": "Mettre une musique douce"
-  },
-  {
-    "id": 2,
-    "title": "Allumer une petite lumière chaleureuse"
-  },
-  {
-    "id": 2,
-    "title": "Éviter les écrans sur la table"
-  },
-  {
-    "id": 2,
-    "title": "Prévoir du pain déjà tranché"
-  },
-  {
-    "id": 2,
-    "title": "Préparer la table la veille"
-  },
-  {
-    "id": 2,
-    "title": "Laisser quelqu’un choisir la boisson"
-  },
-  {
-    "id": 3,
-    "title": "Privilégier fruits ou oléagineux"
-  },
-  {
-    "id": 3,
-    "title": "Éviter biscuits ultra transformés"
-  },
-  {
-    "id": 3,
-    "title": "Préparer les portions à l’avance"
-  },
-  {
-    "id": 3,
-    "title": "Utiliser des petits contenants réutilisables"
-  },
-  {
-    "id": 3,
-    "title": "Mettre la collation à portée de vue"
-  },
-  {
-    "id": 3,
-    "title": "Prévoir aussi une option salée"
-  },
-  {
-    "id": 3,
-    "title": "Couper les fruits en morceaux"
-  },
-  {
-    "id": 3,
-    "title": "Prévoir une carafe d’eau à côté"
-  },
-  {
-    "id": 3,
-    "title": "Proposer de partager, sans forcer"
-  },
-  {
-    "id": 3,
-    "title": "Limiter le sucre ajouté"
-  },
-  {
-    "id": 4,
-    "title": "Choisir une tasse dédiée détente"
-  },
-  {
-    "id": 4,
-    "title": "Respirer l’odeur avant de boire"
-  },
-  {
-    "id": 4,
-    "title": "S’asseoir pour la déguster"
-  },
-  {
-    "id": 4,
-    "title": "Poser le téléphone pendant"
-  },
-  {
-    "id": 4,
-    "title": "Sucrer un peu moins que d’habitude"
-  },
-  {
-    "id": 4,
-    "title": "Préparer aussi un verre d’eau"
-  },
-  {
-    "id": 4,
-    "title": "Éviter café en fin de journée"
-  },
-  {
-    "id": 4,
-    "title": "Préférer infusion le soir"
-  },
-  {
-    "id": 4,
-    "title": "Tenir la tasse entre les deux mains"
-  },
-  {
-    "id": 4,
-    "title": "Boire par petites gorgées"
-  },
-  {
-    "id": 5,
-    "title": "Noter au fur et à mesure"
-  },
-  {
-    "id": 5,
-    "title": "Regrouper par rayon du magasin"
-  },
-  {
-    "id": 5,
-    "title": "Vérifier frigo et placards avant"
-  },
-  {
-    "id": 5,
-    "title": "Ajouter un fruit de saison"
-  },
-  {
-    "id": 5,
-    "title": "Prévoir un repas de secours"
-  },
-  {
-    "id": 5,
-    "title": "Limiter achats impulsifs sucrés"
-  },
-  {
-    "id": 5,
-    "title": "Garder une liste modèle récurrente"
-  },
-  {
-    "id": 5,
-    "title": "Demander une idée à un proche"
-  },
-  {
-    "id": 5,
-    "title": "Noter ce qui manque vraiment"
-  },
-  {
-    "id": 5,
-    "title": "Prendre une photo de la liste"
-  },
-  {
-    "id": 6,
-    "title": "Laisser les fruits visibles sur la table"
-  },
-  {
-    "id": 6,
-    "title": "Laver une partie à l’avance"
-  },
-  {
-    "id": 6,
-    "title": "Préparer une boîte de fruits coupés"
-  },
-  {
-    "id": 6,
-    "title": "Remplacer un dessert sucré par un fruit"
-  },
-  {
-    "id": 6,
-    "title": "Ajouter des fruits au petit-déjeuner"
-  },
-  {
-    "id": 6,
-    "title": "Emporter un fruit dans son sac"
-  },
-  {
-    "id": 6,
-    "title": "Choisir un fruit apprécié en priorité"
-  },
-  {
-    "id": 6,
-    "title": "Varier les couleurs de fruits"
-  },
-  {
-    "id": 6,
-    "title": "Tester un fruit nouveau par semaine"
-  },
-  {
-    "id": 6,
-    "title": "Manger le fruit avant les biscuits"
-  },
-  {
-    "id": 7,
-    "title": "Remplir la gourde dès le matin"
-  },
-  {
-    "id": 7,
-    "title": "La garder toujours à portée de main"
-  },
-  {
-    "id": 7,
-    "title": "Mettre un rappel sur le téléphone"
-  },
-  {
-    "id": 7,
-    "title": "Ajouter une tranche de citron si envie"
-  },
-  {
-    "id": 7,
-    "title": "Vérifier le niveau en milieu de journée"
-  },
-  {
-    "id": 7,
-    "title": "Finir la gourde avant le dîner"
-  },
-  {
-    "id": 7,
-    "title": "La poser sur le bureau en évidence"
-  },
-  {
-    "id": 7,
-    "title": "Rincer la gourde chaque soir"
-  },
-  {
-    "id": 7,
-    "title": "Utiliser une gourde graduée"
-  },
-  {
-    "id": 7,
-    "title": "Boire quelques gorgées à chaque pause"
-  },
-  {
-    "id": 8,
-    "title": "Lier la prise à une habitude fixe"
-  },
-  {
-    "id": 8,
-    "title": "Utiliser un pilulier hebdomadaire"
-  },
-  {
-    "id": 8,
-    "title": "Mettre un rappel sur le téléphone"
-  },
-  {
-    "id": 8,
-    "title": "Préparer le verre d’eau avant"
-  },
-  {
-    "id": 8,
-    "title": "Cocher la prise sur un calendrier"
-  },
-  {
-    "id": 8,
-    "title": "Ranger le traitement toujours au même endroit"
-  },
-  {
-    "id": 8,
-    "title": "Ne jamais doubler la dose sans avis"
-  },
-  {
-    "id": 8,
-    "title": "Renouveler l’ordonnance en avance"
-  },
-  {
-    "id": 8,
-    "title": "Informer un proche si besoin d’aide"
-  },
-  {
-    "id": 8,
-    "title": "Vérifier l’heure avant de prendre"
-  },
-  {
-    "id": 9,
-    "title": "Se donner l’objectif un jour à la fois"
-  },
-  {
-    "id": 9,
-    "title": "Supprimer briquet et cigarettes visibles"
-  },
-  {
-    "id": 9,
-    "title": "Boire un verre d’eau en cas d’envie"
-  },
-  {
-    "id": 9,
-    "title": "Respirer profondément 10 secondes"
-  },
-  {
-    "id": 9,
-    "title": "Changer de pièce quand l’envie monte"
-  },
-  {
-    "id": 9,
-    "title": "Prévenir un proche de l’objectif"
-  },
-  {
-    "id": 9,
-    "title": "Noter l’heure des envies fortes"
-  },
-  {
-    "id": 9,
-    "title": "Remplacer le geste par un chewing-gum"
-  },
-  {
-    "id": 9,
-    "title": "Se féliciter à chaque envie traversée"
-  },
-  {
-    "id": 9,
-    "title": "Préparer une petite récompense le soir"
-  },
-  {
-    "id": 10,
-    "title": "Préparer ton sac la veille au soir"
-  },
-  {
-    "id": 10,
-    "title": "Bloquer un créneau fixe chaque semaine"
-  },
-  {
-    "id": 10,
-    "title": "Y aller avec un ami motivant"
-  },
-  {
-    "id": 10,
-    "title": "Choisir un objectif simple pour la séance"
-  },
-  {
-    "id": 10,
-    "title": "Commencer petit, augmenter progressivement les charges"
-  },
-  {
-    "id": 10,
-    "title": "Mettre une playlist qui te booste"
-  },
-  {
-    "id": 10,
-    "title": "Poser ton téléphone, rester dans le moment"
-  },
-  {
-    "id": 10,
-    "title": "Noter tes progrès après chaque entraînement"
-  },
-  {
-    "id": 10,
-    "title": "Prévoir une récompense saine après la séance"
-  },
-  {
-    "id": 10,
-    "title": "Te rappeler pourquoi tu as commencé"
-  },
-  {
-    "id": 11,
-    "title": "Garder les produits à vue près du miroir"
-  },
-  {
-    "id": 11,
-    "title": "Suivre toujours le même ordre"
-  },
-  {
-    "id": 11,
-    "title": "Utiliser une serviette propre dédiée"
-  },
-  {
-    "id": 11,
-    "title": "Mettre un petit minuteur doux"
-  },
-  {
-    "id": 11,
-    "title": "Appliquer doucement, sans se presser"
-  },
-  {
-    "id": 11,
-    "title": "Respirer calmement pendant le soin"
-  },
-  {
-    "id": 11,
-    "title": "Jeter les produits périmés régulièrement"
-  },
-  {
-    "id": 11,
-    "title": "Préparer les produits la veille au soir"
-  },
-  {
-    "id": 11,
-    "title": "Couper la notification du téléphone"
-  },
-  {
-    "id": 11,
-    "title": "Se regarder avec bienveillance dans le miroir"
-  },
-  {
-    "id": 12,
-    "title": "Préparer serviette et pyjama avant"
-  },
-  {
-    "id": 12,
-    "title": "Mettre l’eau un peu moins chaude que d’habitude"
-  },
-  {
-    "id": 12,
-    "title": "Limiter le bain à 20 minutes"
-  },
-  {
-    "id": 12,
-    "title": "Ajouter une lumière douce ou bougie"
-  },
-  {
-    "id": 12,
-    "title": "Laisser le téléphone hors de la salle de bains"
-  },
-  {
-    "id": 12,
-    "title": "Mettre une musique relaxante si envie"
-  },
-  {
-    "id": 12,
-    "title": "Respirer profondément en fermant les yeux"
-  },
-  {
-    "id": 12,
-    "title": "Ne pas remplir la baignoire complètement"
-  },
-  {
-    "id": 12,
-    "title": "S’hydrater après le bain"
-  },
-  {
-    "id": 12,
-    "title": "Aérer la pièce après usage"
-  },
-  {
-    "id": 13,
-    "title": "Se brosser au moins deux minutes"
-  },
-  {
-    "id": 13,
-    "title": "Prévoir ton verre à l’avance"
-  },
-  {
-    "id": 13,
-    "title": "Choisir un verre que tu savoureras"
-  },
-  {
-    "id": 13,
-    "title": "Alterner avec un grand verre d’eau"
-  },
-  {
-    "id": 13,
-    "title": "Décider de ton limite avant la soirée"
-  },
-  {
-    "id": 13,
-    "title": "Boire lentement pour apprécier plus"
-  },
-  {
-    "id": 13,
-    "title": "Éviter les tournées collectives"
-  },
-  {
-    "id": 13,
-    "title": "Dire non simplement et clairement"
-  },
-  {
-    "id": 13,
-    "title": "Demander du sans-alcool en alternance"
-  },
-  {
-    "id": 13,
-    "title": "Rester connecté à ton ressenti"
-  },
-  {
-    "id": 13,
-    "title": "Penser à ton lendemain tranquille"
-  },
-  {
-    "id": 14,
-    "title": "Préparer les draps propres à l’avance"
-  },
-  {
-    "id": 14,
-    "title": "Aérer la chambre avant de refaire le lit"
-  },
-  {
-    "id": 14,
-    "title": "Secouer le matelas rapidement"
-  },
-  {
-    "id": 14,
-    "title": "Changer la taie d’oreiller en priorité"
-  },
-  {
-    "id": 14,
-    "title": "Plier les anciens draps tout de suite"
-  },
-  {
-    "id": 14,
-    "title": "Lancer la machine juste après"
-  },
-  {
-    "id": 14,
-    "title": "Garder un set de draps facile à installer"
-  },
-  {
-    "id": 14,
-    "title": "Profiter pour enlever la poussière autour"
-  },
-  {
-    "id": 14,
-    "title": "Vérifier la couette et la housse"
-  },
-  {
-    "id": 14,
-    "title": "Savourer la sensation de draps frais"
-  },
-  {
-    "id": 15,
-    "title": "Ramasser ce qui traîne d’abord"
-  },
-  {
-    "id": 15,
-    "title": "Dégager le passage principal"
-  },
-  {
-    "id": 15,
-    "title": "Secouer tapis et paillasson dehors"
-  },
-  {
-    "id": 15,
-    "title": "Balayer rapidement les zones clés"
-  },
-  {
-    "id": 15,
-    "title": "Essuyer les traces au sol visibles"
-  },
-  {
-    "id": 15,
-    "title": "Ranger chaussures en un seul endroit"
-  },
-  {
-    "id": 15,
-    "title": "Prévoir un panier pour le courrier"
-  },
-  {
-    "id": 15,
-    "title": "Mettre un crochet pour les clés"
-  },
-  {
-    "id": 15,
-    "title": "Allumer la lumière pour vérifier"
-  },
-  {
-    "id": 15,
-    "title": "Faire en même temps qu’un autre habitant"
-  },
-  {
-    "id": 16,
-    "title": "Commencer par vider l’évier"
-  },
-  {
-    "id": 16,
-    "title": "Regrouper la vaisselle sale au même endroit"
-  },
-  {
-    "id": 16,
-    "title": "Lancer le lave-vaisselle rapidement"
-  },
-  {
-    "id": 16,
-    "title": "Essuyer les surfaces visibles d’abord"
-  },
-  {
-    "id": 16,
-    "title": "Ranger les aliments au frigo sans attendre"
-  },
-  {
-    "id": 16,
-    "title": "Jeter directement les emballages"
-  },
-  {
-    "id": 16,
-    "title": "Passer un coup de balai express"
-  },
-  {
-    "id": 16,
-    "title": "Utiliser un minuteur de 10 minutes"
-  },
-  {
-    "id": 16,
-    "title": "Répartir les tâches entre les habitants"
-  },
-  {
-    "id": 16,
-    "title": "Finir par un geste agréable (bougie, plante)"
-  },
-  {
-    "id": 17,
-    "title": "Commencer par remettre les coussins"
-  },
-  {
-    "id": 17,
-    "title": "Ramasser tout ce qui n’est pas à sa place"
-  },
-  {
-    "id": 17,
-    "title": "Prévoir un panier pour les objets divers"
-  },
-  {
-    "id": 17,
-    "title": "Plier les plaids et couvertures"
-  },
-  {
-    "id": 17,
-    "title": "Empiler les magazines en petite pile"
-  },
-  {
-    "id": 17,
-    "title": "Éteindre ou ranger les câbles visibles"
-  },
-  {
-    "id": 17,
-    "title": "Ouvrir un peu la fenêtre"
-  },
-  {
-    "id": 17,
-    "title": "Mettre une musique courte motivante"
-  },
-  {
-    "id": 17,
-    "title": "Limiter le rangement à 10 minutes"
-  },
-  {
-    "id": 17,
-    "title": "Regarder le résultat une minute en silence"
-  },
-  {
-    "id": 18,
-    "title": "Aérer les sanitaires régulièrement"
-  },
-  {
-    "id": 18,
-    "title": "Nettoyer les surfaces chaque jour"
-  },
-  {
-    "id": 18,
-    "title": "Changer les serviettes fréquemment"
-  },
-  {
-    "id": 18,
-    "title": "Désinfecter poignées et robinets"
-  },
-  {
-    "id": 18,
-    "title": "Éliminer l’humidité après la douche"
-  },
-  {
-    "id": 18,
-    "title": "Vider la poubelle des sanitaires"
-  },
-  {
-    "id": 18,
-    "title": "Entretenir siphons et canalisations"
-  },
-  {
-    "id": 18,
-    "title": "Vérifier savon et papier dispos"
-  },
-  {
-    "id": 18,
-    "title": "Nettoyer régulièrement miroir et lavabo"
-  },
-  {
-    "id": 18,
-    "title": "Maintenir un parfum léger"
-  },
-  {
-    "id": 19,
-    "title": "Regrouper tous les produits au même endroit"
-  },
-  {
-    "id": 19,
-    "title": "Vérifier ce qui est presque vide"
-  },
-  {
-    "id": 19,
-    "title": "Noter les recharges dans la liste de courses"
-  },
-  {
-    "id": 19,
-    "title": "Séparer produits sol et surfaces"
-  },
-  {
-    "id": 19,
-    "title": "Garder un produit par pièce fréquente"
-  },
-  {
-    "id": 19,
-    "title": "Vérifier l’état des éponges et chiffons"
-  },
-  {
-    "id": 19,
-    "title": "Ranger hors de portée des enfants"
-  },
-  {
-    "id": 19,
-    "title": "Jeter les produits très anciens"
-  },
-  {
-    "id": 19,
-    "title": "Étiqueter les flacons si besoin"
-  },
-  {
-    "id": 19,
-    "title": "Prévoir un stock minimal de secours"
-  },
-  {
-    "id": 20,
-    "title": "Ouvrir la fenêtre au moins 5 minutes"
-  },
-  {
-    "id": 20,
-    "title": "Secouer rapidement oreiller et couette"
-  },
-  {
-    "id": 20,
-    "title": "Replacer les vêtements sur cintre ou chaise"
-  },
-  {
-    "id": 20,
-    "title": "Vider les verres et tasses éventuels"
-  },
-  {
-    "id": 20,
-    "title": "Éteindre les écrans en quittant la chambre"
-  },
-  {
-    "id": 20,
-    "title": "Faire un tour visuel rapide de la pièce"
-  },
-  {
-    "id": 20,
-    "title": "Limiter le rangement à une petite zone"
-  },
-  {
-    "id": 20,
-    "title": "Ranger les objets au sol en priorité"
-  },
-  {
-    "id": 20,
-    "title": "Fermer la fenêtre après aération"
-  },
-  {
-    "id": 20,
-    "title": "Prendre une inspiration profonde avant de sortir"
-  },
-  { "id": 21, "title": "Respire trois fois lentement" },
-  { "id": 21, "title": "Observe l’émotion dominante" },
-  { "id": 21, "title": "Pose la main sur ton cœur" },
-  { "id": 21, "title": "Nommes ton besoin à voix basse" },
-  { "id": 21, "title": "Demande: qu’est-ce qui manque ici ?" },
-  { "id": 21, "title": "Écoute ce qui fait oui en toi" },
+  // id 1 – Utiliser l’app
+  { "id": 1, "title": "Ouvre l’app avant tes mails" },
+  { "id": 1, "title": "Une plante à la fois, comme un rendez-vous" },
+  { "id": 1, "title": "Respire une fois, puis clique" },
+  { "id": 1, "title": "Commence par une habitude vraiment facile" },
+  { "id": 1, "title": "Fais défiler doucement, ton cerveau suit mieux" },
+  { "id": 1, "title": "Une action, puis tu fermes l’app" },
+  { "id": 1, "title": "Reviens plus tard, comme pour arroser" },
+  { "id": 1, "title": "Coche seulement ce que tu as fait" },
+  { "id": 1, "title": "Garde l’écran clair, l’esprit aussi" },
+  { "id": 1, "title": "Offre un sourire à ta première plante 🌿" },
+
+  // id 2 – Petit-déjeuner commun
+  { "id": 2, "title": "Une option sucrée, une salée, tout le monde y gagne" },
+  { "id": 2, "title": "Pose tout sur la table, effet buffet maison" },
+  { "id": 2, "title": "Demande au ventre de chacun ce qu’il préfère" },
+  { "id": 2, "title": "Coupe quelques fruits à partager" },
+  { "id": 2, "title": "Ajoute une musique douce en fond" },
+  { "id": 2, "title": "Choisis une lumière chaleureuse, pas de projecteur" },
+  { "id": 2, "title": "Les écrans restent en coulisses pendant le repas" },
+  { "id": 2, "title": "Le pain arrive déjà tranché, le matin dit merci" },
+  { "id": 2, "title": "Prépare la table la veille, futur toi appréciera" },
+  { "id": 2, "title": "Laisse quelqu’un choisir la boisson du jour" },
+
+  // id 3 – Collation saine
+  { "id": 3, "title": "Fruits et oléagineux en premiers invités" },
+  { "id": 3, "title": "Les biscuits ultra transformés restent exceptionnels" },
+  { "id": 3, "title": "Prépare les portions avant d’avoir trop faim" },
+  { "id": 3, "title": "Petits contenants, grandes bonnes habitudes" },
+  { "id": 3, "title": "Mets la collation là où tu passes souvent" },
+  { "id": 3, "title": "Ajoute aussi une petite option salée" },
+  { "id": 3, "title": "Fruits en morceaux, dégustation facilitée" },
+  { "id": 3, "title": "Installe une carafe d’eau à côté" },
+  { "id": 3, "title": "Propose de partager, jamais d’obligation" },
+  { "id": 3, "title": "Le sucre ajouté reste en arrière-plan" },
+
+  // id 4 – Boisson chaude
+  { "id": 4, "title": "Choisis ta tasse spéciale détente" },
+  { "id": 4, "title": "Respire le parfum avant la première gorgée" },
+  { "id": 4, "title": "Assieds-toi pour vraiment en profiter" },
+  { "id": 4, "title": "Téléphone posé loin, boisson au centre" },
+  { "id": 4, "title": "Sucre un peu moins, douceur intacte" },
+  { "id": 4, "title": "Prépare aussi un verre d’eau fidèle allié" },
+  { "id": 4, "title": "Évite le café tard, le sommeil te remerciera" },
+  { "id": 4, "title": "Le soir, l’infusion prend le relais" },
+  { "id": 4, "title": "Garde la tasse entre tes mains, comme un mini-feu" },
+  { "id": 4, "title": "Bois par petites gorgées attentives" },
+
+  // id 5 – Liste de courses
+  { "id": 5, "title": "Note au fur et à mesure, pas au dernier moment" },
+  { "id": 5, "title": "Classe par rayons, la visite sera plus fluide" },
+  { "id": 5, "title": "Regarde le frigo avant de le remplir" },
+  { "id": 5, "title": "Ajoute un fruit de saison en invité d’honneur" },
+  { "id": 5, "title": "Prévois un repas de secours simple" },
+  { "id": 5, "title": "Réduis les achats sucrés “juste pour voir”" },
+  { "id": 5, "title": "Garde une liste type prête à l’emploi" },
+  { "id": 5, "title": "Demande une idée à quelqu’un de ton entourage" },
+  { "id": 5, "title": "Note ce qui manque vraiment, pas tout ce qui tente" },
+  { "id": 5, "title": "Prends une photo de la liste, au cas où" },
+
+  // id 6 – Manger plus de fruits
+  { "id": 6, "title": "Laisse les fruits visibles, ils aiment la lumière" },
+  { "id": 6, "title": "Lave-en quelques-uns quand tu as de l’énergie" },
+  { "id": 6, "title": "Prépare une boîte de fruits prêts à croquer" },
+  { "id": 6, "title": "Remplace un dessert très sucré par un fruit" },
+  { "id": 6, "title": "Glisse un fruit dans ton sac, discret allié" },
+  { "id": 6, "title": "Commence par les fruits que tu apprécies déjà" },
+  { "id": 6, "title": "Varie les couleurs, ton assiette sourit" },
+  { "id": 6, "title": "Teste un fruit nouveau chaque semaine" },
+  { "id": 6, "title": "Goûte le fruit avant d’ouvrir le paquet de biscuits" },
+  { "id": 6, "title": "Ton corps se souvient des fruits, il aime ça" },
+
+  // id 7 – Boire plus d’eau
+  { "id": 7, "title": "Remplis ta gourde en début de journée" },
+  { "id": 7, "title": "Garde-la toujours à portée de main" },
+  { "id": 7, "title": "Programme un rappel si tu l’oublies souvent" },
+  { "id": 7, "title": "Ajoute une tranche de citron si tu aimes" },
+  { "id": 7, "title": "Fais un point en milieu de journée sur le niveau" },
+  { "id": 7, "title": "Vise la gourde vide avant le dîner" },
+  { "id": 7, "title": "Pose-la bien en vue sur ton bureau" },
+  { "id": 7, "title": "Rince-la chaque soir, rituel de fin de journée" },
+  { "id": 7, "title": "Une gourde graduée peut t’aider à suivre" },
+  { "id": 7, "title": "Bois quelques gorgées à chaque pause" },
+
+  // id 8 – Prise de traitement
+  { "id": 8, "title": "Relie la prise à une habitude déjà en place" },
+  { "id": 8, "title": "Un pilulier t’évite les questions du matin" },
+  { "id": 8, "title": "Utilise un rappel discret sur ton téléphone" },
+  { "id": 8, "title": "Prépare le verre d’eau avant la prise" },
+  { "id": 8, "title": "Coche la prise sur un calendrier rassurant" },
+  { "id": 8, "title": "Range le traitement toujours au même endroit" },
+  { "id": 8, "title": "Ne double jamais la dose sans avis médical" },
+  { "id": 8, "title": "Renouvelle l’ordonnance avant d’être à court" },
+  { "id": 8, "title": "Demande l’aide d’un proche si besoin" },
+  { "id": 8, "title": "Vérifie l’heure avant de prendre ton traitement" },
+
+  // id 9 – Réduire ou arrêter de fumer
+  { "id": 9, "title": "Un jour à la fois, c’est déjà beaucoup" },
+  { "id": 9, "title": "Range briquet et cigarettes hors de vue" },
+  { "id": 9, "title": "En cas d’envie, commence par un verre d’eau" },
+  { "id": 9, "title": "Respire profondément pendant quelques secondes" },
+  { "id": 9, "title": "Change de pièce quand l’envie arrive" },
+  { "id": 9, "title": "Partage ton objectif avec quelqu’un de confiance" },
+  { "id": 9, "title": "Note les moments où l’envie est la plus forte" },
+  { "id": 9, "title": "Remplace le geste par un chewing-gum" },
+  { "id": 9, "title": "Félicite-toi après chaque envie traversée" },
+  { "id": 9, "title": "Prévois une petite récompense le soir" },
+
+  // id 10 – Aller à la salle de sport
+  { "id": 10, "title": "Prépare ton sac la veille, esprit tranquille" },
+  { "id": 10, "title": "Bloque un créneau fixe dans ta semaine" },
+  { "id": 10, "title": "Propose à un ami de t’accompagner" },
+  { "id": 10, "title": "Choisis un objectif simple pour la séance" },
+  { "id": 10, "title": "Commence léger, progresse à ton rythme" },
+  { "id": 10, "title": "Crée une playlist qui te motive vraiment" },
+  { "id": 10, "title": "Laisse ton téléphone de côté pendant l’entraînement" },
+  { "id": 10, "title": "Note ce que tu as fait après la séance" },
+  { "id": 10, "title": "Offre-toi une récompense cohérente avec ton effort" },
+  { "id": 10, "title": "Rappelle-toi la raison pour laquelle tu as commencé" },
+  // id 11 – Routine visage
+  { "id": 11, "title": "Garde tes produits devant toi, pas en expédition" },
+  { "id": 11, "title": "Suis ton ordre, comme une petite chorégraphie" },
+  { "id": 11, "title": "Une serviette propre = visage heureux" },
+  { "id": 11, "title": "Mets un minuteur doux, pas un réveil militaire" },
+  { "id": 11, "title": "Applique lentement, ton peau adore" },
+  { "id": 11, "title": "Respire pendant le soin, ça brille mieux" },
+  { "id": 11, "title": "Les produits périmés partent à la retraite" },
+  { "id": 11, "title": "Prépare tout la veille, cadeau du matin" },
+  { "id": 11, "title": "Notifications coupées, soin concentré" },
+  { "id": 11, "title": "Regarde ton reflet avec douceur" },
+
+  // id 12 – Bain / douche détente
+  { "id": 12, "title": "Serviette + pyjama prêts, ambiance luxe" },
+  { "id": 12, "title": "Eau un peu moins chaude, peau plus contente" },
+  { "id": 12, "title": "20 minutes, pas croisière" },
+  { "id": 12, "title": "Lumière douce, esprit qui fond" },
+  { "id": 12, "title": "Le téléphone reste hors salle" },
+  { "id": 12, "title": "Musique relax si envie" },
+  { "id": 12, "title": "Respire en fermant les yeux, spa maison" },
+  { "id": 12, "title": "Bain pas trop rempli, détente pas tsunami" },
+  { "id": 12, "title": "Hydrate-toi après, peau reconnaissante" },
+  { "id": 12, "title": "Aère la pièce, vapeur dehors" },
+
+  // id 13 – Boissons alcoolisées (modération)
+  { "id": 13, "title": "Deux minutes de brossage, sourire compris" },
+  { "id": 13, "title": "Prépare ton verre avant la soirée" },
+  { "id": 13, "title": "Choisis un verre que tu apprécies vraiment" },
+  { "id": 13, "title": "Un verre d’eau entre deux, équilibre parfait" },
+  { "id": 13, "title": "Décide de ta limite, soirée zen" },
+  { "id": 13, "title": "Bois lentement, goût prolongé" },
+  { "id": 13, "title": "Évite les grandes tournées, rituel tranquille" },
+  { "id": 13, "title": "Un “non” clair est élégant" },
+  { "id": 13, "title": "Varie avec des boissons sans alcool" },
+  { "id": 13, "title": "Garde un œil sur ton ressenti" },
+
+  // id 14 – Changer les draps
+  { "id": 14, "title": "Draps propres prêts, mission express" },
+  { "id": 14, "title": "Aère la chambre avant le grand changement" },
+  { "id": 14, "title": "Secoue le matelas, petits nuages dehors" },
+  { "id": 14, "title": "Change la taie d’oreiller en priorité" },
+  { "id": 14, "title": "Plie les anciens draps sans négocier" },
+  { "id": 14, "title": "Machine lancée aussitôt, cycle bouclé" },
+  { "id": 14, "title": "Choisis un set facile à mettre" },
+  { "id": 14, "title": "Profite pour dépoussiérer autour" },
+  { "id": 14, "title": "Regarde couette et housse un instant" },
+  { "id": 14, "title": "Savoure les draps frais comme un luxe simple" },
+
+  // id 15 – Entrée / hall
+  { "id": 15, "title": "Commence par ramasser ce qui traîne" },
+  { "id": 15, "title": "Libère le passage, effet accueil immédiat" },
+  { "id": 15, "title": "Secoue tapis et paillasson : poussière envolée" },
+  { "id": 15, "title": "Balaye les zones clés sans stress" },
+  { "id": 15, "title": "Essuie les traces visibles seulement" },
+  { "id": 15, "title": "Range les chaussures au même endroit" },
+  { "id": 15, "title": "Un panier pour le courrier = esprit clair" },
+  { "id": 15, "title": "Un crochet pour les clés, magie quotidienne" },
+  { "id": 15, "title": "Allume la lumière, regarde le résultat" },
+  { "id": 15, "title": "Range à deux, ambiance efficace" },
+
+  // id 16 – Cuisine rapide
+  { "id": 16, "title": "Vide l’évier d’abord, mission base" },
+  { "id": 16, "title": "Groupe la vaisselle au même endroit" },
+  { "id": 16, "title": "Lave-vaisselle lancé vite = esprit léger" },
+  { "id": 16, "title": "Essuie les surfaces visibles seulement" },
+  { "id": 16, "title": "Range les aliments sans attendre" },
+  { "id": 16, "title": "Jette les emballages tout de suite" },
+  { "id": 16, "title": "Un coup de balai express" },
+  { "id": 16, "title": "Mets un minuteur de 10 minutes" },
+  { "id": 16, "title": "Répartis la tâche si vous êtes plusieurs" },
+  { "id": 16, "title": "Finis avec un petit geste agréable" },
+
+  // id 17 – Salon / pièce de vie
+  { "id": 17, "title": "Remets les coussins en place : magie immédiate" },
+  { "id": 17, "title": "Ramasse ce qui n’a rien à faire là" },
+  { "id": 17, "title": "Un panier pour les objets vagabonds" },
+  { "id": 17, "title": "Plie les plaids, ambiance cosy" },
+  { "id": 17, "title": "Petite pile de magazines bien rangée" },
+  { "id": 17, "title": "Cache les câbles, détente instantanée" },
+  { "id": 17, "title": "Ouvre la fenêtre un moment" },
+  { "id": 17, "title": "Musique courte et motivante" },
+  { "id": 17, "title": "10 minutes maximum, efficacité légère" },
+  { "id": 17, "title": "Admire une minute en silence" },
+
+  // id 18 – Sanitaires
+  { "id": 18, "title": "Aère souvent, air frais assuré" },
+  { "id": 18, "title": "Un passage rapide sur les surfaces" },
+  { "id": 18, "title": "Change les serviettes régulièrement" },
+  { "id": 18, "title": "Poignées et robinets : zone VIP" },
+  { "id": 18, "title": "Chasse l’humidité après la douche" },
+  { "id": 18, "title": "Vide la petite poubelle" },
+  { "id": 18, "title": "Entretiens les siphons en paix" },
+  { "id": 18, "title": "Vérifie savon et papier" },
+  { "id": 18, "title": "Un coup rapide sur le miroir" },
+  { "id": 18, "title": "Parfum léger, ambiance propre" },
+
+  // id 19 – Produits ménagers
+  { "id": 19, "title": "Rassemble tout au même endroit" },
+  { "id": 19, "title": "Regarde ce qui est presque vide" },
+  { "id": 19, "title": "Note les recharges pour plus tard" },
+  { "id": 19, "title": "Sépare sol et surfaces, duo efficace" },
+  { "id": 19, "title": "Un produit par pièce suffit" },
+  { "id": 19, "title": "Vérifie éponges et chiffons" },
+  { "id": 19, "title": "Range hors portée des enfants" },
+  { "id": 19, "title": "Dites adieu aux produits très anciens" },
+  { "id": 19, "title": "Étiquette si besoin de clarté" },
+  { "id": 19, "title": "Garde un mini stock de secours" },
+
+  // id 20 – Chambre au quotidien
+  { "id": 20, "title": "Ouvre la fenêtre cinq minutes" },
+  { "id": 20, "title": "Secoue oreiller et couette" },
+  { "id": 20, "title": "Remets les vêtements à leur place" },
+  { "id": 20, "title": "Vide les verres oubliés" },
+  { "id": 20, "title": "Éteins les écrans en quittant la pièce" },
+  { "id": 20, "title": "Regarde la chambre d’un œil neuf" },
+  { "id": 20, "title": "Range une seule zone si tu manques de temps" },
+  { "id": 20, "title": "Ramasse ce qui traîne au sol" },
+  { "id": 20, "title": "Referme la fenêtre après aération" },
+  { "id": 20, "title": "Respire une fois avant de sortir" },
+
+  // id 21 – Besoin / introspection
+  { "id": 21, "title": "Respire trois fois, version reboot" },
+  { "id": 21, "title": "Observe l’émotion dominante, en douceur" },
+  { "id": 21, "title": "Pose la main sur ton cœur un instant" },
+  { "id": 21, "title": "Nomme ton besoin comme un murmure" },
+  { "id": 21, "title": "Demande simplement : “Qu’est-ce qui manque ?”" },
+  { "id": 21, "title": "Écoute ce qui dit oui en toi" },
   { "id": 21, "title": "Ralentis pour sentir plus finement" },
-  { "id": 21, "title": "Cherche la tension dans ton corps" },
+  { "id": 21, "title": "Cherche où ton corps se tend" },
   { "id": 21, "title": "Note la première envie sincère" },
   { "id": 21, "title": "Accueille sans te juger" },
-  {
-    "id": 22,
-    "title": "Commencer par vider la surface principale"
-  },
-  {
-    "id": 22,
-    "title": "Mettre les papiers en une seule pile"
-  },
-  {
-    "id": 22,
-    "title": "Ranger les stylos dans un pot unique"
-  },
-  {
-    "id": 22,
-    "title": "Ne garder que l’essentiel sur le bureau"
-  },
-  {
-    "id": 22,
-    "title": "Essuyer rapidement clavier et souris"
-  },
-  {
-    "id": 22,
-    "title": "Dégager la zone autour de l’écran"
-  },
-  {
-    "id": 22,
-    "title": "Trier les post-it inutiles"
-  },
-  {
-    "id": 22,
-    "title": "Prévoir un tiroir ou boîte “en vrac” limitée"
-  },
-  {
-    "id": 22,
-    "title": "Limiter le rangement à 10 minutes"
-  },
-  {
-    "id": 22,
-    "title": "Finir en éteignant l’écran"
-  },
-  {
-    "id": 23,
-    "title": "Demander deux minutes à tout le monde à la fin"
-  },
-  {
-    "id": 23,
-    "title": "Ramasser gobelets et papiers immédiatement"
-  },
-  {
-    "id": 23,
-    "title": "Remettre les chaises alignées"
-  },
-  {
-    "id": 23,
-    "title": "Effacer tableau ou écran partagé"
-  },
-  {
-    "id": 23,
-    "title": "Ranger câbles et télécommandes au même endroit"
-  },
-  {
-    "id": 23,
-    "title": "Vérifier qu’aucun objet personnel ne reste"
-  },
-  {
-    "id": 23,
-    "title": "Jeter les documents inutiles"
-  },
-  {
-    "id": 23,
-    "title": "Fermer fenêtres et lumières si besoin"
-  },
-  {
-    "id": 23,
-    "title": "Vérifier la propreté de la table"
-  },
-  {
-    "id": 23,
-    "title": "Remercier le groupe pour le coup de main"
-  },
-  {
-    "id": 24,
-    "title": "Supprimer les fichiers inutiles"
-  },
-  {
-    "id": 24,
-    "title": "Classer les documents dans des dossiers clairs"
-  },
-  {
-    "id": 24,
-    "title": "Renommer les fichiers ambigus"
-  },
-  {
-    "id": 24,
-    "title": "Vider la corbeille"
-  },
-  {
-    "id": 24,
-    "title": "Mettre à jour les applis essentielles"
-  },
-  {
-    "id": 24,
-    "title": "Désinstaller ce que tu n’utilises plus"
-  },
-  {
-    "id": 24,
-    "title": "Faire un point sur les onglets ouverts"
-  },
-  {
-    "id": 24,
-    "title": "Sauvegarder un dossier important"
-  },
-  {
-    "id": 24,
-    "title": "Vérifier l’espace de stockage"
-  },
-  {
-    "id": 24,
-    "title": "Conserver un écran d’accueil épuré"
-  },
-  {
-    "id": 25,
-    "title": "Lister les fournitures essentielles à vérifier"
-  },
-  {
-    "id": 25,
-    "title": "Regarder niveau stylos, feuilles, agrafes"
-  },
-  {
-    "id": 25,
-    "title": "Noter ce qui manque vraiment"
-  },
-  {
-    "id": 25,
-    "title": "Ranger les fournitures par catégorie"
-  },
-  {
-    "id": 25,
-    "title": "Mettre ce qui est en surplus au même endroit"
-  },
-  {
-    "id": 25,
-    "title": "Prévenir la personne en charge des commandes"
-  },
-  {
-    "id": 25,
-    "title": "Étiqueter rapidement les boîtes"
-  },
-  {
-    "id": 25,
-    "title": "Supprimer les objets cassés ou inutilisables"
-  },
-  {
-    "id": 25,
-    "title": "Vérifier l’emplacement pour accès facile"
-  },
-  {
-    "id": 25,
-    "title": "Planifier une vérification régulière"
-  },
-  {
-    "id": 26,
-    "title": "Choisir un jour fixe pour se rappeler"
-  },
-  {
-    "id": 26,
-    "title": "Vérifier toutes les pièces avant de descendre"
-  },
-  {
-    "id": 26,
-    "title": "Bien fermer le sac avant de sortir"
-  },
-  {
-    "id": 26,
-    "title": "Nettoyer si besoin le fond de la poubelle"
-  },
-  {
-    "id": 26,
-    "title": "Mettre directement un nouveau sac propre"
-  },
-  {
-    "id": 26,
-    "title": "Noter la rotation des habitants"
-  },
-  {
-    "id": 26,
-    "title": "Préparer les sacs de tri à l’avance"
-  },
-  {
-    "id": 26,
-    "title": "Regarder le calendrier de collecte"
-  },
-  {
-    "id": 26,
-    "title": "Profiter pour aérer un peu la pièce"
-  },
-  {
-    "id": 26,
-    "title": "Se remercier mutuellement pour la corvée"
-  },
-  {
-    "id": 27,
-    "title": "Prévoir deux sacs : tri et ordinaire"
-  },
-  {
-    "id": 27,
-    "title": "Commencer par les zones les plus visibles"
-  },
-  {
-    "id": 27,
-    "title": "Regarder les consignes de tri locales"
-  },
-  {
-    "id": 27,
-    "title": "Compresser les emballages volumineux"
-  },
-  {
-    "id": 27,
-    "title": "Montrer l’exemple sans faire la morale"
-  },
-  {
-    "id": 27,
-    "title": "Inviter quelqu’un à aider deux minutes"
-  },
-  {
-    "id": 27,
-    "title": "Ramasser aussi les petits papiers oubliés"
-  },
-  {
-    "id": 27,
-    "title": "Vider les poubelles de bureau ou de classe"
-  },
-  {
-    "id": 27,
-    "title": "Laver les mains après le tri"
-  },
-  {
-    "id": 27,
-    "title": "Remettre les sacs au bon endroit"
-  },
-  {
-    "id": 28,
-    "title": "Choisir une seule étagère à la fois"
-  },
-  {
-    "id": 28,
-    "title": "Mettre de côté ce dont on ne se sert plus"
-  },
-  {
-    "id": 28,
-    "title": "Grouper les objets par thème"
-  },
-  {
-    "id": 28,
-    "title": "Mettre les objets importants à hauteur des yeux"
-  },
-  {
-    "id": 28,
-    "title": "Utiliser une boîte pour les petits éléments"
-  },
-  {
-    "id": 28,
-    "title": "Étiqueter rapidement les boîtes"
-  },
-  {
-    "id": 28,
-    "title": "Donner ou recycler ce qui encombre"
-  },
-  {
-    "id": 28,
-    "title": "Essuyer l’étagère avant de remettre"
-  },
-  {
-    "id": 28,
-    "title": "Limiter les objets par rangée"
-  },
-  {
-    "id": 28,
-    "title": "Reculer d’un pas pour apprécier le résultat"
-  },
-  { "id": 29, "title": "Ouvre les rideaux dès le réveil" },
-  { "id": 29, "title": "Pose un pied au sol immédiatement" },
+
+  // id 22 – Bureau / espace de travail
+  { "id": 22, "title": "Vide la surface principale, effet immédiat" },
+  { "id": 22, "title": "Une seule pile de papiers, pas trois" },
+  { "id": 22, "title": "Les stylos vivent mieux ensemble" },
+  { "id": 22, "title": "Garde seulement l’essentiel visible" },
+  { "id": 22, "title": "Un rapide coup sur clavier et souris" },
+  { "id": 22, "title": "Dégage la zone autour de l’écran" },
+  { "id": 22, "title": "Tri des post-it : sélection naturelle" },
+  { "id": 22, "title": "Un tiroir “vrac” contrôlé suffit" },
+  { "id": 22, "title": "10 minutes maximum, chrono détente" },
+  { "id": 22, "title": "Éteins ton écran pour clôturer" },
+
+  // id 23 – Fin de réunion
+  { "id": 23, "title": "Deux minutes pour ranger, tout change" },
+  { "id": 23, "title": "Ramasse les gobelets avant qu’ils ne s’installent" },
+  { "id": 23, "title": "Aligne les chaises, effet salle neuve" },
+  { "id": 23, "title": "Efface tableau ou écran partagé" },
+  { "id": 23, "title": "Range câbles et télécommandes" },
+  { "id": 23, "title": "Vérifie qu’aucun objet n’a fugué" },
+  { "id": 23, "title": "Jette les documents inutiles" },
+  { "id": 23, "title": "Ferme fenêtres et lumières si besoin" },
+  { "id": 23, "title": "Un regard sur la table, mission propreté" },
+  { "id": 23, "title": "Remercie le groupe pour le coup de main" },
+
+  // id 24 – Ordinateur / numérique
+  { "id": 24, "title": "Supprime ce qui ne sert plus" },
+  { "id": 24, "title": "Range dans des dossiers clairs" },
+  { "id": 24, "title": "Renomme pour comprendre dans 3 mois" },
+  { "id": 24, "title": "Vide la corbeille (oui, elle existe)" },
+  { "id": 24, "title": "Mets à jour ce qui compte vraiment" },
+  { "id": 24, "title": "Désinstalle ce qui dort dans ton ordi" },
+  { "id": 24, "title": "Fais un point sur tes onglets" },
+  { "id": 24, "title": "Sauvegarde un dossier important" },
+  { "id": 24, "title": "Surveille ton espace de stockage" },
+  { "id": 24, "title": "Garde un écran d’accueil apaisant" },
+
+  // id 25 – Fournitures
+  { "id": 25, "title": "Fais une liste des essentiels" },
+  { "id": 25, "title": "Regarde stylos, feuilles, agrafes" },
+  { "id": 25, "title": "Note ce qui manque vraiment" },
+  { "id": 25, "title": "Range par catégories simples" },
+  { "id": 25, "title": "Rassemble le surplus au même endroit" },
+  { "id": 25, "title": "Préviens la personne en charge des commandes" },
+  { "id": 25, "title": "Ajoute une étiquette si utile" },
+  { "id": 25, "title": "Écarte les objets cassés" },
+  { "id": 25, "title": "Simplifie l’accès aux fournitures" },
+  { "id": 25, "title": "Planifie une vérification régulière" },
+
+  // id 26 – Sortir les poubelles
+  { "id": 26, "title": "Choisis un jour fixe, rituel tranquille" },
+  { "id": 26, "title": "Regarde chaque pièce avant de descendre" },
+  { "id": 26, "title": "Ferme bien le sac, sécurité du voyage" },
+  { "id": 26, "title": "Nettoie le fond si besoin" },
+  { "id": 26, "title": "Mets un nouveau sac tout de suite" },
+  { "id": 26, "title": "Note la rotation des habitants" },
+  { "id": 26, "title": "Prépare sacs de tri à l’avance" },
+  { "id": 26, "title": "Regarde le calendrier de collecte" },
+  { "id": 26, "title": "Aère un instant la pièce" },
+  { "id": 26, "title": "Remerciez-vous mutuellement pour la mission" },
+
+  // id 27 – Tri / recyclage
+  { "id": 27, "title": "Deux sacs : tri et ordinaire, facile" },
+  { "id": 27, "title": "Commence par les zones visibles" },
+  { "id": 27, "title": "Regarde les consignes locales de tri" },
+  { "id": 27, "title": "Compresse les emballages volumineux" },
+  { "id": 27, "title": "Montre l’exemple avec douceur" },
+  { "id": 27, "title": "Invite quelqu’un pour deux minutes" },
+  { "id": 27, "title": "Ramasse aussi les petits papiers" },
+  { "id": 27, "title": "Vide les petites poubelles de bureau" },
+  { "id": 27, "title": "Lave les mains après" },
+  { "id": 27, "title": "Remets les sacs au bon endroit" },
+
+  // id 28 – Étagères / rangement
+  { "id": 28, "title": "Une étagère à la fois, sérénité" },
+  { "id": 28, "title": "Mets de côté ce que tu n’utilises plus" },
+  { "id": 28, "title": "Groupe par thème, esprit clair" },
+  { "id": 28, "title": "Les objets importants à hauteur des yeux" },
+  { "id": 28, "title": "Une boîte pour les petits éléments" },
+  { "id": 28, "title": "Une étiquette, une paix intérieure" },
+  { "id": 28, "title": "Donne ou recycle ce qui encombre" },
+  { "id": 28, "title": "Nettoie l’étagère avant de remettre" },
+  { "id": 28, "title": "Une rangée = une limite" },
+  { "id": 28, "title": "Admire ton œuvre un pas en arrière" },
+
+  // id 29 – Sortir du lit
+  { "id": 29, "title": "Ouvre les rideaux, lumière booster" },
+  { "id": 29, "title": "Pose un pied au sol sans réfléchir" },
   { "id": 29, "title": "Compte jusqu’à trois et lève-toi" },
-  { "id": 29, "title": "Attrape ta gourde et bois" },
-  { "id": 29, "title": "Mets une musique douce" },
-  { "id": 29, "title": "Évite de reprendre ton téléphone" },
-  { "id": 29, "title": "Assois-toi avant de te lever" },
-  { "id": 29, "title": "Rappelle-toi la première mission du jour" },
+  { "id": 29, "title": "Bois un peu d’eau dès le réveil" },
+  { "id": 29, "title": "Musique douce pour atterrir" },
+  { "id": 29, "title": "Téléphone en pause quelques minutes" },
+  { "id": 29, "title": "Assieds-toi avant de te lever" },
+  { "id": 29, "title": "Souviens-toi de ta première mission du jour" },
   { "id": 29, "title": "Place ton réveil hors du lit" },
   { "id": 29, "title": "Étire-toi deux secondes" },
+
+  // id 30 – Vélo
   { "id": 30, "title": "Prépare ton vélo la veille" },
   { "id": 30, "title": "Commence par cinq minutes tranquilles" },
   { "id": 30, "title": "Choisis un itinéraire agréable" },
-  { "id": 30, "title": "Ajuste ta selle rapidement" },
+  { "id": 30, "title": "Ajuste la selle en deux secondes" },
   { "id": 30, "title": "Emporte juste l’essentiel" },
-  { "id": 30, "title": "Respire le vent en démarrant" },
-  { "id": 30, "title": "Observe la ville différemment" },
-  { "id": 30, "title": "Roule à ton rythme" },
-  { "id": 30, "title": "Écoute ton souffle" },
-  { "id": 30, "title": "Célèbre l’arrivée" },
-  {
-    "id": 31,
-    "title": "Choisir un seul problème à la fois"
-  },
-  {
-    "id": 31,
-    "title": "Préparer l’outil nécessaire avant de commencer"
-  },
-  {
-    "id": 31,
-    "title": "Regarder un tutoriel court si besoin"
-  },
-  {
-    "id": 31,
-    "title": "Couper l’électricité ou l’eau si nécessaire"
-  },
-  {
-    "id": 31,
-    "title": "Tester la réparation aussitôt faite"
-  },
-  {
-    "id": 31,
-    "title": "Noter si un professionnel doit intervenir"
-  },
-  {
-    "id": 31,
-    "title": "Ranger les outils juste après"
-  },
-  {
-    "id": 31,
-    "title": "Ne pas forcer si ça résiste"
-  },
-  {
-    "id": 31,
-    "title": "Prévenir les autres habitants du changement"
-  },
-  {
-    "id": 31,
-    "title": "Se féliciter de l’amélioration"
-  },
-  {
-    "id": 32,
-    "title": "S’asseoir dans un endroit calme"
-  },
-  {
-    "id": 32,
-    "title": "Ouvrir agenda papier ou numérique"
-  },
-  {
-    "id": 32,
-    "title": "Vérifier les rendez-vous du lendemain"
-  },
-  {
-    "id": 32,
-    "title": "Annuler ce qui n’est plus utile"
-  },
-  {
-    "id": 32,
-    "title": "Prévoir un temps pour les imprévus"
-  },
-  {
-    "id": 32,
-    "title": "Bloquer des moments de pause"
-  },
-  {
-    "id": 32,
-    "title": "Noter une seule priorité par jour"
-  },
-  {
-    "id": 32,
-    "title": "Informer les personnes concernées"
-  },
-  {
-    "id": 32,
-    "title": "Fermer l’agenda en respirant calmement"
-  },
-  {
-    "id": 32,
-    "title": "Ne pas surcharger la semaine"
-  },
-  {
-    "id": 33,
-    "title": "Prévoir une pile garder, jeter, à traiter"
-  },
-  {
-    "id": 33,
-    "title": "Commencer par les papiers les plus récents"
-  },
-  {
-    "id": 33,
-    "title": "Créer trois catégories maximum"
-  },
-  {
-    "id": 33,
-    "title": "Utiliser une pochette par thème"
-  },
-  {
-    "id": 33,
-    "title": "Jeter les doublons évidents"
-  },
-  {
-    "id": 33,
-    "title": "Prendre une photo des documents à archiver"
-  },
-  {
-    "id": 33,
-    "title": "Ne pas tout faire d’un coup"
-  },
-  {
-    "id": 33,
-    "title": "Inscrire l’année sur les pochettes"
-  },
-  {
-    "id": 33,
-    "title": "Ranger les papiers sensibles hors vue"
-  },
-  {
-    "id": 33,
-    "title": "Arrêter dès que la fatigue monte"
-  },
-  {
-    "id": 34,
-    "title": "Utiliser un seul endroit pour les rappels"
-  },
-  {
-    "id": 34,
-    "title": "Écrire court et concret"
-  },
-  {
-    "id": 34,
-    "title": "Mettre une date quand c’est possible"
-  },
-  {
-    "id": 34,
-    "title": "Limiter le nombre de rappels simultanés"
-  },
-  {
-    "id": 34,
-    "title": "Supprimer ceux déjà faits"
-  },
-  {
-    "id": 34,
-    "title": "Regarder la liste au même moment chaque jour"
-  },
-  {
-    "id": 34,
-    "title": "Utiliser une couleur pour les urgences"
-  },
-  {
-    "id": 34,
-    "title": "Éviter de tout garder “pour plus tard”"
-  },
-  {
-    "id": 34,
-    "title": "Ne pas multiplier les applis de rappel"
-  },
-  {
-    "id": 34,
-    "title": "Mettre au-dessus les trois plus importants"
-  },
-  {
-    "id": 35,
-    "title": "Formuler l’envie simplement"
-  },
-  {
-    "id": 35,
-    "title": "Commencer par “Ça me ferait plaisir de…”"
-  },
-  {
-    "id": 35,
-    "title": "Accepter que l’autre puisse dire non"
-  },
-  {
-    "id": 35,
-    "title": "Proposer une alternative possible"
-  },
-  {
-    "id": 35,
-    "title": "Choisir un moment calme pour le dire"
-  },
-  {
-    "id": 35,
-    "title": "Regarder la personne en parlant"
-  },
-  {
-    "id": 35,
-    "title": "Éviter les reproches cachés dedans"
-  },
-  {
-    "id": 35,
-    "title": "Écouter aussi les envies des autres"
-  },
-  {
-    "id": 35,
-    "title": "Noter les envies communes pour plus tard"
-  },
-  {
-    "id": 35,
-    "title": "Remercier quand l’envie est entendue"
-  },
-  {
-    "id": 36,
-    "title": "Choisir un moment où l’on est reposé"
-  },
-  {
-    "id": 36,
-    "title": "Ouvrir l’appli bancaire ou carnet"
-  },
-  {
-    "id": 36,
-    "title": "Regarder seulement la période récente"
-  },
-  {
-    "id": 36,
-    "title": "Repérer les abonnements oubliés"
-  },
-  {
-    "id": 36,
-    "title": "Noter une dépense à réduire"
-  },
-  {
-    "id": 36,
-    "title": "Classer les dépenses par grandes catégories"
-  },
-  {
-    "id": 36,
-    "title": "Ne pas se juger pendant la vérification"
-  },
-  {
-    "id": 36,
-    "title": "Prévoir un petit budget plaisir réaliste"
-  },
-  {
-    "id": 36,
-    "title": "Mettre à jour un tableau simple si besoin"
-  },
-  {
-    "id": 36,
-    "title": "Fermer l’appli en respirant profondément"
-  },
-  {
-    "id": 37,
-    "title": "Choisir un tiroir ou une pile à la fois"
-  },
-  {
-    "id": 37,
-    "title": "Créer trois tas : garder, donner, recycler"
-  },
-  {
-    "id": 37,
-    "title": "Essayer un vêtement si doute"
-  },
-  {
-    "id": 37,
-    "title": "Se demander si on l’a porté cette année"
-  },
-  {
-    "id": 37,
-    "title": "Garder les vêtements confortables en priorité"
-  },
-  {
-    "id": 37,
-    "title": "Mettre à part ceux à réparer"
-  },
-  {
-    "id": 37,
-    "title": "Plier immédiatement ce qui reste"
-  },
-  {
-    "id": 37,
-    "title": "Prévoir un sac dédié pour les dons"
-  },
-  {
-    "id": 37,
-    "title": "Ne pas garder par culpabilité"
-  },
-  {
-    "id": 37,
-    "title": "Écouter son corps plus que la taille"
-  },
-  {
-    "id": 38,
-    "title": "Regrouper le linge dans un seul panier"
-  },
-  {
-    "id": 38,
-    "title": "Vérifier les poches rapidement"
-  },
-  {
-    "id": 38,
-    "title": "Trier au moins clair et foncé"
-  },
-  {
-    "id": 38,
-    "title": "Choisir un programme habituel pour aller vite"
-  },
-  {
-    "id": 38,
-    "title": "Ne pas surcharger le tambour"
-  },
-  {
-    "id": 38,
-    "title": "Ajouter une serviette si machine presque vide"
-  },
-  {
-    "id": 38,
-    "title": "Prévoir où faire sécher après"
-  },
-  {
-    "id": 38,
-    "title": "Lancer la machine à un moment où l’on est là"
-  },
-  {
-    "id": 38,
-    "title": "Mettre un minuteur approximatif"
-  },
-  {
-    "id": 38,
-    "title": "Sortir le linge dès la fin du programme"
-  },
-  {
-    "id": 39,
-    "title": "Choisir un mot simple pour l’humeur"
-  },
-  {
-    "id": 39,
-    "title": "Parler en “je” plutôt qu’en “tu”"
-  },
-  {
-    "id": 39,
-    "title": "Dire si l’on veut juste être écouté"
-  },
-  {
-    "id": 39,
-    "title": "Choisir un moment sans urgence"
-  },
-  {
-    "id": 39,
-    "title": "Prévenir si on ne veut pas de conseil"
-  },
-  {
-    "id": 39,
-    "title": "Écouter en retour l’humeur de l’autre"
-  },
-  {
-    "id": 39,
-    "title": "Utiliser l’image météo si c’est plus simple"
-  },
-  {
-    "id": 39,
-    "title": "Accepter que l’humeur évolue"
-  },
-  {
-    "id": 39,
-    "title": "Rester concret sur la journée"
-  },
-  {
-    "id": 39,
-    "title": "Remercier pour l’écoute"
-  },
-  {
-    "id": 40,
-    "title": "Repérer une petite occasion d’aider"
-  },
-  {
-    "id": 40,
-    "title": "Agir sans attendre de retour"
-  },
-  {
-    "id": 40,
-    "title": "Choisir un geste simple et faisable"
-  },
-  {
-    "id": 40,
-    "title": "Rester discret si la personne est pudique"
-  },
-  {
-    "id": 40,
-    "title": "Adapter à l’énergie du jour"
-  },
-  {
-    "id": 40,
-    "title": "Proposer avant d’imposer l’aide"
-  },
-  {
-    "id": 40,
-    "title": "Garder le geste léger, sans lourdeur"
-  },
-  {
-    "id": 40,
-    "title": "Se rappeler que le non est possible"
-  },
-  {
-    "id": 40,
-    "title": "Se féliciter intérieurement du geste"
-  },
-  {
-    "id": 40,
-    "title": "Varier les formes de bienveillance"
-  },
-  {
-    "id": 41,
-    "title": "Choisir une astuce testée soi-même"
-  },
-  {
-    "id": 41,
-    "title": "Expliquer en une ou deux phrases"
-  },
-  {
-    "id": 41,
-    "title": "Montrer rapidement si possible"
-  },
-  {
-    "id": 41,
-    "title": "Adapter le niveau de détail à la personne"
-  },
-  {
-    "id": 41,
-    "title": "Proposer, sans imposer la méthode"
-  },
-  {
-    "id": 41,
-    "title": "Donner un exemple concret d’utilisation"
-  },
-  {
-    "id": 41,
-    "title": "Inviter l’autre à partager aussi une astuce"
-  },
-  {
-    "id": 41,
-    "title": "Envoyer un petit message récap si utile"
-  },
-  {
-    "id": 41,
-    "title": "Choisir un moment calme pour en parler"
-  },
-  {
-    "id": 41,
-    "title": "Rester ouvert aux questions"
-  },
-  {
-    "id": 42,
-    "title": "Commencer par un message simple"
-  },
-  {
-    "id": 42,
-    "title": "Proposer un moment pour échanger"
-  },
-  {
-    "id": 42,
-    "title": "Dire directement que l’on pense à la personne"
-  },
-  {
-    "id": 42,
-    "title": "Ne pas attendre une longue conversation"
-  },
-  {
-    "id": 42,
-    "title": "Envoyer une photo ou un emoji si plus facile"
-  },
-  {
-    "id": 42,
-    "title": "Accepter que l’autre réponde plus tard"
-  },
-  {
-    "id": 42,
-    "title": "Rester soi-même dans le ton"
-  },
-  {
-    "id": 42,
-    "title": "Éviter de parler uniquement des soucis"
-  },
-  {
-    "id": 42,
-    "title": "Rappeler un bon souvenir commun"
-  },
-  {
-    "id": 42,
-    "title": "Se remercier d’avoir fait le premier pas"
-  },
-  {
-    "id": 43,
-    "title": "Choisir un repas sans urgence après"
-  },
-  {
-    "id": 43,
-    "title": "Poser les écrans loin de la table"
-  },
-  {
-    "id": 43,
-    "title": "Prévoir un sujet léger à partager"
-  },
-  {
-    "id": 43,
-    "title": "Proposer à chacun de raconter un petit moment"
-  },
-  {
-    "id": 43,
-    "title": "Servir au moins un plat apprécié de tous"
-  },
-  {
-    "id": 43,
-    "title": "S’asseoir vraiment ensemble avant de commencer"
-  },
-  {
-    "id": 43,
-    "title": "Prendre le temps de se regarder"
-  },
-  {
-    "id": 43,
-    "title": "Écouter sans forcément répondre tout de suite"
-  },
-  {
-    "id": 43,
-    "title": "Remercier pour le repas préparé"
-  },
-  {
-    "id": 43,
-    "title": "Prolonger de quelques minutes si l’ambiance est bonne"
-  },
-  {
-    "id": 44,
-    "title": "Demander d’abord s’il ou elle veut parler"
-  },
-  {
-    "id": 44,
-    "title": "Écouter sans interrompre"
-  },
-  {
-    "id": 44,
-    "title": "Valider ce que la personne ressent"
-  },
-  {
-    "id": 44,
-    "title": "Éviter les phrases “il faut que…”"
-  },
-  {
-    "id": 44,
-    "title": "Proposer une petite action concrète"
-  },
-  {
-    "id": 44,
-    "title": "Rappeler une qualité sincère de la personne"
-  },
-  {
-    "id": 44,
-    "title": "Offrir sa présence même en silence"
-  },
-  {
-    "id": 44,
-    "title": "Envoyer un message après la conversation"
-  },
-  {
-    "id": 44,
-    "title": "Ne pas minimiser la difficulté"
-  },
-  {
-    "id": 44,
-    "title": "Soutenir sans vouloir tout résoudre"
-  },
-  {
-    "id": 45,
-    "title": "Choisir un moment où l’on se sent assez en sécurité"
-  },
-  {
-    "id": 45,
-    "title": "Croiser le regard brièvement"
-  },
-  {
-    "id": 45,
-    "title": "Sourire simplement, sans insister"
-  },
-  {
-    "id": 45,
-    "title": "Ne rien attendre en retour"
-  },
-  {
-    "id": 45,
-    "title": "Commencer par les personnes du voisinage"
-  },
-  {
-    "id": 45,
-    "title": "Tester dans des lieux rassurants"
-  },
-  {
-    "id": 45,
-    "title": "Garder les écouteurs à volume bas"
-  },
-  {
-    "id": 45,
-    "title": "Respecter les signaux de malaise éventuels"
-  },
-  {
-    "id": 45,
-    "title": "Se rappeler que le geste est déjà suffisant"
-  },
-  {
-    "id": 45,
-    "title": "Garder le sourire aussi pour soi"
-  },
-  {
-    "id": 46,
-    "title": "Demander l’accord clairement"
-  },
-  {
-    "id": 46,
-    "title": "Ouvrir les bras avant de s’approcher"
-  },
-  {
-    "id": 46,
-    "title": "Adapter la durée à l’autre"
-  },
-  {
-    "id": 46,
-    "title": "Respirer calmement pendant le câlin"
-  },
-  {
-    "id": 46,
-    "title": "Relâcher doucement, pas brusquement"
-  },
-  {
-    "id": 46,
-    "title": "Respecter un refus sans insister"
-  },
-  {
-    "id": 46,
-    "title": "Proposer un autre geste si besoin"
-  },
-  {
-    "id": 46,
-    "title": "Ne pas parler si la personne préfère le silence"
-  },
-  {
-    "id": 46,
-    "title": "Se concentrer sur la chaleur du contact"
-  },
-  {
-    "id": 46,
-    "title": "Remercier pour le câlin partagé"
-  },
-  {
-    "id": 47,
-    "title": "Nommer l’action pour laquelle on remercie"
-  },
-  {
-    "id": 47,
-    "title": "Dire le merci à la personne directement"
-  },
-  {
-    "id": 47,
-    "title": "Regarder dans les yeux si possible"
-  },
-  {
-    "id": 47,
-    "title": "Parler avec un ton sincère"
-  },
-  {
-    "id": 47,
-    "title": "Éviter les “merci mais…”"
-  },
-  {
-    "id": 47,
-    "title": "Expliquer en quoi cela a aidé"
-  },
-  {
-    "id": 47,
-    "title": "Remercier aussi pour les petites choses"
-  },
-  {
-    "id": 47,
-    "title": "Varier la façon de dire merci"
-  },
-  {
-    "id": 47,
-    "title": "Envoyer un message de remerciement après coup"
-  },
-  {
-    "id": 47,
-    "title": "Se laisser toucher par ce qu’on reçoit"
-  },
-  {
-    "id": 48,
-    "title": "Choisir un endroit où la personne passera"
-  },
-  {
-    "id": 48,
-    "title": "Écrire quelques mots seulement"
-  },
-  {
-    "id": 48,
-    "title": "Utiliser le prénom ou un surnom affectueux"
-  },
-  {
-    "id": 48,
-    "title": "Mentionner un détail positif récent"
-  },
-  {
-    "id": 48,
-    "title": "Ajouter un petit dessin ou emoji"
-  },
-  {
-    "id": 48,
-    "title": "Rester simple plutôt que trop parfait"
-  },
-  {
-    "id": 48,
-    "title": "Éviter les reproches cachés dedans"
-  },
-  {
-    "id": 48,
-    "title": "Ne pas attendre forcément de réponse"
-  },
-  {
-    "id": 48,
-    "title": "Garder une carte ou un carnet dédié"
-  },
-  {
-    "id": 48,
-    "title": "Observer plus tard la réaction en silence"
-  },
-  {
-    "id": 49,
-    "title": "Nommer ce que la personne fait bien"
-  },
-  {
-    "id": 49,
-    "title": "Parler au présent plutôt qu’au passé"
-  },
-  {
-    "id": 49,
-    "title": "Éviter les comparaisons avec d’autres"
-  },
-  {
-    "id": 49,
-    "title": "Rester concret dans le compliment"
-  },
-  {
-    "id": 49,
-    "title": "Sourire en même temps que l’on parle"
-  },
-  {
-    "id": 49,
-    "title": "Ne pas ajouter de critique juste après"
-  },
-  {
-    "id": 49,
-    "title": "Envoyer un message d’encouragement avant un événement"
-  },
-  {
-    "id": 49,
-    "title": "Reconnaître aussi les efforts, pas seulement les résultats"
-  },
-  {
-    "id": 49,
-    "title": "Demander comment mieux soutenir"
-  },
-  {
-    "id": 49,
-    "title": "Rester authentique et simple"
-  },
-  {
-    "id": 50,
-    "title": "Dire clairement que l’idée est intéressante"
-  },
-  {
-    "id": 50,
-    "title": "Nommer la personne qui l’a proposée"
-  },
-  {
-    "id": 50,
-    "title": "Reformuler l’idée avec ses mots"
-  },
-  {
-    "id": 50,
-    "title": "Proposer de la noter quelque part"
-  },
-  {
-    "id": 50,
-    "title": "Demander comment la mettre en pratique"
-  },
-  {
-    "id": 50,
-    "title": "Soutenir l’idée même si elle est imparfaite"
-  },
-  {
-    "id": 50,
-    "title": "Inviter les autres à réagir avec bienveillance"
-  },
-  {
-    "id": 50,
-    "title": "Éviter de s’approprier l’idée"
-  },
-  {
-    "id": 50,
-    "title": "Remercier pour le partage"
-  },
-  {
-    "id": 50,
-    "title": "Revenir plus tard sur l’idée pour la faire vivre"
-  },
-  {
-    "id": 51,
-    "title": "Choisir quelque chose de simple et utile"
-  },
-  {
-    "id": 51,
-    "title": "Penser à un détail que la personne aime"
-  },
-  {
-    "id": 51,
-    "title": "Ajouter un petit mot si possible"
-  },
-  {
-    "id": 51,
-    "title": "Offrir sans attendre de cadeau en retour"
-  },
-  {
-    "id": 51,
-    "title": "Respecter la pudeur de la personne"
-  },
-  {
-    "id": 51,
-    "title": "Privilégier une attention plutôt qu’un objet cher"
-  },
-  {
-    "id": 51,
-    "title": "Adapter au contexte (bureau, maison, classe)"
-  },
-  {
-    "id": 51,
-    "title": "Proposer aussi un cadeau non matériel"
-  },
-  {
-    "id": 51,
-    "title": "Vérifier que le cadeau ne met pas mal à l’aise"
-  },
-  {
-    "id": 51,
-    "title": "Profiter du sourire au moment de l’offrir"
-  },
-  {
-    "id": 52,
-    "title": "Repérer quelqu’un souvent à l’écart"
-  },
-  {
-    "id": 52,
-    "title": "S’asseoir à côté sans forcer la discussion"
-  },
-  {
-    "id": 52,
-    "title": "Proposer de rejoindre une activité simple"
-  },
-  {
-    "id": 52,
-    "title": "Poser une question ouverte et douce"
-  },
-  {
-    "id": 52,
-    "title": "Respecter si la personne préfère observer"
-  },
-  {
-    "id": 52,
-    "title": "Lui présenter une autre personne accueillante"
-  },
-  {
-    "id": 52,
-    "title": "Éviter de la mettre au centre d’un coup"
-  },
-  {
-    "id": 52,
-    "title": "Inviter régulièrement, même si elle refuse parfois"
-  },
-  {
-    "id": 52,
-    "title": "Montrer que sa présence compte"
-  },
-  {
-    "id": 52,
-    "title": "Remercier discrètement quand elle participe"
-  },
-  {
-    "id": 53,
-    "title": "Demander “Tu veux un coup de main ?”"
-  },
-  {
-    "id": 53,
-    "title": "Dire clairement ce qu’on peut faire"
-  },
-  {
-    "id": 53,
-    "title": "Accepter un refus sans insister"
-  },
-  {
-    "id": 53,
-    "title": "Adapter l’aide à ses propres limites"
-  },
-  {
-    "id": 53,
-    "title": "Rester disponible sans se sacrifier"
-  },
-  {
-    "id": 53,
-    "title": "S’entendre sur qui fait quoi"
-  },
-  {
-    "id": 53,
-    "title": "Proposer un temps court d’aide"
-  },
-  {
-    "id": 53,
-    "title": "Vérifier après si tout est ok"
-  },
-  {
-    "id": 53,
-    "title": "Remercier pour la confiance donnée"
-  },
-  {
-    "id": 53,
-    "title": "Noter ce que cela apporte aussi pour soi"
-  },
-  {
-    "id": 54,
-    "title": "Demander explicitement l’accord avant"
-  },
-  {
-    "id": 54,
-    "title": "Choisir une zone neutre (épaules, nuque)"
-  },
-  {
-    "id": 54,
-    "title": "Limiter à quelques minutes seulement"
-  },
-  {
-    "id": 54,
-    "title": "Observer les réactions de l’autre"
-  },
-  {
-    "id": 54,
-    "title": "Arrêter dès que la personne le souhaite"
-  },
-  {
-    "id": 54,
-    "title": "Prévenir si l’on n’est pas professionnel"
-  },
-  {
-    "id": 54,
-    "title": "Utiliser des gestes doux et lents"
-  },
-  {
-    "id": 54,
-    "title": "Garder un ton calme pendant"
-  },
-  {
-    "id": 54,
-    "title": "Proposer un verre d’eau après"
-  },
-  {
-    "id": 54,
-    "title": "Remercier pour la confiance"
-  },
-  {
-    "id": 55,
-    "title": "Repérer les situations où ça sort facilement"
-  },
-  {
-    "id": 55,
-    "title": "Remplacer par un mot neutre ou drôle"
-  },
-  {
-    "id": 55,
-    "title": "Inspirer profondément avant de répondre"
-  },
-  {
-    "id": 55,
-    "title": "Compter jusqu’à trois dans sa tête"
-  },
-  {
-    "id": 55,
-    "title": "S’éloigner quelques secondes si possible"
-  },
-  {
-    "id": 55,
-    "title": "Rappeler qu’on veut protéger l’ambiance"
-  },
-  {
-    "id": 55,
-    "title": "S’excuser si le mot est déjà sorti"
-  },
-  {
-    "id": 55,
-    "title": "Noter les progrès sur la semaine"
-  },
-  {
-    "id": 55,
-    "title": "Demander soutien d’un proche si besoin"
-  },
-  {
-    "id": 55,
-    "title": "Se féliciter à chaque fois qu’on retient"
-  },
-  { "id": 56, "title": "Relis mentalement trois moments clés" },
-  { "id": 56, "title": "Note une petite victoire" },
-  { "id": 56, "title": "Libère une pensée en la écrivant" },
-  { "id": 56, "title": "Observe ton humeur sans juger" },
-  { "id": 56, "title": "Respire lentement pour atterrir" },
-  { "id": 56, "title": "Ferme une boucle restée ouverte" },
-  { "id": 56, "title": "Dis merci pour un détail" },
-  { "id": 56, "title": "Laisse aller ce qui pèse" },
-  { "id": 56, "title": "Choisis ton intention pour demain" },
-  { "id": 56, "title": "Dépose ton téléphone hors lit" },
-  { "id": 57, "title": "Choisis un mot qui guide" },
-  { "id": 57, "title": "Décide d’une énergie à cultiver" },
-  { "id": 57, "title": "Note l’intention en une phrase" },
-  { "id": 57, "title": "Rappelle-toi ce qui compte vraiment" },
-  { "id": 57, "title": "Relie ton intention à un besoin" },
-  { "id": 57, "title": "Imagine ton premier geste aligné" },
-  { "id": 57, "title": "Évite d’en choisir trop" },
-  { "id": 57, "title": "Formule-la simplement et clairement" },
-  { "id": 57, "title": "Choisis une intention réaliste" },
-  { "id": 57, "title": "Pose-la avant de te coucher" },
-  {
-    "id": 58,
-    "title": "Prévenir les autres en avance"
-  },
-  {
-    "id": 58,
-    "title": "Choisir une heure de début réaliste"
-  },
-  {
-    "id": 58,
-    "title": "Réduire les lumières et les écrans"
-  },
-  {
-    "id": 58,
-    "title": "Proposer une activité calme simple"
-  },
-  {
-    "id": 58,
-    "title": "Prévoir une boisson chaude ou fraîche"
-  },
-  {
-    "id": 58,
-    "title": "Accepter que chacun participe à sa façon"
-  },
-  {
-    "id": 58,
-    "title": "Éviter les sujets de tension ce soir-là"
-  },
-  {
-    "id": 58,
-    "title": "Limiter les notifications pendant la soirée"
-  },
-  {
-    "id": 58,
-    "title": "Clore la soirée avec un petit rituel"
-  },
-  {
-    "id": 58,
-    "title": "Remercier le groupe pour ce temps"
-  },
-  {
-    "id": 59,
-    "title": "Fixer une heure pour éteindre les écrans"
-  },
-  {
-    "id": 59,
-    "title": "Préparer la chambre une demi-heure avant"
-  },
-  {
-    "id": 59,
-    "title": "Mettre un rappel 30 minutes avant 23h"
-  },
-  {
-    "id": 59,
-    "title": "Faire un geste calme juste avant le coucher"
-  },
-  {
-    "id": 59,
-    "title": "Éviter les boissons excitantes le soir"
-  },
-  {
-    "id": 59,
-    "title": "Choisir une heure de réveil cohérente"
-  },
-  {
-    "id": 59,
-    "title": "Ne pas viser la perfection tous les soirs"
-  },
-  {
-    "id": 59,
-    "title": "S’autoriser à aller au lit même sans être épuisé"
-  },
-  {
-    "id": 59,
-    "title": "Ritualiser un petit geste répétitif (lumière, rideau)"
-  },
-  {
-    "id": 59,
-    "title": "Observer l’effet sur l’humeur le lendemain"
-  },
-  {
-    "id": 60,
-    "title": "Choisir trois soirs dans la semaine au départ"
-  },
-  {
-    "id": 60,
-    "title": "Mettre le téléphone dans une autre pièce"
-  },
-  {
-    "id": 60,
-    "title": "Utiliser un réveil non téléphonique si possible"
-  },
-  {
-    "id": 60,
-    "title": "Prévenir ses proches de cette habitude"
-  },
-  {
-    "id": 60,
-    "title": "Prévoir une activité alternative agréable"
-  },
-  {
-    "id": 60,
-    "title": "Désactiver les notifications avant 21h"
-  },
-  {
-    "id": 60,
-    "title": "Baisser la luminosité progressive en soirée"
-  },
-  {
-    "id": 60,
-    "title": "Tester le mode avion pour la nuit"
-  },
-  {
-    "id": 60,
-    "title": "Repérer comment le sommeil évolue"
-  },
-  {
-    "id": 60,
-    "title": "Se féliciter pour chaque soirée réussie"
-  },
-  { "id": 61, "title": "Éteins toutes les notifications" },
-  { "id": 61, "title": "Prépare une boisson chaude" },
-  { "id": 61, "title": "Choisis un coin confortable" },
-  { "id": 61, "title": "Respire profondément trente secondes" },
-  { "id": 61, "title": "Écoute un son apaisant" },
-  { "id": 61, "title": "Ferme les yeux un instant" },
-  { "id": 61, "title": "Étire doucement ton dos" },
-  { "id": 61, "title": "Mets une lumière tamisée" },
-  { "id": 61, "title": "Laisse ton téléphone au loin" },
-  { "id": 61, "title": "Accorde-toi cinq minutes pour rien" },
-  {
-    "id": 62,
-    "title": "S’allonger si possible ou s’asseoir confortablement"
-  },
-  {
-    "id": 62,
-    "title": "Fermer les yeux même si on ne dort pas"
-  },
-  {
-    "id": 62,
-    "title": "Couper les notifications pendant ce temps"
-  },
-  {
-    "id": 62,
-    "title": "Prévenir les personnes autour"
-  },
-  {
-    "id": 62,
-    "title": "Éviter la sieste trop tardive"
-  },
-  {
-    "id": 62,
-    "title": "Accepter que réfléchir calmement compte aussi"
-  },
-  {
-    "id": 62,
-    "title": "Se lever doucement au réveil"
-  },
-  {
-    "id": 62,
-    "title": "Boire un verre d’eau après"
-  },
-  {
-    "id": 62,
-    "title": "Observer l’effet sur la suite de la journée"
-  },
-  {
-    "id": 63,
-    "title": "S’asseoir ou se tenir debout stable"
-  },
-  {
-    "id": 63,
-    "title": "Inspire par le nez en comptant jusqu’à quatre"
-  },
-  {
-    "id": 63,
-    "title": "Expirer plus longtemps que l’inspiration"
-  },
-  {
-    "id": 63,
-    "title": "Poser une main sur le ventre"
-  },
-  {
-    "id": 63,
-    "title": "Fermer doucement les yeux si possible"
-  },
-  {
-    "id": 63,
-    "title": "Faire au moins cinq respirations complètes"
-  },
-  {
-    "id": 63,
-    "title": "Se concentrer sur l’air qui entre et sort"
-  },
-  {
-    "id": 63,
-    "title": "Accepter que l’esprit vagabonde"
-  },
-  {
-    "id": 63,
-    "title": "Revenir doucement à ce qu’on faisait"
-  },
-  {
-    "id": 63,
-    "title": "Réutiliser ce geste en cas de stress"
-  },
-  {
-    "id": 64,
-    "title": "Choisir un endroit où l’on ne sera pas interrompu"
-  },
-  {
-    "id": 64,
-    "title": "Regarder un point fixe ou fermer les yeux"
-  },
-  {
-    "id": 64,
-    "title": "Poser les pieds bien au sol"
-  },
-  {
-    "id": 64,
-    "title": "Laisser venir les pensées sans les suivre"
-  },
-  {
-    "id": 64,
-    "title": "Écouter les bruits sans les juger"
-  },
-  {
-    "id": 64,
-    "title": "Se focaliser sur le contact du corps avec le siège"
-  },
-  {
-    "id": 64,
-    "title": "Utiliser un minuteur discret"
-  },
-  {
-    "id": 64,
-    "title": "Ne pas chercher à “bien faire”"
-  },
-  {
-    "id": 64,
-    "title": "Se lever doucement à la fin"
-  },
-  {
-    "id": 64,
-    "title": "Reprendre une action simple ensuite"
-  },
-  {
-    "id": 65,
-    "title": "Se rapprocher d’une fenêtre ou sortir"
-  },
-  {
-    "id": 65,
-    "title": "Chercher trois détails agréables à regarder"
-  },
-  {
-    "id": 65,
-    "title": "Observer le ciel, les arbres, les toits"
-  },
-  {
-    "id": 65,
-    "title": "Regarder les mouvements lents autour"
-  },
-  {
-    "id": 65,
-    "title": "Respirer calmement pendant l’observation"
-  },
-  {
-    "id": 65,
-    "title": "Éteindre quelques secondes les écrans"
-  },
-  {
-    "id": 65,
-    "title": "Changer légèrement de point de vue"
-  },
-  {
-    "id": 65,
-    "title": "Remarquer les couleurs présentes"
-  },
-  {
-    "id": 65,
-    "title": "Imaginer prendre une photo mentale"
-  },
-  {
-    "id": 65,
-    "title": "Ramener cette image quand le stress monte"
-  },
-  {
-    "id": 66,
-    "title": "Sortir même juste devant le bâtiment"
-  },
-  {
-    "id": 66,
-    "title": "Inspirer plus profondément que d’habitude"
-  },
-  {
-    "id": 66,
-    "title": "Regarder le ciel ou un arbre"
-  },
-  {
-    "id": 66,
-    "title": "Sentir la température sur la peau"
-  },
-  {
-    "id": 66,
-    "title": "S’éloigner un peu des écrans"
-  },
-  {
-    "id": 66,
-    "title": "Marcher lentement quelques pas"
-  },
-  {
-    "id": 66,
-    "title": "Écouter les bruits extérieurs"
-  },
-  {
-    "id": 66,
-    "title": "Laisser les épaules se détendre"
-  },
-  {
-    "id": 66,
-    "title": "Fixer un point agréable une seconde"
-  },
-  {
-    "id": 66,
-    "title": "Revenir en notant l’effet sur le corps"
-  },
-  {
-    "id": 67,
-    "title": "Choisir un lieu accessible facilement"
-  },
-  {
-    "id": 67,
-    "title": "Prévenir si l’on part seul"
-  },
-  {
-    "id": 67,
-    "title": "Couper ou baisser le son du téléphone"
-  },
-  {
-    "id": 67,
-    "title": "Marcher à un rythme confortable"
-  },
-  {
-    "id": 67,
-    "title": "Toucher un arbre ou une plante si on aime"
-  },
-  {
-    "id": 67,
-    "title": "Regarder les textures au sol"
-  },
-  {
-    "id": 67,
-    "title": "Respirer en rythme avec les pas"
-  },
-  {
-    "id": 67,
-    "title": "Écouter les sons naturels autour"
-  },
-  {
-    "id": 67,
-    "title": "Rester au moins un quart d’heure si possible"
-  },
-  {
-    "id": 67,
-    "title": "Repérer un endroit où revenir plus tard"
-  },
-  {
-    "id": 68,
-    "title": "Baisser légèrement le volume de sa voix"
-  },
-  {
-    "id": 68,
-    "title": "Proposer une courte pause"
-  },
-  {
-    "id": 68,
-    "title": "Nommer calmement la tension ressentie"
-  },
-  {
-    "id": 68,
-    "title": "Rappeler l’objectif commun"
-  },
-  {
-    "id": 68,
-    "title": "Inviter chacun à parler à tour de rôle"
-  },
-  {
-    "id": 68,
-    "title": "Réorienter vers un sujet plus neutre si besoin"
-  },
-  {
-    "id": 68,
-    "title": "Utiliser l’humour léger sans se moquer"
-  },
-  {
-    "id": 68,
-    "title": "Soutenir la personne la plus fragile"
-  },
-  {
-    "id": 68,
-    "title": "Proposer une action concrète simple"
-  },
-  {
-    "id": 68,
-    "title": "Remercier le groupe quand la tension baisse"
-  },
-  {
-    "id": 69,
-    "title": "Observer qui semble fatigué ou à l’écart"
-  },
-  {
-    "id": 69,
-    "title": "Demander “De quoi on a besoin là ?”"
-  },
-  {
-    "id": 69,
-    "title": "Proposer une petite pause collective"
-  },
-  {
-    "id": 69,
-    "title": "Vérifier que tout le monde comprend la consigne"
-  },
-  {
-    "id": 69,
-    "title": "Adapter le rythme si tout le monde sature"
-  },
-  {
-    "id": 69,
-    "title": "Donner la parole aux plus discrets"
-  },
-  {
-    "id": 69,
-    "title": "Rappeler les règles de respect si besoin"
-  },
-  {
-    "id": 69,
-    "title": "Proposer de redistribuer les tâches"
-  },
-  {
-    "id": 69,
-    "title": "Noter brièvement les besoins exprimés"
-  },
-  {
-    "id": 69,
-    "title": "Revenir plus tard sur ce qui a été entendu"
-  },
-  {
-    "id": 70,
-    "title": "Commencer par bouger doucement la nuque"
-  },
-  {
-    "id": 70,
-    "title": "Rouler les épaules en avant et en arrière"
-  },
-  {
-    "id": 70,
-    "title": "Étendre les bras vers le ciel"
-  },
-  {
-    "id": 70,
-    "title": "Plier et déplier les genoux"
-  },
-  {
-    "id": 70,
-    "title": "Étirer le dos sans forcer"
-  },
-  {
-    "id": 70,
-    "title": "Bouger les poignets et les chevilles"
-  },
-  {
-    "id": 70,
-    "title": "Respirer plus profondément pendant les mouvements"
-  },
-  {
-    "id": 70,
-    "title": "Faire le tout en deux ou trois minutes"
-  },
-  {
-    "id": 70,
-    "title": "S’arrêter si douleur"
-  },
-  {
-    "id": 70,
-    "title": "Noter la sensation de réveil après"
-  },
-  {
-    "id": 71,
-    "title": "Choisir une activité que l’on supporte vraiment"
-  },
-  {
-    "id": 71,
-    "title": "Préparer tenue et chaussures en avance"
-  },
-  {
-    "id": 71,
-    "title": "Mettre un minuteur de 30 minutes"
-  },
-  {
-    "id": 71,
-    "title": "Commencer doucement les cinq premières minutes"
-  },
-  {
-    "id": 71,
-    "title": "Boire un peu d’eau avant et après"
-  },
-  {
-    "id": 71,
-    "title": "Écouter son corps, adapter l’intensité"
-  },
-  {
-    "id": 71,
-    "title": "Finir par quelques étirements simples"
-  },
-  {
-    "id": 71,
-    "title": "Noter l’exercice réalisé quelque part"
-  },
-  {
-    "id": 71,
-    "title": "Se féliciter même si ce n’est pas parfait"
-  },
-  {
-    "id": 71,
-    "title": "Prévoir déjà le prochain créneau"
-  },
-  {
-    "id": 72,
-    "title": "Choisir deux ou trois zones à étirer"
-  },
-  {
-    "id": 72,
-    "title": "Étirer sans douleur, juste tension douce"
-  },
-  {
-    "id": 72,
-    "title": "Maintenir chaque étirement 15 à 20 secondes"
-  },
-  {
-    "id": 72,
-    "title": "Respirer calmement pendant le mouvement"
-  },
-  {
-    "id": 72,
-    "title": "Éviter les gestes brusques"
-  },
-  {
-    "id": 72,
-    "title": "S’arrêter si vertige ou douleur vive"
-  },
-  {
-    "id": 72,
-    "title": "Utiliser une chaise ou un mur si besoin d’appui"
-  },
-  {
-    "id": 72,
-    "title": "Étendre surtout après une période assise"
-  },
-  {
-    "id": 72,
-    "title": "Ne pas chercher la performance"
-  },
-  {
-    "id": 72,
-    "title": "Ressentir la détente après chaque étirement"
-  },
-  {
-    "id": 73,
-    "title": "Repérer les petits succès, pas seulement les grands"
-  },
-  {
-    "id": 73,
-    "title": "Proposer spontanément un mini applaudissement"
-  },
-  {
-    "id": 73,
-    "title": "Nommer ce qu’on applaudit"
-  },
-  {
-    "id": 73,
-    "title": "Inviter tout le monde à participer"
-  },
-  {
-    "id": 73,
-    "title": "Garder le moment court et joyeux"
-  },
-  {
-    "id": 73,
-    "title": "Inclure aussi les réussites collectives"
-  },
-  {
-    "id": 73,
-    "title": "Éviter de comparer entre personnes"
-  },
-  {
-    "id": 73,
-    "title": "Applaudir même les progrès partiels"
-  },
-  {
-    "id": 73,
-    "title": "Regarder la personne en applaudissant"
-  },
-  {
-    "id": 73,
-    "title": "Continuer la journée sur cette note positive"
-  },
-  {
-    "id": 74,
-    "title": "Chercher un petit détail agréable autour"
-  },
-  {
-    "id": 74,
-    "title": "Changer d’angle pour regarder autrement"
-  },
-  {
-    "id": 74,
-    "title": "Se rapprocher pour voir la texture"
-  },
-  {
-    "id": 74,
-    "title": "Prendre une seule photo, pas dix"
-  },
-  {
-    "id": 74,
-    "title": "Regarder la photo avant de la ranger"
-  },
-  {
-    "id": 74,
-    "title": "Créer un album “petites beautés du quotidien”"
-  },
-  {
-    "id": 74,
-    "title": "Partage la photo seulement si tu veux"
-  },
-  {
-    "id": 74,
-    "title": "Ne pas chercher la photo parfaite"
-  },
-  {
-    "id": 74,
-    "title": "Faire cet exercice surtout les jours gris"
-  },
-  {
-    "id": 74,
-    "title": "Reparcourir ces photos plus tard pour se ressourcer"
-  },
-  {
-    "id": 75,
-    "title": "Préparer une petite playlist douceur"
-  },
-  {
-    "id": 75,
-    "title": "Baisser le volume pour ne pas saturer"
-  },
-  {
-    "id": 75,
-    "title": "Choisir une musique sans paroles si besoin"
-  },
-  {
-    "id": 75,
-    "title": "Écouter en faisant une activité simple"
-  },
-  {
-    "id": 75,
-    "title": "Éviter de scroller en même temps"
-  },
-  {
-    "id": 75,
-    "title": "Fermer les yeux quelques instants"
-  },
-  {
-    "id": 75,
-    "title": "Repérer ce que la musique change en soi"
-  },
-  {
-    "id": 75,
-    "title": "Couper doucement la musique ensuite"
-  },
-  {
-    "id": 75,
-    "title": "Garder une chanson douce “référence”"
-  },
-  {
-    "id": 75,
-    "title": "Utiliser cette musique dans une routine du soir"
-  },
-  {
-    "id": 76,
-    "title": "Choisir un air spontané"
-  },
-  {
-    "id": 76,
-    "title": "Ne pas chercher à bien chanter"
-  },
-  {
-    "id": 76,
-    "title": "Commencer tout bas si on est pudique"
-  },
-  {
-    "id": 76,
-    "title": "Fredonner en rangeant ou en cuisinant"
-  },
-  {
-    "id": 76,
-    "title": "Sentir la vibration dans la poitrine"
-  },
-  {
-    "id": 76,
-    "title": "Sourire en même temps si possible"
-  },
-  {
-    "id": 76,
-    "title": "Changer de chanson selon l’humeur"
-  },
-  {
-    "id": 76,
-    "title": "Utiliser un souvenir musical agréable"
-  },
-  {
-    "id": 76,
-    "title": "Inviter quelqu’un à fredonner avec soi"
-  },
-  {
-    "id": 76,
-    "title": "Couper si l’on dérange les autres"
-  },
-  {
-    "id": 77,
-    "title": "Choisir une comédie pas trop lourde"
-  },
-  {
-    "id": 77,
-    "title": "Prévoir le temps de visionnage complet"
-  },
-  {
-    "id": 77,
-    "title": "Couper les notifications pendant le film"
-  },
-  {
-    "id": 77,
-    "title": "S’installer confortablement avant de lancer"
-  },
-  {
-    "id": 77,
-    "title": "Regarder vraiment, sans scroller en parallèle"
-  },
-  {
-    "id": 77,
-    "title": "Partager le moment avec quelqu’un si possible"
-  },
-  {
-    "id": 77,
-    "title": "S’autoriser à rire à voix haute"
-  },
-  {
-    "id": 77,
-    "title": "Arrêter si le contenu ne fait pas du bien"
-  },
-  {
-    "id": 77,
-    "title": "Noter les répliques qui font sourire"
-  },
-  {
-    "id": 77,
-    "title": "Observer l’humeur après la séance"
-  },
-  {
-    "id": 78,
-    "title": "Choisir un jeu simple à expliquer"
-  },
-  {
-    "id": 78,
-    "title": "Adapter la durée au temps disponible"
-  },
-  {
-    "id": 78,
-    "title": "Vérifier que tout le monde est ok pour jouer"
-  },
-  {
-    "id": 78,
-    "title": "Rappeler que le but est de s’amuser"
-  },
-  {
-    "id": 78,
-    "title": "Éviter les jeux trop compétitifs si ambiance fragile"
-  },
-  {
-    "id": 78,
-    "title": "Proposer un rôle simple aux plus timides"
-  },
-  {
-    "id": 78,
-    "title": "Prévoir une fin claire au jeu"
-  },
-  {
-    "id": 78,
-    "title": "Changer de jeu si tout le monde décroche"
-  },
-  {
-    "id": 78,
-    "title": "Remercier pour le moment partagé"
-  },
-  {
-    "id": 78,
-    "title": "Demander quel jeu chacun aimerait tester ensuite"
-  },
-  {
-    "id": 79,
-    "title": "Choisir une énigme à sa portée"
-  },
-  {
-    "id": 79,
-    "title": "Se donner un temps limité pour chercher"
-  },
-  {
-    "id": 79,
-    "title": "Noter les pistes qui viennent"
-  },
-  {
-    "id": 79,
-    "title": "Accepter de ne pas trouver immédiatement"
-  },
-  {
-    "id": 79,
-    "title": "Demander un indice plutôt que la solution"
-  },
-  {
-    "id": 79,
-    "title": "Faire une pause si on bloque"
-  },
-  {
-    "id": 79,
-    "title": "Partager la solution avec quelqu’un"
-  },
-  {
-    "id": 79,
-    "title": "Apprécier le chemin plus que la réponse"
-  },
-  {
-    "id": 79,
-    "title": "Varier les types d’énigmes"
-  },
-  {
-    "id": 79,
-    "title": "Garder celles qu’on aime pour les proposer aux autres"
-  },
-  {
-    "id": 80,
-    "title": "Choisir un lieu accessible en transport"
-  },
-  {
-    "id": 80,
-    "title": "Inviter quelqu’un qui pourrait apprécier"
-  },
-  {
-    "id": 80,
-    "title": "Se renseigner sur les horaires avant"
-  },
-  {
-    "id": 80,
-    "title": "Repérer une exposition ou activité précise"
-  },
-  {
-    "id": 80,
-    "title": "Arriver avec quelques minutes d’avance"
-  },
-  {
-    "id": 80,
-    "title": "Prendre le temps de lire au moins un cartel"
-  },
-  {
-    "id": 80,
-    "title": "Observer ce que l’on ressent face aux œuvres"
-  },
-  {
-    "id": 80,
-    "title": "Échanger à la sortie sur ce qu’on a préféré"
-  },
-  {
-    "id": 80,
-    "title": "Garder un souvenir (billet, photo, note)"
-  },
-  {
-    "id": 80,
-    "title": "Noter une idée de prochaine sortie"
-  },
-  {
-    "id": 81,
-    "title": "Choisir un carnet ou une application dédiée"
-  },
-  {
-    "id": 81,
-    "title": "Écrire sans viser la beauté du texte"
-  },
-  {
-    "id": 81,
-    "title": "Noter juste ce qui vient en tête"
-  },
-  {
-    "id": 81,
-    "title": "Limiter à trois lignes pour rester léger"
-  },
-  {
-    "id": 81,
-    "title": "Ne pas relire tout de suite"
-  },
-  {
-    "id": 81,
-    "title": "Écrire au même moment de la journée"
-  },
-  {
-    "id": 81,
-    "title": "Parler de soi à la première personne"
-  },
-  {
-    "id": 81,
-    "title": "Accepter les fautes, ne pas corriger"
-  },
-  {
-    "id": 81,
-    "title": "Fermer le carnet symboliquement après"
-  },
-  {
-    "id": 81,
-    "title": "Relire après quelques semaines si envie"
-  },
-  {
-    "id": 82,
-    "title": "Choisir un petit élément discret"
-  },
-  {
-    "id": 82,
-    "title": "Demander l’avis des personnes concernées"
-  },
-  {
-    "id": 82,
-    "title": "Utiliser ce que l’on a déjà si possible"
-  },
-  {
-    "id": 82,
-    "title": "Placer la déco à un endroit visible"
-  },
-  {
-    "id": 82,
-    "title": "Éviter de surcharger l’espace"
-  },
-  {
-    "id": 82,
-    "title": "Adapter au style du lieu"
-  },
-  {
-    "id": 82,
-    "title": "Préférer quelque chose facile à enlever"
-  },
-  {
-    "id": 82,
-    "title": "Observer l’ambiance après le changement"
-  },
-  {
-    "id": 82,
-    "title": "Changer de temps en temps la décoration"
-  },
-  {
-    "id": 82,
-    "title": "Respecter les sensibilités de chacun"
-  },
-  {
-    "id": 83,
-    "title": "Prévoir quelques minutes de marge"
-  },
-  {
-    "id": 83,
-    "title": "Commencer par un ou deux étages seulement"
-  },
-  {
-    "id": 83,
-    "title": "Monter à son rythme sans se comparer"
-  },
-  {
-    "id": 83,
-    "title": "Tenir la rampe si besoin"
-  },
-  {
-    "id": 83,
-    "title": "Respirer calmement pendant la montée"
-  },
-  {
-    "id": 83,
-    "title": "Mettre une petite récompense symbolique à l’arrivée"
-  },
-  {
-    "id": 83,
-    "title": "Alterner escaliers et ascenseur au début"
-  },
-  {
-    "id": 83,
-    "title": "Écouter son corps si essoufflement important"
-  },
-  {
-    "id": 83,
-    "title": "Noter la progression sur la semaine"
-  },
-  {
-    "id": 83,
-    "title": "Se féliciter à chaque fois qu’on choisit les escaliers"
-  },
-  {
-    "id": 84,
-    "title": "Choisir un livre vraiment attirant"
-  },
-  {
-    "id": 84,
-    "title": "Poser le téléphone dans une autre pièce"
-  },
-  {
-    "id": 84,
-    "title": "S’installer dans un coin confortable"
-  },
-  {
-    "id": 84,
-    "title": "Lire sans obligation de finir le chapitre"
-  },
-  {
-    "id": 84,
-    "title": "Mettre un signet pour marquer l’arrêt"
-  },
-  {
-    "id": 84,
-    "title": "Autoriser la relecture d’un passage"
-  },
-  {
-    "id": 84,
-    "title": "Ne pas se juger si l’on décroche"
-  },
-  {
-    "id": 84,
-    "title": "Changer de livre si le plaisir n’est plus là"
-  },
-  {
-    "id": 84,
-    "title": "Lire quelques minutes avant de dormir"
-  },
-  {
-    "id": 84,
-    "title": "Observer ce que la lecture change dans la tête"
-  },
-  {
-    "id": 85,
-    "title": "Commencer par un projet très simple"
-  },
-  {
-    "id": 85,
-    "title": "Préparer le matériel avant de se lancer"
-  },
-  {
-    "id": 85,
-    "title": "Protéger la zone de travail"
-  },
-  {
-    "id": 85,
-    "title": "Lire ou regarder un tutoriel rapide"
-  },
-  {
-    "id": 85,
-    "title": "Se donner un temps limité pour la séance"
-  },
-  {
-    "id": 85,
-    "title": "Accepter l’imperfection du résultat"
-  },
-  {
-    "id": 85,
-    "title": "Demander de l’aide si ça bloque"
-  },
-  {
-    "id": 85,
-    "title": "Ranger les outils juste après"
-  },
-  {
-    "id": 85,
-    "title": "Prendre une photo du avant/après"
-  },
-  {
-    "id": 85,
-    "title": "Noter ce que ce bricolage apporte concrètement"
-  },
-  {
-    "id": 86,
-    "title": "Mettre une chanson qui donne envie de bouger"
-  },
-  {
-    "id": 86,
-    "title": "Se laisser guider par le corps"
-  },
-  {
-    "id": 86,
-    "title": "Danser même si on ne sait pas danser"
-  },
-  {
-    "id": 86,
-    "title": "Fermer la porte si on est pudique"
-  },
-  {
-    "id": 86,
-    "title": "Bouger surtout le haut du corps si limité"
-  },
-  {
-    "id": 86,
-    "title": "Sourire volontairement en même temps"
-  },
-  {
-    "id": 86,
-    "title": "Arrêter avant d’être essoufflé"
-  },
-  {
-    "id": 86,
-    "title": "Proposer à quelqu’un de danser avec soi"
-  },
-  {
-    "id": 86,
-    "title": "Réutiliser ce geste en cas de coup de mou"
-  },
-  {
-    "id": 86,
-    "title": "Noter l’humeur avant et après"
-  },
-  {
-    "id": 87,
-    "title": "Choisir un épisode pas trop long"
-  },
-  {
-    "id": 87,
-    "title": "Télécharger à l’avance si possible"
-  },
-  {
-    "id": 87,
-    "title": "Écouter en faisant une tâche simple"
-  },
-  {
-    "id": 87,
-    "title": "Éviter de multiplier les podcasts en parallèle"
-  },
-  {
-    "id": 87,
-    "title": "Mettre en pause pour noter une idée importante"
-  },
-  {
-    "id": 87,
-    "title": "Changer d’émission si le ton ne convient pas"
-  },
-  {
-    "id": 87,
-    "title": "Écouter à vitesse normale au moins parfois"
-  },
-  {
-    "id": 87,
-    "title": "Arrêter si cela excite trop au lieu d’apaiser"
-  },
-  {
-    "id": 87,
-    "title": "Partager un épisode marquant avec un proche"
-  },
-  {
-    "id": 87,
-    "title": "Limiter le nombre d’épisodes par jour"
-  },
-  {
-    "id": 88,
-    "title": "Privilégier l’auto-dérision plutôt que les autres"
-  },
-  {
-    "id": 88,
-    "title": "Adapter l’humour au contexte"
-  },
-  {
-    "id": 88,
-    "title": "Éviter les sujets sensibles ou blessants"
-  },
-  {
-    "id": 88,
-    "title": "Observer la réaction du groupe"
-  },
-  {
-    "id": 88,
-    "title": "S’arrêter si quelqu’un semble mal à l’aise"
-  },
-  {
-    "id": 88,
-    "title": "Utiliser une image drôle ou un gif léger"
-  },
-  {
-    "id": 88,
-    "title": "Raconter une petite anecdote bienveillante"
-  },
-  {
-    "id": 88,
-    "title": "Garder l’intention de détendre, pas de briller"
-  },
-  {
-    "id": 88,
-    "title": "Accepter si la blague ne prend pas"
-  },
-  {
-    "id": 88,
-    "title": "Laisser aussi la place à l’humour des autres"
-  },
-  {
-    "id": 89,
-    "title": "Choisir un parfum qui rassure"
-  },
-  {
-    "id": 89,
-    "title": "Fermer les yeux une seconde en inspirant"
-  },
-  {
-    "id": 89,
-    "title": "Inspirer doucement par le nez"
-  },
-  {
-    "id": 89,
-    "title": "Repérer les notes principales (fleur, bois, fruit)"
-  },
-  {
-    "id": 89,
-    "title": "Éviter les parfums trop forts en intérieur"
-  },
-  {
-    "id": 89,
-    "title": "Ne pas en abuser sur soi pour les autres"
-  },
-  {
-    "id": 89,
-    "title": "Garder un objet légèrement parfumé à portée"
-  },
-  {
-    "id": 89,
-    "title": "Associer ce parfum à un moment calme"
-  },
-  {
-    "id": 89,
-    "title": "Changer de parfum selon les saisons"
-  },
-  {
-    "id": 89,
-    "title": "Observer l’effet sur l’humeur immédiate"
-  },
-  {
-    "id": 90,
-    "title": "Remplir la moitié d’assiette de légumes"
-  },
-  {
-    "id": 90,
-    "title": "Cuire simple : vapeur ou four"
-  },
-  {
-    "id": 90,
-    "title": "Limiter sauces toutes faites"
-  },
-  {
-    "id": 90,
-    "title": "Prévoir protéines à chaque repas"
-  },
-  {
-    "id": 90,
-    "title": "Goûter avant de resaler"
-  },
-  {
-    "id": 90,
-    "title": "Préparer une portion en plus"
-  },
-  {
-    "id": 90,
-    "title": "Ranger les restes rapidement"
-  },
-  {
-    "id": 90,
-    "title": "Boire un verre d’eau avant"
-  },
-  {
-    "id": 90,
-    "title": "Éviter la télé pendant le repas"
-  },
-  {
-    "id": 90,
-    "title": "Manger assis, sans se presser"
-  }
+  { "id": 30, "title": "Respire le vent, effet immédiat" },
+  { "id": 30, "title": "Observe la ville autrement" },
+  { "id": 30, "title": "Roule vraiment à ton rythme" },
+  { "id": 30, "title": "Écoute ton souffle, compagnon fidèle" },
+  { "id": 30, "title": "Célèbre l’arrivée, petite victoire" },
+  // 31 – Réparer / bricoler un souci
+  { "id": 31, "title": "Un seul problème, pas tout l’appart" },
+  { "id": 31, "title": "Sort l’outil avant de jouer au héros" },
+  { "id": 31, "title": "Un tuto rapide avant le carnage" },
+  { "id": 31, "title": "Coupe le courant, garde tes doigts" },
+  { "id": 31, "title": "Teste tout de suite, pas demain" },
+  { "id": 31, "title": "Si ça coince, appelle un vrai pro" },
+  { "id": 31, "title": "Les outils retournent au bercail après" },
+  { "id": 31, "title": "Si ça force trop, on arrête" },
+  { "id": 31, "title": "Préviens les autres avant de tout changer" },
+  { "id": 31, "title": "Admire ton œuvre deux secondes" },
+
+  // 32 – Organiser la semaine
+  { "id": 32, "title": "Pose-toi, agenda, respiration, go" },
+  { "id": 32, "title": "Ouvre l’agenda, pas Insta" },
+  { "id": 32, "title": "Repère les rendez-vous qui piquent" },
+  { "id": 32, "title": "Supprime ce qui ne sert plus" },
+  { "id": 32, "title": "Garde un peu de place pour l’imprévu" },
+  { "id": 32, "title": "Planifie aussi des vraies pauses" },
+  { "id": 32, "title": "Une priorité par jour, pas cinquante" },
+  { "id": 32, "title": "Préviens les humains concernés" },
+  { "id": 32, "title": "Referme l’agenda comme un petit rituel zen" },
+  { "id": 32, "title": "La semaine n’est pas un Tetris" },
+
+  // 33 – Trier papiers / administratif
+  { "id": 33, "title": "Trois tas, pas plus : garder, jeter, traiter" },
+  { "id": 33, "title": "Commence par la pile la plus récente" },
+  { "id": 33, "title": "Trois catégories max, cerveau content" },
+  { "id": 33, "title": "Une pochette par thème, pas par humeur" },
+  { "id": 33, "title": "Les doublons vont direct à la poubelle" },
+  { "id": 33, "title": "Photo, puis archive → mode ninja" },
+  { "id": 33, "title": "Tu n’es pas obligé de tout finir" },
+  { "id": 33, "title": "Un coup de stylo pour noter l’année" },
+  { "id": 33, "title": "Les papiers importants ne vivent pas sur la table" },
+  { "id": 33, "title": "Stop dès que ton cerveau fait grève" },
+
+  // 34 – Gérer ses rappels / to-do
+  { "id": 34, "title": "Un seul endroit pour les rappels, pas huit" },
+  { "id": 34, "title": "Écris court, ton futur toi te remerciera" },
+  { "id": 34, "title": "Ajoute une date quand c’est possible" },
+  { "id": 34, "title": "Trop de rappels = plus aucun fait" },
+  { "id": 34, "title": "Coche et supprime, ne collectionne pas" },
+  { "id": 34, "title": "Check ta liste toujours au même moment" },
+  { "id": 34, "title": "Une couleur spéciale mode urgence" },
+  { "id": 34, "title": "“Plus tard” = jamais, fais un choix" },
+  { "id": 34, "title": "Une appli de rappel suffit, promis" },
+  { "id": 34, "title": "Les trois plus importants en haut" },
+
+  // 35 – Exprimer une envie
+  { "id": 35, "title": "Dis-le simplement, pas en thèse de doctorat" },
+  { "id": 35, "title": "“Ça me ferait plaisir de…” marche très bien" },
+  { "id": 35, "title": "Le non existe, et c’est ok" },
+  { "id": 35, "title": "Propose un plan B friendly" },
+  { "id": 35, "title": "Choisis un moment sans explosion émotionnelle" },
+  { "id": 35, "title": "Regarde la personne, pas tes chaussures" },
+  { "id": 35, "title": "Une envie, pas un reproche déguisé" },
+  { "id": 35, "title": "Les envies des autres comptent aussi" },
+  { "id": 35, "title": "Note les envies communes pour plus tard" },
+  { "id": 35, "title": "Dis merci quand ton envie est entendue" },
+
+  // 36 – Regarder ses finances
+  { "id": 36, "title": "Choisis un moment où tu es à peu près serein" },
+  { "id": 36, "title": "Ouvre ton appli bancaire, pas ton horoscope" },
+  { "id": 36, "title": "Regarde d’abord les derniers jours" },
+  { "id": 36, "title": "Traque les abonnements zombies" },
+  { "id": 36, "title": "Une dépense à dompter, pas tout ton budget" },
+  { "id": 36, "title": "Range tout en deux ou trois grandes catégories" },
+  { "id": 36, "title": "Observer oui, s’auto-flageller non" },
+  { "id": 36, "title": "Garde un mini budget plaisir légal" },
+  { "id": 36, "title": "Ton tableau peut être moche mais utile" },
+  { "id": 36, "title": "Referme l’appli avec une grande expiration" },
+
+  // 37 – Trier ses vêtements
+  { "id": 37, "title": "Un tiroir à la fois, pas la garde-robe entière" },
+  { "id": 37, "title": "Trois tas : garder, donner, recycler" },
+  { "id": 37, "title": "Enfile si tu hésites, pas juste “au cas où”" },
+  { "id": 37, "title": "Si tu ne l’as pas porté cette année…" },
+  { "id": 37, "title": "Le confort gagne souvent le match" },
+  { "id": 37, "title": "Met de côté les “à réparer”" },
+  { "id": 37, "title": "Plie tout de suite ce que tu gardes" },
+  { "id": 37, "title": "Un sac spécial “futurs heureux donataires”" },
+  { "id": 37, "title": "On ne garde pas par culpabilité" },
+  { "id": 37, "title": "Écoute ton corps, pas juste l’étiquette" },
+
+  // 38 – Faire une machine
+  { "id": 38, "title": "Tout le linge dans UN panier" },
+  { "id": 38, "title": "Vérifie les poches, adieu mouchoirs explosés" },
+  { "id": 38, "title": "Au minimum : clair d’un côté, foncé de l’autre" },
+  { "id": 38, "title": "Programme habituel = cerveau en mode pilote auto" },
+  { "id": 38, "title": "On ne bourre pas le tambour comme une valise" },
+  { "id": 38, "title": "Ajoute une serviette si la machine est trop vide" },
+  { "id": 38, "title": "Sais-tu où tout ça va sécher ?" },
+  { "id": 38, "title": "Lance la machine quand tu es dans le coin" },
+  { "id": 38, "title": "Un minuteur approximatif suffit" },
+  { "id": 38, "title": "Sors le linge avant qu’il ne devienne sculpture froissée" },
+
+  // 39 – Partager son humeur
+  { "id": 39, "title": "Choisis un mot simple pour ton humeur" },
+  { "id": 39, "title": "Parle en “je”, ça pique moins" },
+  { "id": 39, "title": "Dis si tu veux juste être écouté" },
+  { "id": 39, "title": "Évite les confidences en pleine urgence" },
+  { "id": 39, "title": "Préviens : “je veux parler, pas de conseils”" },
+  { "id": 39, "title": "Demande aussi l’humeur en face" },
+  { "id": 39, "title": "Météo intérieure : “soleil”, “nuage”, ça marche" },
+  { "id": 39, "title": "Ton humeur n’est pas tatouée, elle bouge" },
+  { "id": 39, "title": "Reste sur aujourd’hui, pas toute ta vie" },
+  { "id": 39, "title": "Un merci pour l’écoute, ça fait du bien" },
+
+  // 40 – Faire un geste d’aide
+  { "id": 40, "title": "Repère une mini occasion d’aider" },
+  { "id": 40, "title": "Aide sans calculer le retour sur investissement" },
+  { "id": 40, "title": "Un geste simple vaut mieux qu’un grand discours" },
+  { "id": 40, "title": "Respecte la pudeur, pas besoin de projecteurs" },
+  { "id": 40, "title": "Adapte ton aide à ton énergie du jour" },
+  { "id": 40, "title": "On propose, on n’impose pas son aide" },
+  { "id": 40, "title": "Geste léger, ambiance légère" },
+  { "id": 40, "title": "Un non ne casse pas ta gentillesse" },
+  { "id": 40, "title": "Fais-toi un petit clin d’œil intérieur" },
+  { "id": 40, "title": "Change de forme de gentillesse régulièrement" },
+
+  // 41 – Partager une astuce
+  { "id": 41, "title": "Partage un truc que tu as vraiment testé" },
+  { "id": 41, "title": "Version courte, pas mode tutoriel Netflix" },
+  { "id": 41, "title": "Si tu peux montrer, c’est encore mieux" },
+  { "id": 41, "title": "Dose les détails selon la personne" },
+  { "id": 41, "title": "Propose, ne convertis pas à ta secte d’astuces" },
+  { "id": 41, "title": "Donne un exemple concret d’utilisation" },
+  { "id": 41, "title": "Invite l’autre à partager son hack aussi" },
+  { "id": 41, "title": "Un petit message récap peut dépanner" },
+  { "id": 41, "title": "Choisis un moment calme, pas en plein rush" },
+  { "id": 41, "title": "Reste dispo pour les questions marrantes" },
+
+  // 42 – Prendre des nouvelles
+  { "id": 42, "title": "Un message simple vaut mille silences gênés" },
+  { "id": 42, "title": "Propose un moment pour papoter" },
+  { "id": 42, "title": "“Je pense à toi” fait toujours du bien" },
+  { "id": 42, "title": "Tu n’as pas besoin d’un long roman" },
+  { "id": 42, "title": "Un emoji ou une photo, ça compte aussi" },
+  { "id": 42, "title": "Laisse à l’autre le temps de répondre" },
+  { "id": 42, "title": "Reste toi-même, pas besoin de masque social" },
+  { "id": 42, "title": "Parle aussi d’autre chose que des soucis" },
+  { "id": 42, "title": "Glisse un souvenir commun qui fait sourire" },
+  { "id": 42, "title": "Félicite-toi d’avoir fait le premier pas" },
+
+  // 43 – Repas partagé
+  { "id": 43, "title": "Choisis un repas où personne ne court après un train" },
+  { "id": 43, "title": "Les écrans restent loin de la table" },
+  { "id": 43, "title": "Prévois un sujet léger en stock" },
+  { "id": 43, "title": "Invite chacun à raconter un petit moment" },
+  { "id": 43, "title": "Un plat chouchou de tout le monde aide bien" },
+  { "id": 43, "title": "Asseyez-vous vraiment tous ensemble, pas en wifi" },
+  { "id": 43, "title": "Prenez le temps de vous regarder" },
+  { "id": 43, "title": "Écoute sans forcément donner ton avis" },
+  { "id": 43, "title": "Un merci pour le repas, ça nourrit aussi" },
+  { "id": 43, "title": "Si l’ambiance est bonne, prolonge un peu" },
+
+  // 44 – Remonter le moral
+  { "id": 44, "title": "Demande d’abord : “Tu veux en parler ?”" },
+  { "id": 44, "title": "Écoute la version longue sans couper" },
+  { "id": 44, "title": "Valide le ressenti, pas besoin de réparer tout de suite" },
+  { "id": 44, "title": "Bannis le fameux “tu devrais…”" },
+  { "id": 44, "title": "Propose une petite action concrète, pas un plan de vie" },
+  { "id": 44, "title": "Rappelle une qualité vraie, pas un slogan" },
+  { "id": 44, "title": "Ta présence compte, même en silence" },
+  { "id": 44, "title": "Un petit message après, ça réchauffe" },
+  { "id": 44, "title": "Évite de minimiser ce que l’autre vit" },
+  { "id": 44, "title": "Tu soutiens, tu ne portes pas tout" },
+
+  // 45 – Sourire aux gens
+  { "id": 45, "title": "Choisis un moment où tu te sens safe" },
+  { "id": 45, "title": "Un micro coup d’œil, c’est déjà du contact" },
+  { "id": 45, "title": "Un sourire bref, pas une affiche 4x3" },
+  { "id": 45, "title": "Ne rien attendre, juste offrir" },
+  { "id": 45, "title": "Commence avec les visages familiers" },
+  { "id": 45, "title": "Teste dans des lieux où tu es à l’aise" },
+  { "id": 45, "title": "Garde un œil sur ton environnement" },
+  { "id": 45, "title": "Si quelqu’un semble gêné, tu ajustes" },
+  { "id": 45, "title": "Ton geste suffit, même sans réponse" },
+  { "id": 45, "title": "Offre aussi ton sourire à toi-même" },
+
+  // 46 – Faire un câlin
+  { "id": 46, "title": "Pose la question clairement avant le câlin" },
+  { "id": 46, "title": "Bras ouverts = mode consentement activé" },
+  { "id": 46, "title": "La durée se règle à deux" },
+  { "id": 46, "title": "Respire calmement, pas besoin de parler" },
+  { "id": 46, "title": "Relâche doucement, pas version “éjection siège”" },
+  { "id": 46, "title": "Un refus ne dit rien sur ta valeur" },
+  { "id": 46, "title": "Propose un autre geste si besoin" },
+  { "id": 46, "title": "Le silence peut être très doux" },
+  { "id": 46, "title": "Savoure juste la chaleur du contact" },
+  { "id": 46, "title": "Un merci discret après le câlin" },
+
+  // 47 – Dire merci
+  { "id": 47, "title": "Dis merci pour un truc précis" },
+  { "id": 47, "title": "Adresse-le à la bonne personne, pas au plafond" },
+  { "id": 47, "title": "Un regard dans les yeux, ça compte" },
+  { "id": 47, "title": "Le ton sincère vaut plus que les fleurs" },
+  { "id": 47, "title": "Évite le “merci mais…” qui casse tout" },
+  { "id": 47, "title": "Explique en quoi ça t’a aidé" },
+  { "id": 47, "title": "Remercie aussi pour les gestes minuscules" },
+  { "id": 47, "title": "Varie les formes : mot, message, sourire" },
+  { "id": 47, "title": "Un merci après coup fait toujours plaisir" },
+  { "id": 47, "title": "Laisse ton cœur recevoir pour de vrai" },
+
+  // 48 – Petit mot écrit
+  { "id": 48, "title": "Pose le mot là où il sera trouvé" },
+  { "id": 48, "title": "Quelques mots suffisent, pas un roman" },
+  { "id": 48, "title": "Glisse un prénom ou surnom tendre" },
+  { "id": 48, "title": "Mentionne un joli détail récent" },
+  { "id": 48, "title": "Un petit dessin ou emoji, bonus douceur" },
+  { "id": 48, "title": "Simple, pas parfait, c’est très bien" },
+  { "id": 48, "title": "Pas de reproche caché dans le mot" },
+  { "id": 48, "title": "Le mot offre, il n’exige pas de réponse" },
+  { "id": 48, "title": "Garde un stock de cartes à portée" },
+  { "id": 48, "title": "Observe sa réaction sans en faire trop" },
+
+  // 49 – Faire un compliment
+  { "id": 49, "title": "Dis ce que la personne fait bien" },
+  { "id": 49, "title": "Parle au présent, c’est plus vivant" },
+  { "id": 49, "title": "Pas de classement “meilleur que machin”" },
+  { "id": 49, "title": "Un compliment concret, pas un slogan flou" },
+  { "id": 49, "title": "Ajoute un sourire, ça aide" },
+  { "id": 49, "title": "Ne colle pas une critique juste après" },
+  { "id": 49, "title": "Encourage avant un moment important" },
+  { "id": 49, "title": "Célèbre l’effort, pas que la médaille" },
+  { "id": 49, "title": "Demande comment mieux soutenir" },
+  { "id": 49, "title": "Reste simple, ton vrai ton suffit" },
+
+  // 50 – Valoriser une idée
+  { "id": 50, "title": "Dis clairement que l’idée est chouette" },
+  { "id": 50, "title": "Cite la personne, pas juste “quelqu’un a dit”" },
+  { "id": 50, "title": "Reformule avec tes mots pour la mettre en lumière" },
+  { "id": 50, "title": "Note l’idée quelque part avant qu’elle s’envole" },
+  { "id": 50, "title": "Demande comment on pourrait la tester" },
+  { "id": 50, "title": "Soutiens l’idée même si elle n’est pas parfaite" },
+  { "id": 50, "title": "Invite les autres à réagir en douceur" },
+  { "id": 50, "title": "Ne récupère pas l’idée à ton nom" },
+  { "id": 50, "title": "Un merci pour l’idée, ça motive" },
+  { "id": 50, "title": "Reviens dessus plus tard pour la faire vivre" },
+
+  // 51 – Faire un petit cadeau
+  { "id": 51, "title": "Choisis un truc simple et utile" },
+  { "id": 51, "title": "Pense à un détail qu’elle ou il adore" },
+  { "id": 51, "title": "Glisse un petit mot si tu peux" },
+  { "id": 51, "title": "Offre sans calculer le retour" },
+  { "id": 51, "title": "Tiens compte de sa pudeur" },
+  { "id": 51, "title": "Une attention vaut souvent plus qu’un gros budget" },
+  { "id": 51, "title": "Adapte ton cadeau au lieu où vous êtes" },
+  { "id": 51, "title": "Pense aussi aux cadeaux immatériels" },
+  { "id": 51, "title": "Vérifie que ça ne met pas mal à l’aise" },
+  { "id": 51, "title": "Savoure le sourire au moment d’offrir" },
+
+  // 52 – Inclure quelqu’un d’isolé
+  { "id": 52, "title": "Repère la personne un peu en retrait" },
+  { "id": 52, "title": "Viens t’asseoir près d’elle, tranquille" },
+  { "id": 52, "title": "Propose une activité simple à rejoindre" },
+  { "id": 52, "title": "Pose une question ouverte, sans l’assaillir" },
+  { "id": 52, "title": "Respecte si elle préfère juste observer" },
+  { "id": 52, "title": "Présente-la à quelqu’un de bienveillant" },
+  { "id": 52, "title": "Évite les spotlight gênants d’un coup" },
+  { "id": 52, "title": "Invite régulièrement, sans la harceler" },
+  { "id": 52, "title": "Fais sentir que sa présence compte" },
+  { "id": 52, "title": "Un merci discret quand elle participe" },
+
+  // 53 – Proposer son aide
+  { "id": 53, "title": "Demande : “Tu veux un coup de main ?”" },
+  { "id": 53, "title": "Dis clairement ce que tu peux faire" },
+  { "id": 53, "title": "Le refus n’est pas une insulte" },
+  { "id": 53, "title": "Aide à la hauteur de tes batteries" },
+  { "id": 53, "title": "Soutenir oui, se sacrifier non" },
+  { "id": 53, "title": "Mettez-vous d’accord sur qui fait quoi" },
+  { "id": 53, "title": "Propose un créneau court d’aide" },
+  { "id": 53, "title": "Un petit “tout va bien ?” après" },
+  { "id": 53, "title": "Remercie pour la confiance" },
+  { "id": 53, "title": "Note aussi ce que ça t’apporte" },
+
+  // 54 – Offrir un massage détente
+  { "id": 54, "title": "Demande clairement l’accord avant de toucher" },
+  { "id": 54, "title": "Reste sur des zones neutres et safe" },
+  { "id": 54, "title": "Quelques minutes suffisent pour détendre" },
+  { "id": 54, "title": "Observe le corps de l’autre, pas ton ego" },
+  { "id": 54, "title": "Stop immédiat si la personne le demande" },
+  { "id": 54, "title": "Dis que tu n’es pas pro, juste bienveillant" },
+  { "id": 54, "title": "Gestes lents, doux, pas mode mixeur" },
+  { "id": 54, "title": "Voix calme, ou silence cosy" },
+  { "id": 54, "title": "Propose un verre d’eau après" },
+  { "id": 54, "title": "Remercie pour cette confiance intime" },
+
+  // 55 – Éviter un mot blessant
+  { "id": 55, "title": "Repère les situations où ça dérape" },
+  { "id": 55, "title": "Inventes-toi un mot drôle de remplacement" },
+  { "id": 55, "title": "Inspire avant de dégainer une phrase" },
+  { "id": 55, "title": "Compter jusqu’à trois, ton bouclier secret" },
+  { "id": 55, "title": "Fais un mini pas de côté si besoin" },
+  { "id": 55, "title": "Rappelle-toi que tu protèges l’ambiance" },
+  { "id": 55, "title": "Si le mot part, une excuse sincère aide" },
+  { "id": 55, "title": "Repère tes progrès sur quelques jours" },
+  { "id": 55, "title": "Demande à un proche d’être ton co-équipier" },
+  { "id": 55, "title": "Célèbre chaque fois où tu t’es retenu" },
+
+  // 56 – Intégrer sa journée avant de dormir
+  { "id": 56, "title": "Revois trois moments de ta journée" },
+  { "id": 56, "title": "Note une mini victoire, même ridicule" },
+  { "id": 56, "title": "Pose sur papier une pensée qui tourne" },
+  { "id": 56, "title": "Regarde ton humeur comme une météo" },
+  { "id": 56, "title": "Respire doucement, atterrissage en cours" },
+  { "id": 56, "title": "Ferme une boucle qui traîne encore" },
+  { "id": 56, "title": "Dis merci pour un micro détail" },
+  { "id": 56, "title": "Laisse repartir ce qui pèse trop" },
+  { "id": 56, "title": "Choisis une petite intention pour demain" },
+  { "id": 56, "title": "Ton téléphone dort hors du lit" },
+
+  // 57 – Choisir son intention
+  { "id": 57, "title": "Choisis un mot-boussole pour la journée" },
+  { "id": 57, "title": "Décide de l’énergie que tu veux nourrir" },
+  { "id": 57, "title": "Écris ton intention en une phrase" },
+  { "id": 57, "title": "Rappelle-toi ce qui compte pour toi" },
+  { "id": 57, "title": "Relie ton intention à un besoin réel" },
+  { "id": 57, "title": "Imagine ton premier geste aligné demain" },
+  { "id": 57, "title": "Une intention, pas un catalogue" },
+  { "id": 57, "title": "Formule-la simple, ton cerveau aime" },
+  { "id": 57, "title": "Reste réaliste, pas super-héros" },
+  { "id": 57, "title": "Pose ton intention avant de dormir" },
+
+  // 58 – Soirée calme / apaisée
+  { "id": 58, "title": "Préviens le monde : ce soir on ralentit" },
+  { "id": 58, "title": "Choisis une heure crédible de début" },
+  { "id": 58, "title": "Lumières plus douces, écrans plus loin" },
+  { "id": 58, "title": "Propose une activité calme, pas un marathon" },
+  { "id": 58, "title": "Une boisson chaude ou fraîche en mode cocon" },
+  { "id": 58, "title": "Chacun participe à sa façon, zéro obligation" },
+  { "id": 58, "title": "Les gros sujets attendront un autre jour" },
+  { "id": 58, "title": "Notifications en vacances pour la soirée" },
+  { "id": 58, "title": "Termine par un petit rituel de fin" },
+  { "id": 58, "title": "Remercie pour ce moment plus doux" },
+
+  // 59 – Se coucher plus tôt / régulier
+  { "id": 59, "title": "Choisis une heure limite d’écran" },
+  { "id": 59, "title": "Prépare ta chambre un peu avant" },
+  { "id": 59, "title": "Rappel 30 minutes avant ton heure cible" },
+  { "id": 59, "title": "Un petit geste calme avant le lit" },
+  { "id": 59, "title": "Évite les boissons turbo le soir" },
+  { "id": 59, "title": "Assure-toi que l’heure de réveil suit" },
+  { "id": 59, "title": "On vise mieux, pas parfait" },
+  { "id": 59, "title": "Tu as le droit d’aller au lit sans être KO" },
+  { "id": 59, "title": "Rituel express : lumière, rideau, dodo" },
+  { "id": 59, "title": "Observe l’humeur du lendemain, petit test" },
+
+  // 60 – Soirée sans téléphone au lit
+  { "id": 60, "title": "Choisis quelques soirs, pas tous d’un coup" },
+  { "id": 60, "title": "Le téléphone reste dans une autre pièce" },
+  { "id": 60, "title": "Un réveil non connecté, c’est pratique" },
+  { "id": 60, "title": "Préviens les proches : mode nuit sacré" },
+  { "id": 60, "title": "Prévois une activité agréable hors écran" },
+  { "id": 60, "title": "Notifications en off après 21h" },
+  { "id": 60, "title": "Baisse la lumière pour dire “chut” au cerveau" },
+  { "id": 60, "title": "Tente le mode avion nocturne" },
+  { "id": 60, "title": "Observe comment ton sommeil change" },
+  { "id": 60, "title": "Félicite-toi pour chaque soirée débranchée" },
+
+
+  // 61 - S'offrir un moment de détente
+  { "id": 61, "title": "Coupe les notifs, pas ton calme" },
+  { "id": 61, "title": "Prépare une boisson comme un petit rituel" },
+  { "id": 61, "title": "Choisis ton coin chill officiel" },
+  { "id": 61, "title": "Respire comme si tu avais tout ton temps" },
+  { "id": 61, "title": "Écoute un son qui fait descendre les épaules" },
+  { "id": 61, "title": "Ferme les yeux, laisse le cerveau en roue libre" },
+  { "id": 61, "title": "Étire ton dos comme un chat qui se réveille" },
+  { "id": 61, "title": "Allume la lumière version “soirée cocoon”" },
+  { "id": 61, "title": "Laisse ton téléphone vivre sa vie loin de toi" },
+  { "id": 61, "title": "Offre-toi cinq minutes où tu ne sers à rien" },
+
+  // 62 - Pause / sieste courte
+  { "id": 62, "title": "Installe ton corps en mode pause, pas sprint" },
+  { "id": 62, "title": "Ferme les yeux, même si le sommeil snobe" },
+  { "id": 62, "title": "Passe en mode avion, toi et ton téléphone" },
+  { "id": 62, "title": "Préviens les humains que tu deviens canapé" },
+  { "id": 62, "title": "Évite la sieste qui se transforme en nuit bonus" },
+  { "id": 62, "title": "Compte aussi la rêverie comme vraie pause" },
+  { "id": 62, "title": "Réveille-toi comme si tu sortais d’un nuage" },
+  { "id": 62, "title": "Bois un verre d’eau pour rallumer le système" },
+  { "id": 62, "title": "Observe si ta journée passe en HD après" },
+
+  // 63 - Respiration calme
+  { "id": 63, "title": "Pose-toi comme une montagne, stable" },
+  { "id": 63, "title": "Inspire par le nez comme si ça sentait bon" },
+  { "id": 63, "title": "Souffle plus longtemps, comme si tu soufflais des bougies" },
+  { "id": 63, "title": "Pose une main sur le ventre, vérifie qu’il vit" },
+  { "id": 63, "title": "Ferme les yeux et laisse le monde en coulisses" },
+  { "id": 63, "title": "Fais au moins cinq respirations “version luxe”" },
+  { "id": 63, "title": "Regarde l’air entrer et sortir comme un va-et-vient zen" },
+  { "id": 63, "title": "Laisse ton esprit vagabonder sans le gronder" },
+  { "id": 63, "title": "Reviens à ta journée comme après une mini sieste" },
+  { "id": 63, "title": "Sors cette respiration secrète dès que ça chauffe" },
+
+  // 64 - Mini méditation
+  { "id": 64, "title": "Choisis un spot où on ne t’attaque pas toutes les deux minutes" },
+  { "id": 64, "title": "Fixe un point ou ferme les yeux, mode statue" },
+  { "id": 64, "title": "Ancre tes pieds au sol comme un arbre" },
+  { "id": 64, "title": "Regarde les pensées défiler comme des stories" },
+  { "id": 64, "title": "Laisse les bruits être là, sans les liker" },
+  { "id": 64, "title": "Sens le poids du corps posé, comme collé au siège" },
+  { "id": 64, "title": "Mets un minuteur discret, pas une sirène" },
+  { "id": 64, "title": "Oublie le “faire bien”, fais juste" },
+  { "id": 64, "title": "Sors de la pause comme au ralenti" },
+  { "id": 64, "title": "Enchaîne avec une action simple, pas un marathon" },
+
+  // 65 - Regarder dehors
+  { "id": 65, "title": "Colle-toi à une fenêtre comme un chat curieux" },
+  { "id": 65, "title": "Trouve trois trucs jolis, même une gouttière stylée" },
+  { "id": 65, "title": "Observe le ciel, les arbres, les toits, même moches" },
+  { "id": 65, "title": "Cherche les mouvements lents, pas les avions de chasse" },
+  { "id": 65, "title": "Respire doucement pendant que tes yeux se baladent" },
+  { "id": 65, "title": "Éteins l’écran, rouvre le mode “paysage réel”" },
+  { "id": 65, "title": "Déplace-toi un peu, change de cadre comme au cinéma" },
+  { "id": 65, "title": "Repère les couleurs comme si tu faisais une palette" },
+  { "id": 65, "title": "Prends une photo mentale, pas forcément instagrammable" },
+  { "id": 65, "title": "Rappelle-toi cette image quand le stress fait le malin" },
+
+  // 66 - Prendre l’air
+  { "id": 66, "title": "Sors, même si c’est juste dix pas héroïques" },
+  { "id": 66, "title": "Inspire plus fort que d’habitude, sans te noyer" },
+  { "id": 66, "title": "Dis bonjour au ciel, à un arbre ou à un pigeon" },
+  { "id": 66, "title": "Laisse la météo te raconter sa vie sur ta peau" },
+  { "id": 66, "title": "Pose une distance de sécurité avec les écrans" },
+  { "id": 66, "title": "Fais quelques pas comme si tu te promenais dans un film" },
+  { "id": 66, "title": "Écoute les sons, même les voitures ont un rythme" },
+  { "id": 66, "title": "Laisse tes épaules descendre de deux étages" },
+  { "id": 66, "title": "Choisis un détail agréable à regarder une seconde" },
+  { "id": 66, "title": "Retourne dedans en observant comment ton corps répond" },
+
+  // 67 - Balade nature / parc
+  { "id": 67, "title": "Choisis un coin nature que tu peux atteindre sans expédition" },
+  { "id": 67, "title": "Préviens quelqu’un que tu pars te perdre… un peu" },
+  { "id": 67, "title": "Baisse le volume du téléphone, pas celui de la vie" },
+  { "id": 67, "title": "Marche à ton rythme, pas à celui des joggeurs pros" },
+  { "id": 67, "title": "Touche un arbre ou une plante, dis-lui bonjour discrètement" },
+  { "id": 67, "title": "Regarde le sol comme un explorateur de textures" },
+  { "id": 67, "title": "Synchronise ton souffle avec tes pas" },
+  { "id": 67, "title": "Écoute les bruits naturels comme une playlist gratuite" },
+  { "id": 67, "title": "Reste un peu, le calme ne répond pas toujours instantanément" },
+  { "id": 67, "title": "Repère ton spot préféré pour une prochaine échappée" },
+
+  // 68 - Apaiser l’ambiance d’un groupe
+  { "id": 68, "title": "Baisse un peu le volume, pas la bienveillance" },
+  { "id": 68, "title": "Propose une mini pause au lieu d’un débat télévisé" },
+  { "id": 68, "title": "Nommer la tension, sans y ajouter du piment" },
+  { "id": 68, "title": "Rappelle le but commun, pas le score des égos" },
+  { "id": 68, "title": "Laisse chacun parler sans faire “buzzer” les gens" },
+  { "id": 68, "title": "Détourne vers un sujet neutre, genre météo ou cookies" },
+  { "id": 68, "title": "Utilise un humour doux, jamais au détriment de quelqu’un" },
+  { "id": 68, "title": "Garde un œil sur la personne la plus fragile" },
+  { "id": 68, "title": "Propose une action simple pour avancer concrètement" },
+  { "id": 68, "title": "Remercie tout le monde quand l’ambiance redescend" },
+
+  // 69 - Veiller aux besoins du groupe
+  { "id": 69, "title": "Observe qui décroche, baille ou disparaît mentalement" },
+  { "id": 69, "title": "Demande “De quoi on a besoin là, vraiment ?”" },
+  { "id": 69, "title": "Propose une pause avant que les cerveaux fondent" },
+  { "id": 69, "title": "Vérifie que tout le monde a compris, pas seulement les bavards" },
+  { "id": 69, "title": "Adapte le rythme, ce n’est pas un sprint olympique" },
+  { "id": 69, "title": "Invite les plus discrets à parler sans les spotlight" },
+  { "id": 69, "title": "Rappelle les règles de respect, version douce" },
+  { "id": 69, "title": "Redistribue les tâches pour alléger les surchargés" },
+  { "id": 69, "title": "Note deux-trois besoins qui reviennent vraiment" },
+  { "id": 69, "title": "Montre plus tard que tu as entendu tout ça" },
+
+  // 70 - Réveil corporel
+  { "id": 70, "title": "Fais rouler ta nuque comme un réveil en douceur" },
+  { "id": 70, "title": "Fais tourner tes épaules comme si tu chassais la journée d’hier" },
+  { "id": 70, "title": "Étire tes bras vers le ciel comme un humain-tournesol" },
+  { "id": 70, "title": "Plie les genoux, confirme qu’ils sont toujours livrés avec toi" },
+  { "id": 70, "title": "Allonge ton dos sans jouer au héros" },
+  { "id": 70, "title": "Fais bouger poignets et chevilles en mode déverrouillage" },
+  { "id": 70, "title": "Respire plus profond pendant cette petite danse" },
+  { "id": 70, "title": "En deux- trois minutes, signe ton contrat avec la journée" },
+  { "id": 70, "title": "Stoppe tout si ton corps fait grève" },
+  { "id": 70, "title": "Note comme tu te sens un peu plus vivant après" },
+
+  // 71 - Activité physique 30 minutes
+  { "id": 71, "title": "Choisis un sport que tu ne détestes pas" },
+  { "id": 71, "title": "Sors la tenue avant que la flemme se réveille" },
+  { "id": 71, "title": "Lance un minuteur : 30 minutes, pas la vie entière" },
+  { "id": 71, "title": "Commence en douceur, ce n’est pas un casting" },
+  { "id": 71, "title": "Bois un peu d’eau, tu n’es pas une plante en plastique" },
+  { "id": 71, "title": "Écoute ton corps, pas ton ego sportif" },
+  { "id": 71, "title": "Finis par quelques étirements “merci le corps”" },
+  { "id": 71, "title": "Note ce que tu as fait, même si c’est modeste" },
+  { "id": 71, "title": "Applaudis-toi, pas besoin de médaille" },
+  { "id": 71, "title": "Décide déjà du prochain rencard avec ton corps" },
+
+  // 72 - Étirements
+  { "id": 72, "title": "Choisis deux ou trois zones un peu rouillées" },
+  { "id": 72, "title": "Étire jusqu’à “ça tire un peu”, pas jusqu’au drame" },
+  { "id": 72, "title": "Garde l’étirement quelques secondes, pas une éternité" },
+  { "id": 72, "title": "Respire tranquillement pendant la tension douce" },
+  { "id": 72, "title": "Évite les mouvements brusques façon film d’action" },
+  { "id": 72, "title": "Stoppe net si ton corps proteste fort" },
+  { "id": 72, "title": "Appuie-toi sur une chaise ou un mur, version humain malin" },
+  { "id": 72, "title": "Étire surtout après avoir fusionné avec une chaise" },
+  { "id": 72, "title": "Oublie la performance, vise le “ah ça fait du bien”" },
+  { "id": 72, "title": "Savoure la petite détente après chaque étirement" },
+
+  // 73 - Fêter les mini-succès
+  { "id": 73, "title": "Repère les mini-victoires, pas seulement les Oscars" },
+  { "id": 73, "title": "Lance un mini applaudissement improvisé" },
+  { "id": 73, "title": "Nommer ce que tu célèbres, pas juste “bravo”" },
+  { "id": 73, "title": "Invite tout le monde à participer à la mini ovation" },
+  { "id": 73, "title": "Garde le moment court, joyeux, pas gênant" },
+  { "id": 73, "title": "Applaudis ce que le groupe a réussi ensemble" },
+  { "id": 73, "title": "Évite le classement, ce n’est pas un concours" },
+  { "id": 73, "title": "Valide aussi les petits pas, pas que les grands sauts" },
+  { "id": 73, "title": "Regarde la personne comme si tu signais son fan-club" },
+  { "id": 73, "title": "Laisse l’ambiance joyeuse infuser la suite de la journée" },
+
+  // 74 - Photo d’un beau détail
+  { "id": 74, "title": "Chasse un petit détail joli dans le décor" },
+  { "id": 74, "title": "Change d’angle comme un photographe amateur inspiré" },
+  { "id": 74, "title": "Rapproche-toi pour voir la texture en gros plan" },
+  { "id": 74, "title": "Prends une seule photo, pas un shooting complet" },
+  { "id": 74, "title": "Regarde la photo, puis range le téléphone, pas l’inverse" },
+  { "id": 74, "title": "Crée un album “belles broutilles du quotidien”" },
+  { "id": 74, "title": "Partage la photo seulement si ça te fait vraiment envie" },
+  { "id": 74, "title": "Accepte que la beauté soit parfois un peu bancale" },
+  { "id": 74, "title": "Fais ça surtout les jours tout gris à l’intérieur" },
+  { "id": 74, "title": "Feuillette ces images plus tard comme un petit stock de soleil" },
+
+  // 75 - Musique apaisante
+  { "id": 75, "title": "Prépare une playlist qui fait fondre les épaules" },
+  { "id": 75, "title": "Baisse le volume, pas ton plaisir" },
+  { "id": 75, "title": "Choisis des morceaux doux, pas une rave-party" },
+  { "id": 75, "title": "Écoute en faisant quelque chose de simple" },
+  { "id": 75, "title": "Laisse le scroll tranquille pendant la musique" },
+  { "id": 75, "title": "Ferme les yeux quelques secondes, pour voir la musique" },
+  { "id": 75, "title": "Observe ce que ça change dedans" },
+  { "id": 75, "title": "Coupe doucement, comme un fondu enchaîné" },
+  { "id": 75, "title": "Garde un morceau “sécurité émotionnelle” de référence" },
+  { "id": 75, "title": "Glisse cette musique dans ton rituel du soir" },
+
+  // 76 - Fredonner / chanter
+  { "id": 76, "title": "Laisse venir un air, même bizarre" },
+  { "id": 76, "title": "Chante pour toi, pas pour The Voice" },
+  { "id": 76, "title": "Commence tout bas si la pudeur surveille" },
+  { "id": 76, "title": "Fredonne en rangeant, cuisine en mode comédie musicale" },
+  { "id": 76, "title": "Sens la vibration dans ta poitrine comme un petit tambour" },
+  { "id": 76, "title": "Ajoute un sourire au refrain, combo gagnant" },
+  { "id": 76, "title": "Change de chanson selon ton humeur du moment" },
+  { "id": 76, "title": "Choisis un souvenir musical qui réchauffe" },
+  { "id": 76, "title": "Invite quelqu’un à fredonner avec toi si tu oses" },
+  { "id": 76, "title": "Coupe si les voisins envoient un regard très long" },
+
+  // 77 - Film / série qui fait du bien
+  { "id": 77, "title": "Choisis une comédie qui te fait sourire, pas réfléchir à ta vie" },
+  { "id": 77, "title": "Prends le temps pour le voir en entier" },
+  { "id": 77, "title": "Coupe les notifs, laisse juste le générique parler" },
+  { "id": 77, "title": "Installe-toi comme pour une cérémonie du plaid" },
+  { "id": 77, "title": "Regarde vraiment, pas en mode “écran + téléphone”" },
+  { "id": 77, "title": "Si possible, partage ce moment avec quelqu’un" },
+  { "id": 77, "title": "Autorise-toi à rire fort, même tout seul" },
+  { "id": 77, "title": "Stoppe si le contenu pèse au lieu de libérer" },
+  { "id": 77, "title": "Note une réplique qui t’a fait du bien" },
+  { "id": 77, "title": "Observe ton humeur après la séance" },
+
+  // 78 - Jeu léger
+  { "id": 78, "title": "Choisis un jeu simple, pas un mode d’emploi de 40 pages" },
+  { "id": 78, "title": "Adapte la durée pour éviter le “c’est quand qu’on finit ?”" },
+  { "id": 78, "title": "Vérifie que tout le monde a signé pour jouer" },
+  { "id": 78, "title": "Rappelle que le but, c’est de rigoler, pas de gagner un procès" },
+  { "id": 78, "title": "Évite les jeux trop vachards si l’ambiance est fragile" },
+  { "id": 78, "title": "Donne un petit rôle facile aux timides" },
+  { "id": 78, "title": "Préviens comment on sait que la partie est finie" },
+  { "id": 78, "title": "Change de jeu si tout le monde décroche en silence" },
+  { "id": 78, "title": "Remercie pour ce temps partagé, même court" },
+  { "id": 78, "title": "Demande quel jeu chacun rêve de tester après" },
+
+  // 79 - Énigme / casse-tête
+  { "id": 79, "title": "Choisis une énigme à taille humaine, pas un concours d’énarque" },
+  { "id": 79, "title": "Donne-toi un temps de recherche, pas une nuit blanche" },
+  { "id": 79, "title": "Note les idées qui passent, même farfelues" },
+  { "id": 79, "title": "Accepte de ne pas trouver du premier coup" },
+  { "id": 79, "title": "Demande un petit indice avant d’abandonner la partie" },
+  { "id": 79, "title": "Fais une pause cerveau si ça fume trop" },
+  { "id": 79, "title": "Partage la solution avec quelqu’un pour le fun" },
+  { "id": 79, "title": "Savoure le chemin plus que la bonne réponse" },
+  { "id": 79, "title": "Varie les types d’énigmes pour explorer" },
+  { "id": 79, "title": "Garde tes énigmes préférées pour piéger gentiment les autres" },
+
+  // 80 - Sortie culturelle
+  { "id": 80, "title": "Choisis un lieu culturel atteignable sans expédition polaire" },
+  { "id": 80, "title": "Invite quelqu’un qui pourrait aimer, ou toi-même suffit" },
+  { "id": 80, "title": "Jette un œil aux horaires avant de partir en héros" },
+  { "id": 80, "title": "Repère une expo ou une salle qui t’attire vraiment" },
+  { "id": 80, "title": "Arrive un peu en avance, version visite tranquille" },
+  { "id": 80, "title": "Lis au moins un cartel comme un explorateur d’art" },
+  { "id": 80, "title": "Observe ce que ça réveille en toi, pas ce que tu “dois” penser" },
+  { "id": 80, "title": "À la sortie, partage ton coup de cœur (ou ton fou rire)" },
+  { "id": 80, "title": "Garde un petit souvenir : billet, note, photo" },
+  { "id": 80, "title": "Note déjà une idée pour la prochaine virée" },
+
+  // 81 - Journal / écrire
+  { "id": 81, "title": "Choisis un carnet ou appli rien qu’à toi" },
+  { "id": 81, "title": "Écris sans faire de la littérature" },
+  { "id": 81, "title": "Note juste ce qui traverse ta tête maintenant" },
+  { "id": 81, "title": "Limite à quelques lignes, pas un roman-fleuve" },
+  { "id": 81, "title": "Ne relis pas tout de suite, laisse mariner" },
+  { "id": 81, "title": "Écris à la même heure, comme un rendez-vous discret" },
+  { "id": 81, "title": "Parle de toi en “je”, c’est ton journal, pas le JT" },
+  { "id": 81, "title": "Ignore les fautes, ton cœur n’a pas de correcteur orthographique" },
+  { "id": 81, "title": "Referme le carnet comme on ferme une petite boîte à secrets" },
+  { "id": 81, "title": "Relis dans quelques semaines si tu en as envie" },
+
+  // 82 - Touche déco
+  { "id": 82, "title": "Ajoute un petit détail, pas un changement d’émission déco" },
+  { "id": 82, "title": "Demande l’avis des habitants du lieu" },
+  { "id": 82, "title": "Utilise ce que tu as déjà avant d’acheter le magasin" },
+  { "id": 82, "title": "Place la déco là où les yeux passent souvent" },
+  { "id": 82, "title": "Évite l’effet brocante surchargée" },
+  { "id": 82, "title": "Respecte l’ambiance du lieu, même si tu aimes les néons" },
+  { "id": 82, "title": "Choisis quelque chose facile à enlever si flop" },
+  { "id": 82, "title": "Observe si l’atmosphère change un peu" },
+  { "id": 82, "title": "Change de temps en temps pour rafraîchir l’œil" },
+  { "id": 82, "title": "Prends en compte les sensibilités, pas seulement ton mood" },
+
+  // 83 - Prendre les escaliers
+  { "id": 83, "title": "Prévois quelques minutes de bonus pour tes marches héroïques" },
+  { "id": 83, "title": "Commence par quelques étages, pas l’Everest" },
+  { "id": 83, "title": "Monter à ton rythme, pas à celui du voisin sportif" },
+  { "id": 83, "title": "Tiens la rampe, ce n’est pas un aveu de faiblesse" },
+  { "id": 83, "title": "Respire tranquillement, pas comme une locomotive" },
+  { "id": 83, "title": "Accorde-toi une mini récompense en haut" },
+  { "id": 83, "title": "Alterne escalier et ascenseur au début, mode mix" },
+  { "id": 83, "title": "Écoute ton corps, pas la petite voix “fais le héros”" },
+  { "id": 83, "title": "Note quand ça devient plus facile qu’avant" },
+  { "id": 83, "title": "Félicite-toi à chaque fois que tu choisis les marches" },
+
+  // 84 - Lecture plaisir
+  { "id": 84, "title": "Choisis un livre qui t’appelle vraiment, pas “à lire absolument”" },
+  { "id": 84, "title": "Laisse ton téléphone dans une autre pièce, qu’il médite" },
+  { "id": 84, "title": "Fabrique-toi un coin lecture digne de toi" },
+  { "id": 84, "title": "Lis un peu, même sans finir le chapitre" },
+  { "id": 84, "title": "Pose un marque-page, pas ta mémoire" },
+  { "id": 84, "title": "Relis un passage qui t’a fait vibrer si tu veux" },
+  { "id": 84, "title": "Ne te juge pas si ta tête s’envole" },
+  { "id": 84, "title": "Change de livre si le plaisir n’y est plus" },
+  { "id": 84, "title": "Lis quelques minutes avant de dormir, comme un atterrissage doux" },
+  { "id": 84, "title": "Observe ce que la lecture fait à tes pensées" },
+
+  // 85 - Bricolage simple
+  { "id": 85, "title": "Commence par un bricolage niveau “je débute”" },
+  { "id": 85, "title": "Sors tout le matériel avant de te lancer" },
+  { "id": 85, "title": "Protège la zone comme si tu attendais des éclaboussures de génie" },
+  { "id": 85, "title": "Regarde un tuto rapide, pas une série en 12 épisodes" },
+  { "id": 85, "title": "Donne-toi une durée, pas une mission à vie" },
+  { "id": 85, "title": "Accepte que ce soit un peu bancal, mais fait par toi" },
+  { "id": 85, "title": "Demande de l’aide avant de t’énerver sur la vis" },
+  { "id": 85, "title": "Range les outils immédiatement, futur toi dira merci" },
+  { "id": 85, "title": "Prends une photo avant/après pour admirer" },
+  { "id": 85, "title": "Note ce que ce bricolage change concrètement" },
+
+  // 86 - Danse
+  { "id": 86, "title": "Mets une chanson qui fait vibrer tes orteils" },
+  { "id": 86, "title": "Laisse ton corps décider, ton cerveau suivra" },
+  { "id": 86, "title": "Danse comme si personne ne filmait, surtout personne" },
+  { "id": 86, "title": "Ferme la porte si ta pudeur veut un ticket" },
+  { "id": 86, "title": "Si besoin, bouge juste le haut du corps, version discret" },
+  { "id": 86, "title": "Ajoute un sourire, même timide, ça compte double" },
+  { "id": 86, "title": "Arrête avant de finir totalement rincé" },
+  { "id": 86, "title": "Propose à quelqu’un de te rejoindre sur la piste improvisée" },
+  { "id": 86, "title": "Sors ce mouvement secret quand le moral descend" },
+  { "id": 86, "title": "Compare ton humeur avant/après, façon expérience scientifique" },
+
+  // 87 - Podcast
+  { "id": 87, "title": "Choisis un épisode court, pas un marathon audio" },
+  { "id": 87, "title": "Télécharge-le avant, tu évites le suspense du wifi" },
+  { "id": 87, "title": "Écoute tout en faisant une tâche simple" },
+  { "id": 87, "title": "Évite de lancer cinq podcasts en parallèle" },
+  { "id": 87, "title": "Mets en pause si une idée mérite un gribouillage" },
+  { "id": 87, "title": "Change d’émission si ton corps soupire" },
+  { "id": 87, "title": "Reviens parfois à la vitesse normale, pas toujours en x2" },
+  { "id": 87, "title": "Coupe si ça t’excite plus que ça t’apaise" },
+  { "id": 87, "title": "Partage un épisode marquant avec quelqu’un" },
+  { "id": 87, "title": "Fixe un nombre d’épisodes par jour pour garder la tête libre" },
+
+  // 88 - Humour pour détendre
+  { "id": 88, "title": "Teste l’auto-dérision avant de viser les autres" },
+  { "id": 88, "title": "Adapte ton humour au lieu, pas l’inverse" },
+  { "id": 88, "title": "Évite les zones sensibles, même si la blague est “bonne”" },
+  { "id": 88, "title": "Scanne la salle : rires ou malaise silencieux ?" },
+  { "id": 88, "title": "Si quelqu’un se crispe, tu coupes, pas tu insistes" },
+  { "id": 88, "title": "Un gif ou une image légère peut faire le job" },
+  { "id": 88, "title": "Raconte une anecdote gentille, pas un roast" },
+  { "id": 88, "title": "Garde comme intention de détendre, pas de briller" },
+  { "id": 88, "title": "Accepte que la blague tombe à plat, ça arrive" },
+  { "id": 88, "title": "Laisse aussi les autres amener leur humour" },
+
+  // 89 - Parfums / odeurs agréables
+  { "id": 89, "title": "Choisis un parfum qui te fait “ahhh”, pas “oups”" },
+  { "id": 89, "title": "Inspire une seconde comme si tu dégustais l’air" },
+  { "id": 89, "title": "Respire lentement par le nez, façon sommelier de parfum" },
+  { "id": 89, "title": "Devine si c’est plutôt fleur, bois, ou dessert" },
+  { "id": 89, "title": "Va mollo en intérieur, tout le monde n’a pas ton nez" },
+  { "id": 89, "title": "Sur toi, le parfum, c’est un invité, pas un envahisseur" },
+  { "id": 89, "title": "Garde un petit objet parfumé à portée de nez" },
+  { "id": 89, "title": "Associe cette odeur à un moment calme" },
+  { "id": 89, "title": "Change de parfum au fil des saisons" },
+  { "id": 89, "title": "Observe comment ton humeur suit ton nez" },
+
+  // 90 - Repas équilibré
+  { "id": 90, "title": "Laisse la moitié de l’assiette aux légumes, star du jour" },
+  { "id": 90, "title": "Cuis simple : vapeur, four, pas usine à gaz" },
+  { "id": 90, "title": "Va doucement sur les sauces toutes faites" },
+  { "id": 90, "title": "Invite une source de protéines à chaque repas" },
+  { "id": 90, "title": "Goûte avant de sortir le sel en freestyle" },
+  { "id": 90, "title": "Prépare une portion en plus pour le futur toi" },
+  { "id": 90, "title": "Range les restes avant qu’ils fassent leur vie" },
+  { "id": 90, "title": "Bois un verre d’eau en ouverture de repas" },
+  { "id": 90, "title": "Laisse la télé tranquille, le repas est la star" },
+  { "id": 90, "title": "Mange assis, à ton rythme, pas en mission ninja" }
 ];
 
 if (typeof module !== "undefined" && module.exports) {
