@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.12" />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.12.1.12" />
+  <link rel="stylesheet" href="style.css?v=2025.12.1.13" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.12.1.12" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.1.13" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -555,9 +555,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.12"></script>
-  <script src="library.js?v=2025.12.1.12"></script>
-  <script src="tips.js?v=2025.12.1.12"></script>
+  <script src="names.js?v=2025.12.1.13"></script>
+  <script src="library.js?v=2025.12.1.13"></script>
+  <script src="tips.js?v=2025.12.1.13"></script>
   <script>
     /* ===== Données ===== */
 
@@ -650,7 +650,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.12.1.12';
+    const APP_VERSION = '2025.12.1.13';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1444,8 +1444,24 @@
       if (!Number.isFinite(candidate)) return null;
       return candidate;
     }
+    let statsPushTimer = null;
+    const STATS_PUSH_DELAY_MS = 2000;
+
+    function scheduleStatsPush(delay = STATS_PUSH_DELAY_MS) {
+      if (statsPushTimer) {
+        clearTimeout(statsPushTimer);
+        statsPushTimer = null;
+      }
+      if (!shouldSyncStats()) return;
+      statsPushTimer = setTimeout(() => {
+        statsPushTimer = null;
+        maybePushStatsSnapshot().catch(() => { });
+      }, delay);
+    }
+
     function markHabitStatsChanged() {
       safeStorageSet(HABIT_STATS_CHANGE_KEY, String(Date.now()));
+      scheduleStatsPush();
     }
     function persistMagicLinkEmail(email) {
       if (!email) return;
@@ -1513,14 +1529,13 @@
       } catch (err) {
       }
     }
-    function canPerformStatsOperation(storageKey, targetSpaceId, intervalMs = STATS_SYNC_INTERVAL_MS) {
+    function canPerformStatsOperation(storageKey, targetSpaceId) {
       if (!targetSpaceId) return false;
       const last = getStatsTimestamp(storageKey, targetSpaceId);
       if (!last) return true;
       const changeTs = readHabitStatsChangeTimestamp();
       if (!changeTs) return false;
-      if (changeTs <= last) return false;
-      return Date.now() - last >= intervalMs;
+      return changeTs > last;
     }
     let habitListSnapshot = { spaceId: '', ts: 0, habits: [] };
     function hydrateHabitListSnapshotCache() {

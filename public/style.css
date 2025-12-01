@@ -1136,11 +1136,11 @@ button:active,
 .space-stats-table table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 12px;
 }
 .space-stats-table th,
 .space-stats-table td {
-  padding: 8px;
+  padding: 4px;
   text-align: left;
   border-bottom: 1px solid rgba(30, 31, 26, 0.1);
 }
@@ -1171,7 +1171,7 @@ button:active,
   opacity: 0.5;
 }
 .stat-emoji {
-  margin-right: 6px;
+  margin-right: 1px;
 }
 .space-stats-table td span {
   vertical-align: middle;
@@ -1185,7 +1185,7 @@ button:active,
 .stat-habit-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
   border: none;
   background: transparent;
   font: inherit;

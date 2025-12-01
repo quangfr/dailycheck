@@ -1,4 +1,4 @@
-const ASSET_VERSION = '2025.12.1.12';
+const ASSET_VERSION = '2025.12.1.13';
 const CACHE_NAME = `habitube-app-${ASSET_VERSION}`;
 const ASSET_QUERY = `?v=${ASSET_VERSION}`;
 const OFFLINE_HTML = `/offline.html${ASSET_QUERY}`;
@@ -9,9 +9,9 @@ const OFFLINE_URLS = Array.from(new Set([
   `/library.js${ASSET_QUERY}`,
   `/names.js${ASSET_QUERY}`,
   `/tips.js${ASSET_QUERY}`,
-  `/manifest.webmanifest${ASSET_QUERY}`,
-  `/icon-192.png${ASSET_QUERY}`,
-  `/icon-512.png${ASSET_QUERY}`,
+  '/manifest.webmanifest',
+  '/icon-192.png',
+  '/icon-512.png',
   OFFLINE_HTML
 ]));
 let offlineNotificationSent = false;
