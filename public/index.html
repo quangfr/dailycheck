@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.11" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.12" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.12.1.11" />
+  <link rel="stylesheet" href="style.css?v=2025.12.1.12" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.12.1.11" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.1.12" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -555,9 +555,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.11"></script>
-  <script src="library.js?v=2025.12.1.11"></script>
-  <script src="tips.js?v=2025.12.1.11"></script>
+  <script src="names.js?v=2025.12.1.12"></script>
+  <script src="library.js?v=2025.12.1.12"></script>
+  <script src="tips.js?v=2025.12.1.12"></script>
   <script>
     /* ===== Données ===== */
 
@@ -650,7 +650,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.12.1.11';
+    const APP_VERSION = '2025.12.1.12';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1624,6 +1624,13 @@
     }
     function shouldQueueSpaceSnapshot() {
       return shouldPersistSpaceData();
+    }
+    function shouldSyncStats(profile = currentProfile) {
+      if (!profile) return false;
+      if (typeof window === 'undefined') return false;
+      const db = window.HABITU_FIREBASE_DB;
+      if (!db) return false;
+      return isProfileModeVisible(profile);
     }
     function markSpaceDirty() {
       if (!shouldQueueSpaceSnapshot()) return;
@@ -4662,7 +4669,7 @@
       updateHabitFilterCounts(filterCounts);
       updateHabitFilterButtons();
       renderDateBar();
-      if (shouldQueueSpaceSnapshot()) {
+      if (shouldSyncStats()) {
         ensureHabitStreakCounts().catch(() => { });
       }
       updateAddModalOptions();
@@ -4811,7 +4818,7 @@
       }
       const sinceDate = addDays(curDate(), -DEFAULT_GARDENER_WINDOW_DAYS);
       let stats = [];
-      if (shouldQueueSpaceSnapshot()) {
+      if (shouldSyncStats()) {
         stats = await loadHabitGardenersSnapshot(activeId);
       }
       if (!stats.length) {
@@ -5779,7 +5786,7 @@
       // badge count is driven by server stats; no client increment required
     }
     function ensureHabitStreakCounts(force = false) {
-      if (!shouldQueueSpaceSnapshot()) {
+      if (!shouldSyncStats()) {
         habitStreakCountsCache.clear();
         habitStreakCountsPromise = Promise.resolve(new Map());
         return habitStreakCountsPromise;
@@ -5820,7 +5827,7 @@
       return habitStreakCountsPromise;
     }
     async function loadHabitGardenersSnapshot(habitId, { force = false } = {}) {
-      if (!shouldQueueSpaceSnapshot()) {
+      if (!shouldSyncStats()) {
         return [];
       }
       const key = String(habitId);
@@ -5865,7 +5872,7 @@
       return promise;
     }
     async function refreshAllHabitStatsFromServer({ force = false } = {}) {
-      if (!spaceId || !shouldQueueSpaceSnapshot() || !HABITU_FIREBASE_DB) return;
+      if (!spaceId || !shouldSyncStats() || !HABITU_FIREBASE_DB) return;
       if (!isProfileModeVisible()) return;
       if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
       const space = getSpace();
