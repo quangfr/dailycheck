@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.5" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.6" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.12.1.5" />
+  <link rel="stylesheet" href="style.css?v=2025.12.1.6" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.12.1.5" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.1.6" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -556,9 +556,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.5"></script>
-  <script src="library.js?v=2025.12.1.5"></script>
-  <script src="tips.js?v=2025.12.1.5"></script>
+  <script src="names.js?v=2025.12.1.6"></script>
+  <script src="library.js?v=2025.12.1.6"></script>
+  <script src="tips.js?v=2025.12.1.6"></script>
   <script>
     /* ===== Données ===== */
 
@@ -632,7 +632,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.12.1.5';
+    const APP_VERSION = '2025.12.1.6';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -3566,6 +3566,9 @@
       habitData.repeatConfig = normalizeRepeatConfig(habitData, habitData.repeatConfig || {});
       ensureHabitMetadata(habitData);
       const habitId = String(habitData.id);
+      if (!habitData.deleted) {
+        DELETED_HABITS.delete(habitId);
+      }
       const collection = getSpaceHabitsCollection(spaceId);
       if (!collection) return Promise.resolve();
       return collection.doc(habitId)
@@ -3722,6 +3725,11 @@
           }
         });
         const visibleHabits = habits.filter(habit => !habit.deleted);
+        visibleHabits.forEach(habit => {
+          if (habit?.id) {
+            DELETED_HABITS.delete(habit.id);
+          }
+        });
         if (visibleHabits.length > 0) {
           markFirstHabitCreated();
         }
@@ -4976,7 +4984,7 @@
         container.innerHTML = '<div class="miniInfo">Aucun jardin sélectionné.</div>';
         return [];
       }
-      const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted && !DELETED_HABITS.has(habit.id));
       if (!habits.length) {
         container.innerHTML = '<div class="miniInfo">Aucune habitude enregistrée pour ce jardin.</div>';
         return [];
@@ -5313,7 +5321,7 @@
       if (!range) return 0;
       const space = getSpace();
       if (!space) return 0;
-      const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted && !DELETED_HABITS.has(habit.id));
       return habits.reduce((total, habit) => total + countScheduledOccurrencesInRange(habit, range), 0);
     }
     function computeRangeRegularity(range) {
