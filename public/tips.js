@@ -24,16 +24,16 @@ const HABIT_TIPS = [
   { "id": 2, "title": "Laisse quelqu’un choisir la boisson du jour" },
 
   // id 3 – Collation saine
-  { "id": 3, "title": "Fruits et oléagineux en premiers invités" },
-  { "id": 3, "title": "Les biscuits ultra transformés restent exceptionnels" },
-  { "id": 3, "title": "Prépare les portions avant d’avoir trop faim" },
-  { "id": 3, "title": "Petits contenants, grandes bonnes habitudes" },
-  { "id": 3, "title": "Mets la collation là où tu passes souvent" },
-  { "id": 3, "title": "Ajoute aussi une petite option salée" },
-  { "id": 3, "title": "Fruits en morceaux, dégustation facilitée" },
-  { "id": 3, "title": "Installe une carafe d’eau à côté" },
-  { "id": 3, "title": "Propose de partager, jamais d’obligation" },
-  { "id": 3, "title": "Le sucre ajouté reste en arrière-plan" },
+  { "id": 3, "title": "Regarder ton assiette comme une œuvre" },
+  { "id": 3, "title": "Poser la fourchette entre deux bouchées" },
+  { "id": 3, "title": "Faire une mini-pause comme un chat zen" },
+  { "id": 3, "title": "Croquer en mode slow-motion" },
+  { "id": 3, "title": "Sentir l’odeur avant de goûter" },
+  { "id": 3, "title": "Imaginer que tu tournes une pub gourmande" },
+  { "id": 3, "title": "Mâcher comme si tu testais une nouvelle recette" },
+  { "id": 3, "title": "Écouter le petit bruit des aliments" },
+  { "id": 3, "title": "Faire un mini-sourire à chaque bouchée" },
+  { "id": 3, "title": "Ranger ton téléphone comme un ninja" },
 
   // id 4 – Boisson chaude
   { "id": 4, "title": "Choisis ta tasse spéciale détente" },
@@ -60,28 +60,28 @@ const HABIT_TIPS = [
   { "id": 5, "title": "Prends une photo de la liste, au cas où" },
 
   // id 6 – Manger plus de fruits
-  { "id": 6, "title": "Laisse les fruits visibles, ils aiment la lumière" },
-  { "id": 6, "title": "Lave-en quelques-uns quand tu as de l’énergie" },
-  { "id": 6, "title": "Prépare une boîte de fruits prêts à croquer" },
-  { "id": 6, "title": "Remplace un dessert très sucré par un fruit" },
-  { "id": 6, "title": "Glisse un fruit dans ton sac, discret allié" },
-  { "id": 6, "title": "Commence par les fruits que tu apprécies déjà" },
-  { "id": 6, "title": "Varie les couleurs, ton assiette sourit" },
-  { "id": 6, "title": "Teste un fruit nouveau chaque semaine" },
-  { "id": 6, "title": "Goûte le fruit avant d’ouvrir le paquet de biscuits" },
-  { "id": 6, "title": "Ton corps se souvient des fruits, il aime ça" },
+  { "id": 6, "title": "Ajoute une couleur de plus dans ton assiette" },
+  { "id": 6, "title": "Glisse un fruit dans ton sac comme un bonus" },
+  { "id": 6, "title": "Croque une pomme quand tu hésites au goûter" },
+  { "id": 6, "title": "Transforme les légumes en petits héros du repas" },
+  { "id": 6, "title": "Mixe un smoothie comme une potion magique" },
+  { "id": 6, "title": "Garnis ton plat de légumes comme un peintre" },
+  { "id": 6, "title": "Ajoute une crudité dès que ça manque de pep" },
+  { "id": 6, "title": "Découpe les fruits en étoiles, juste pour le fun" },
+  { "id": 6, "title": "Choisis un légume inconnu chaque semaine" },
+  { "id": 6, "title": "Remplace un snack par un fruit arc-en-ciel" },
 
   // id 7 – Boire plus d’eau
-  { "id": 7, "title": "Remplis ta gourde en début de journée" },
-  { "id": 7, "title": "Garde-la toujours à portée de main" },
-  { "id": 7, "title": "Programme un rappel si tu l’oublies souvent" },
-  { "id": 7, "title": "Ajoute une tranche de citron si tu aimes" },
-  { "id": 7, "title": "Fais un point en milieu de journée sur le niveau" },
-  { "id": 7, "title": "Vise la gourde vide avant le dîner" },
-  { "id": 7, "title": "Pose-la bien en vue sur ton bureau" },
-  { "id": 7, "title": "Rince-la chaque soir, rituel de fin de journée" },
-  { "id": 7, "title": "Une gourde graduée peut t’aider à suivre" },
-  { "id": 7, "title": "Bois quelques gorgées à chaque pause" },
+  { "id": 7, "title": "Garde ta gourde comme un sidekick" },
+  { "id": 7, "title": "Bois avant que ta bouche râle" },
+  { "id": 7, "title": "Prends une gorgée à chaque pause" },
+  { "id": 7, "title": "Pose ta bouteille en vue, pas en déco" },
+  { "id": 7, "title": "Fais sonner l’alarme à eau, discret" },
+  { "id": 7, "title": "Remplis ton verre, ton futur toi dira merci" },
+  { "id": 7, "title": "Ajoute un citron, effet fancy immédiat" },
+  { "id": 7, "title": "Une gorgée par onglet ouvert, courage" },
+  { "id": 7, "title": "Transforme chaque gorgée en mini-pause zen" },
+  { "id": 7, "title": "Compète secrète : finir ta gourde avant 18h" },
 
   // id 8 – Prise de traitement
   { "id": 8, "title": "Relie la prise à une habitude déjà en place" },
@@ -142,17 +142,17 @@ const HABIT_TIPS = [
   { "id": 12, "title": "Hydrate-toi après, peau reconnaissante" },
   { "id": 12, "title": "Aère la pièce, vapeur dehors" },
 
-  // id 13 – Boissons alcoolisées (modération)
-  { "id": 13, "title": "Deux minutes de brossage, sourire compris" },
-  { "id": 13, "title": "Prépare ton verre avant la soirée" },
-  { "id": 13, "title": "Choisis un verre que tu apprécies vraiment" },
-  { "id": 13, "title": "Un verre d’eau entre deux, équilibre parfait" },
-  { "id": 13, "title": "Décide de ta limite, soirée zen" },
-  { "id": 13, "title": "Bois lentement, goût prolongé" },
-  { "id": 13, "title": "Évite les grandes tournées, rituel tranquille" },
-  { "id": 13, "title": "Un “non” clair est élégant" },
-  { "id": 13, "title": "Varie avec des boissons sans alcool" },
-  { "id": 13, "title": "Garde un œil sur ton ressenti" },
+  // id 13 – Boissons alcoolisées zéro
+  { "id": 13, "title": "Porter son verre… d’eau fièrement" },
+  { "id": 13, "title": "Commander « comme d’hab », mais sans alcool" },
+  { "id": 13, "title": "Dire que ton foie te félicite déjà" },
+  { "id": 13, "title": "Tenir ton verre comme un trophée" },
+  { "id": 13, "title": "Boire lentement pour faire pro" },
+  { "id": 13, "title": "Proposer un toast… à l’eau pétillante" },
+  { "id": 13, "title": "Remplir ton verre avant qu’on insiste" },
+  { "id": 13, "title": "Changer de bar, pas de boisson" },
+  { "id": 13, "title": "Faire genre « c’est un choix d’artiste »" },
+  { "id": 13, "title": "Rappeler que demain, tu seras frais" }
 
   // id 14 – Changer les draps
   { "id": 14, "title": "Draps propres prêts, mission express" },
@@ -322,17 +322,17 @@ const HABIT_TIPS = [
   { "id": 27, "title": "Lave les mains après" },
   { "id": 27, "title": "Remets les sacs au bon endroit" },
 
-  // id 28 – Étagères / rangement
-  { "id": 28, "title": "Une étagère à la fois, sérénité" },
-  { "id": 28, "title": "Mets de côté ce que tu n’utilises plus" },
-  { "id": 28, "title": "Groupe par thème, esprit clair" },
-  { "id": 28, "title": "Les objets importants à hauteur des yeux" },
-  { "id": 28, "title": "Une boîte pour les petits éléments" },
-  { "id": 28, "title": "Une étiquette, une paix intérieure" },
-  { "id": 28, "title": "Donne ou recycle ce qui encombre" },
-  { "id": 28, "title": "Nettoie l’étagère avant de remettre" },
-  { "id": 28, "title": "Une rangée = une limite" },
-  { "id": 28, "title": "Admire ton œuvre un pas en arrière" },
+  // id 28 – Brossage de dents
+  { "id": 28, "title": "Fais briller ton sourire comme un projecteur" },
+  { "id": 28, "title": "Brosse comme si tu polissais un trésor" },
+  { "id": 28, "title": "Offre un spa express à tes molaires" },
+  { "id": 28, "title": "Chouchoute tes gencives comme une plante fragile" },
+  { "id": 28, "title": "Danse la samba avec ta brosse" },
+  { "id": 28, "title": "Rince comme si tu préparais un toast radio" },
+  { "id": 28, "title": "Passe le fil comme un ninja discret" },
+  { "id": 28, "title": "Souris à ton miroir, ça motive toujours" },
+  { "id": 28, "title": "Change ta brosse avant qu’elle ne fasse grève" },
+  { "id": 28, "title": "Garde ta bouche fraîche comme un matin d’hiver" }
 
   // id 29 – Sortir du lit
   { "id": 29, "title": "Ouvre les rideaux, lumière booster" },
@@ -706,16 +706,16 @@ const HABIT_TIPS = [
   { "id": 59, "title": "Observe l’humeur du lendemain, petit test" },
 
   // 60 – Soirée sans téléphone au lit
-  { "id": 60, "title": "Choisis quelques soirs, pas tous d’un coup" },
-  { "id": 60, "title": "Le téléphone reste dans une autre pièce" },
-  { "id": 60, "title": "Un réveil non connecté, c’est pratique" },
-  { "id": 60, "title": "Préviens les proches : mode nuit sacré" },
-  { "id": 60, "title": "Prévois une activité agréable hors écran" },
-  { "id": 60, "title": "Notifications en off après 21h" },
-  { "id": 60, "title": "Baisse la lumière pour dire “chut” au cerveau" },
-  { "id": 60, "title": "Tente le mode avion nocturne" },
-  { "id": 60, "title": "Observe comment ton sommeil change" },
-  { "id": 60, "title": "Félicite-toi pour chaque soirée débranchée" },
+  { "id": 60, "title": "Annonce à ton tel que c’est l’heure" },
+  { "id": 60, "title": "Glisse-le sous une couverture, chuuut" },
+  { "id": 60, "title": "Désactive-le comme un bouton pause" },
+  { "id": 60, "title": "Souhaite-lui une bonne nuit polie" },
+  { "id": 60, "title": "Confie-le à une prise loin du lit" },
+  { "id": 60, "title": "Fais-lui croire qu’il est en vacances" },
+  { "id": 60, "title": "Dépose-le dans un coin en douceur" },
+  { "id": 60, "title": "Éteins-le comme une petite lanterne" },
+  { "id": 60, "title": "Range-le en murmurant « demain »" },
+  { "id": 60, "title": "Offre-lui un couvre-feu bienveillant" }
 
 
   { "id": 61, "title": "Coupe les notifs, garde ton calme" },
@@ -825,16 +825,16 @@ const HABIT_TIPS = [
   { "id": 69, "title": "Montre plus tard que tu as entendu" },
 
   // 70 - Réveil corporel
-  { "id": 70, "title": "Fais rouler ta nuque en douceur" },
-  { "id": 70, "title": "Fais tourner tes épaules tranquille" },
-  { "id": 70, "title": "Étire tes bras vers le ciel" },
-  { "id": 70, "title": "Plie les genoux, teste-les" },
-  { "id": 70, "title": "Allonge ton dos sans héroïsme" },
-  { "id": 70, "title": "Bouge poignets et chevilles" },
-  { "id": 70, "title": "Respire profond dans la mini-danse" },
-  { "id": 70, "title": "En trois minutes, signe avec la journée" },
-  { "id": 70, "title": "Stoppe si ton corps proteste" },
-  { "id": 70, "title": "Note comme tu te sens plus vivant" },
+  { "id": 70, "title": "Commencer par les orteils, héros discret" },
+  { "id": 70, "title": "Compter jusqu’à trois… ou dix" },
+  { "id": 70, "title": "Regarder l’eau comme un défi amical" },
+  { "id": 70, "title": "Faire un sourire courageux au jet" },
+  { "id": 70, "title": "Imaginer que c’est une cascade zen" },
+  { "id": 70, "title": "Aller vite avant de réfléchir trop" },
+  { "id": 70, "title": "Respirer comme un maître yogi surpris" },
+  { "id": 70, "title": "Se féliciter dès la première goutte" },
+  { "id": 70, "title": "Penser au café… sans en boire" },
+  { "id": 70, "title": "Sortir fier comme un pingouin motivé" },
 
   // 71 - Activité physique 30 minutes
   { "id": 71, "title": "Choisis un sport que tu ne détestes pas" },
