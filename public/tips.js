@@ -715,7 +715,7 @@ const HABIT_TIPS = [
   { "id": 60, "title": "Dépose-le dans un coin en douceur" },
   { "id": 60, "title": "Éteins-le comme une petite lanterne" },
   { "id": 60, "title": "Range-le en murmurant « demain »" },
-  { "id": 60, "title": "Offre-lui un couvre-feu bienveillant" }
+  { "id": 60, "title": "Offre-lui un couvre-feu bienveillant" },
 
 
   { "id": 61, "title": "Coupe les notifs, garde ton calme" },

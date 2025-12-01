@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.4" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.5" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.12.1.4" />
+  <link rel="stylesheet" href="style.css?v=2025.12.1.5" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.12.1.4" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.1.5" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -556,9 +556,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.4"></script>
-  <script src="library.js?v=2025.12.1.4"></script>
-  <script src="tips.js?v=2025.12.1.4"></script>
+  <script src="names.js?v=2025.12.1.5"></script>
+  <script src="library.js?v=2025.12.1.5"></script>
+  <script src="tips.js?v=2025.12.1.5"></script>
   <script>
     /* ===== Données ===== */
 
@@ -632,7 +632,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.12.1.4';
+    const APP_VERSION = '2025.12.1.5';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1094,7 +1094,7 @@
     let PERSONAL_ACTIVITY_LAST_REFRESH = 0;
     let personalActivityRefreshPromise = null;
     const PERSONAL_ACTIVITY_REFRESH_INTERVAL_MS = 3 * 60 * 1000;
-    const LOADER_ROTATION_MS = 60000;
+    const LOADER_ROTATION_MS = 300000;
     const SPOTLIGHT_STEPS = [
       {
         title: 'Bienvenue sur Habitube 🌱',
@@ -1206,14 +1206,10 @@
     }
     function buildLoaderHabitTags(habit) {
       if (!habit) return ['#habitude'];
+      const needs = Array.isArray(habit?.needs) ? habit.needs : [];
       const sources = [];
-      ['needs', 'contexts', 'tags'].forEach(key => {
-        const values = habit?.[key];
-        if (Array.isArray(values)) {
-          values.forEach(value => {
-            if (value) sources.push(value);
-          });
-        }
+      needs.forEach(value => {
+        if (value) sources.push(value);
       });
       const seen = new Set();
       const tags = [];
