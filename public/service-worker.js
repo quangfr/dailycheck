@@ -1,4 +1,4 @@
-const ASSET_VERSION = '2025.12.1.1';
+const ASSET_VERSION = '2025.12.1.2';
 const CACHE_NAME = `habitube-app-${ASSET_VERSION}`;
 const ASSET_QUERY = `?v=${ASSET_VERSION}`;
 const OFFLINE_HTML = `/offline.html${ASSET_QUERY}`;

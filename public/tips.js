@@ -123,7 +123,7 @@ const HABIT_TIPS = [
   { "id": 11, "title": "Suis ton ordre, comme une petite chorégraphie" },
   { "id": 11, "title": "Une serviette propre = visage heureux" },
   { "id": 11, "title": "Mets un minuteur doux, pas un réveil militaire" },
-  { "id": 11, "title": "Applique lentement, ton peau adore" },
+  { "id": 11, "title": "Applique lentement, ta peau adore" },
   { "id": 11, "title": "Respire pendant le soin, ça brille mieux" },
   { "id": 11, "title": "Les produits périmés partent à la retraite" },
   { "id": 11, "title": "Prépare tout la veille, cadeau du matin" },
@@ -152,7 +152,7 @@ const HABIT_TIPS = [
   { "id": 13, "title": "Remplir ton verre avant qu’on insiste" },
   { "id": 13, "title": "Changer de bar, pas de boisson" },
   { "id": 13, "title": "Faire genre « c’est un choix d’artiste »" },
-  { "id": 13, "title": "Rappeler que demain, tu seras frais" }
+  { "id": 13, "title": "Rappeler que demain, tu seras frais" },
 
   // id 14 – Changer les draps
   { "id": 14, "title": "Draps propres prêts, mission express" },
