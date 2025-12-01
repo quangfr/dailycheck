@@ -1182,6 +1182,18 @@ button:active,
 .space-stats-table tbody tr.clickable:hover {
   background: rgba(0, 0, 0, 0.04);
 }
+.stat-habit-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
 
 /* Encadrés par état + auteur + mode */
 .card.s0 {

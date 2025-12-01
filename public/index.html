@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.7" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.9" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.12.1.7" />
+  <link rel="stylesheet" href="style.css?v=2025.12.1.9" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.12.1.7" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.1.9" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -223,10 +223,9 @@
       <div class="section">
         <div class="view active" id="sprofile">
           <div class="profile-intention-row">
-            <label class="profile-intention-label" for="profileIntentionSelect">Intention du moment</label>
             <div class="profile-intention-control">
               <select id="profileIntentionSelect" class="select profile-intention-select"
-                aria-label="Mon intention du moment"></select>
+                aria-label="Intention du moment"></select>
             </div>
           </div>
           <div class="space-profile-visual">
@@ -424,7 +423,7 @@
             <div class="emoji">🌍</div>
             <div>
               <b>Rendre mon profil visible</b>
-            <div class="subtitle">Partage mon profil pour voir les palmarès</div>
+              <div class="subtitle">Partage mon profil pour voir les palmarès</div>
             </div>
           </div>
         </div>
@@ -556,9 +555,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.7"></script>
-  <script src="library.js?v=2025.12.1.7"></script>
-  <script src="tips.js?v=2025.12.1.7"></script>
+  <script src="names.js?v=2025.12.1.9"></script>
+  <script src="library.js?v=2025.12.1.9"></script>
+  <script src="tips.js?v=2025.12.1.9"></script>
   <script>
     /* ===== Données ===== */
 
@@ -629,10 +628,29 @@
     const HABIT_DESC = {}, HABIT_TITLE_CUSTOM = {}, SPACE_DESC_TXT = {};
     const BASE_MINUTES = {}, HABIT_MODE = {}, LOCKED_COMMUN = {}, LOCKED_BY = {}, DONE_SETS = {};
     const HAS_DESC = {}, DELETED_HABITS = new Set();
+    function normalizeHabitKey(value) {
+      if (value === undefined || value === null) return '';
+      return String(value);
+    }
+    function markHabitDeleted(id) {
+      const key = normalizeHabitKey(id);
+      if (!key) return;
+      DELETED_HABITS.add(key);
+    }
+    function unmarkHabitDeleted(id) {
+      const key = normalizeHabitKey(id);
+      if (!key) return;
+      DELETED_HABITS.delete(key);
+    }
+    function isHabitMarkedDeleted(id) {
+      const key = normalizeHabitKey(id);
+      if (!key) return false;
+      return DELETED_HABITS.has(key);
+    }
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.12.1.7';
+    const APP_VERSION = '2025.12.1.9';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1762,6 +1780,23 @@
       const entry = map[getSpaceStatsCacheId(spaceId)];
       return entry?.data || null;
     }
+    function findHabitIdFromEntry(space, entry) {
+      if (!space || !entry) return '';
+      if (entry.habitId !== undefined && entry.habitId !== null) {
+        return String(entry.habitId);
+      }
+      const label = (entry.label || '').trim();
+      if (!label) return '';
+      const target = label.replace(/^🌱\s*/, '').trim().toLowerCase();
+      const candidate = (space.ch || []).find(habit => {
+        if (!habit || habit.deleted || isHabitMarkedDeleted(habit.id)) return false;
+        return (habitLabel(habit) || '').trim().toLowerCase() === target;
+      });
+      if (candidate?.id) {
+        return String(candidate.id);
+      }
+      return '';
+    }
     function persistSpaceStatsCache(spaceId, entries) {
       if (!spaceId) return;
       const map = getSpaceStatsCacheMap();
@@ -2081,7 +2116,7 @@
         if (ownerId && record.ownerId !== ownerId) return false;
         if (habitId && record.habitId !== habitId) return false;
         if (dayKey && record.dayKey !== dayKey) return false;
-        if (DELETED_HABITS.has(record.habitId)) return false;
+        if (isHabitMarkedDeleted(record.habitId)) return false;
         if (since) {
           const recorded = timestampToDate(record.recordedAt);
           if (!recorded || recorded < since) return false;
@@ -3569,7 +3604,7 @@
       ensureHabitMetadata(habitData);
       const habitId = String(habitData.id);
       if (!habitData.deleted) {
-        DELETED_HABITS.delete(habitId);
+        unmarkHabitDeleted(habitId);
       }
       const collection = getSpaceHabitsCollection(spaceId);
       if (!collection) return Promise.resolve();
@@ -3723,13 +3758,13 @@
         habits.forEach(habit => {
           ensureHabitMetadata(habit);
           if (habit.deleted) {
-            DELETED_HABITS.add(habit.id);
+            markHabitDeleted(habit.id);
           }
         });
         const visibleHabits = habits.filter(habit => !habit.deleted);
         visibleHabits.forEach(habit => {
           if (habit?.id) {
-            DELETED_HABITS.delete(habit.id);
+            unmarkHabitDeleted(habit.id);
           }
         });
         if (visibleHabits.length > 0) {
@@ -4156,15 +4191,22 @@
       return (space.ch || []).filter(habit => {
         if (!habit) return false;
         if (habit.deleted) return false;
-        if (DELETED_HABITS.has(habit.id)) return false;
+        if (isHabitMarkedDeleted(habit.id)) return false;
         return true;
       });
     }
     function findAny(id) {
+      if (id === undefined || id === null) return null;
+      const normalizedId = String(id);
       const map = new Map();
-      Object.values(SPACES).forEach(space => { (space.ch || []).forEach(h => { if (h?.id) map.set(h.id, h); }); });
-      if (map.has(id)) return map.get(id);
-      return LIBRARY_HABITS.find(h => h.id === id);
+      Object.values(SPACES).forEach(space => {
+        (space.ch || []).forEach(h => {
+          if (!h?.id) return;
+          map.set(String(h.id), h);
+        });
+      });
+      if (map.has(normalizedId)) return map.get(normalizedId);
+      return LIBRARY_HABITS.find(h => String(h.id) === normalizedId);
     }
     function habitLabel(it) {
       if (!it) return '';
@@ -4194,7 +4236,7 @@
         if (!habit || habit.deleted) return;
         const key = String(habit.id);
         if (!key) return;
-        if (DELETED_HABITS.has(key)) return;
+        if (isHabitMarkedDeleted(key)) return;
         ids.add(key);
       });
       return ids;
@@ -4336,7 +4378,7 @@
         const pinnedCards = [];
         const normalCards = [];
         items.forEach(it => {
-          if (DELETED_HABITS.has(it.id)) return;
+          if (isHabitMarkedDeleted(it.id)) return;
           const pinned = isHabitPinned(it.id);
           ensureHabit(it.id);
           const scheduledToday = shouldOccurOnDate(it, today);
@@ -5000,7 +5042,7 @@
         container.innerHTML = '<div class="miniInfo">Aucun jardin sélectionné.</div>';
         return [];
       }
-      const habits = (space.ch || []).filter(habit => habit && !habit.deleted && !DELETED_HABITS.has(habit.id));
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted && !isHabitMarkedDeleted(habit.id));
       if (!habits.length) {
         container.innerHTML = '<div class="miniInfo">Aucune habitude enregistrée pour ce jardin.</div>';
         return [];
@@ -5295,18 +5337,20 @@
           entry.last = recordedAt;
         }
       });
-      Array.from(statsByHabit.values()).sort((a, b) => b.total - a.total).forEach(entry => {
+      const rowsData = Array.from(statsByHabit.values()).sort((a, b) => b.total - a.total).map(entry => {
         const habit = entry.habit || {};
         const streakValue = getStreakForHabit(spaceId, habit, profileOwnerKey);
-        const row = document.createElement('tr');
-        row.dataset.streak = String(streakValue);
-        row.dataset.total = String(entry.total);
-        const emoji = habit?.emoji || '🌱';
         const label = habitLabel(habit) || 'Habitude';
-        const plural = streakValue > 1 ? 's' : '';
-        row.innerHTML = `<td><span class="stat-emoji">${emoji}</span><span>${label}</span></td><td>${streakValue}</td><td>${entry.total}</td>`;
-        body.appendChild(row);
+        const emoji = habit?.emoji || '🌱';
+        return {
+          habitId: habit.id,
+          label,
+          emoji,
+          streak: streakValue,
+          total: entry.total
+        };
       });
+      rowsData.forEach(rowData => appendSpaceStatRow(body, rowData));
       sortSpaceStats(statsSortKey, statsSortDirection);
       persistProfileStatsCache(spaceId, profileOwnerKey, profilePeriod, {
         score: scoreValue,
@@ -5337,7 +5381,7 @@
       if (!range) return 0;
       const space = getSpace();
       if (!space) return 0;
-      const habits = (space.ch || []).filter(habit => habit && !habit.deleted && !DELETED_HABITS.has(habit.id));
+      const habits = (space.ch || []).filter(habit => habit && !habit.deleted && !isHabitMarkedDeleted(habit.id));
       return habits.reduce((total, habit) => total + countScheduledOccurrencesInRange(habit, range), 0);
     }
     function computeRangeRegularity(range) {
@@ -5392,10 +5436,19 @@
       const row = document.createElement('tr');
       row.dataset.streak = String(normalizedStreak);
       row.dataset.total = String(normalizedTotal);
-      const plural = normalizedStreak > 1 ? 's' : '';
       const emojiValue = emoji || '🌱';
       const labelValue = label || 'Habitude';
-      row.innerHTML = `<td><span class="stat-emoji">${emojiValue}</span><span>${labelValue}</span></td><td>${normalizedStreak}</td><td>${normalizedTotal}</td>`;
+      const firstCell = document.createElement('td');
+      const labelBtn = document.createElement('button');
+      labelBtn.type = 'button';
+      labelBtn.className = 'stat-habit-link';
+      labelBtn.innerHTML = `<span class="stat-emoji">${emojiValue}</span><span>${labelValue}</span>`;
+      firstCell.appendChild(labelBtn);
+      const streakCell = document.createElement('td');
+      const totalCell = document.createElement('td');
+      streakCell.textContent = String(normalizedStreak);
+      totalCell.textContent = String(normalizedTotal);
+      row.append(firstCell, streakCell, totalCell);
       const hasHabitId = habitId !== undefined && habitId !== null;
       if (hasHabitId) {
         const habitKey = String(habitId);
@@ -5405,20 +5458,32 @@
           row.classList.add('clickable');
           row.tabIndex = 0;
           row.setAttribute('role', 'button');
-          row.addEventListener('click', openEditionTab);
+          row.addEventListener('click', event => {
+            console.log('[spaceStats] row click', { habitId });
+            openEditionTab();
+          });
           row.addEventListener('keydown', event => {
             if (event.key === 'Enter' || event.key === ' ') {
               event.preventDefault();
               openEditionTab();
             }
           });
+          labelBtn.addEventListener('click', event => {
+            event.stopPropagation();
+            console.log('[spaceStats] stat-habit-link clicked', { habitId });
+            openEditionTab();
+          });
         }
       }
       body.appendChild(row);
     }
-    function renderSpaceStatsCacheRows(body, entries) {
+    function renderSpaceStatsCacheRows(body, entries, space) {
       if (!body || !Array.isArray(entries)) return;
-      entries.forEach(entry => appendSpaceStatRow(body, entry));
+      entries.forEach(entry => {
+        const resolvedId = findHabitIdFromEntry(space, entry);
+        const enriched = { ...entry, habitId: resolvedId || entry.habitId };
+        appendSpaceStatRow(body, enriched);
+      });
     }
     function countStreakFromDays(habit, recordDays) {
       if (!habit) return 0;
@@ -5493,7 +5558,7 @@
       }
       const cached = getCachedSpaceStats(spaceId);
       if (cached?.entries?.length) {
-        renderSpaceStatsCacheRows(body, cached.entries);
+        renderSpaceStatsCacheRows(body, cached.entries, space);
       }
       const entries = habits.map(habit => {
         const records = getHabitRecords(spaceId, habit.id);
@@ -6043,7 +6108,7 @@
         del.onclick = () => {
           if (!requireAdmin('supprimer une habitude')) return;
           if (!confirm('Supprimer cette habitude ?')) return;
-          DELETED_HABITS.add(activeId);
+          markHabitDeleted(activeId);
           const sp = SPACES[spaceId];
           if (sp && Array.isArray(sp.ch)) {
             sp.ch = sp.ch.filter(habit => habit?.id !== activeId);
