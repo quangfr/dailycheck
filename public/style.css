@@ -857,6 +857,28 @@ button:active,
   flex-direction: column;
   gap: 16px;
 }
+.profile-intention-row {
+  background: transparent;
+  padding: 0px 0px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom:10px;
+}
+.profile-intention-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.profile-intention-control {
+  flex: 1;
+  min-width: 200px;
+}
+.profile-intention-select {
+  width: 100%;
+}
 .score-panel {
   border: 1px solid var(--border);
   border-radius: var(--r);
@@ -973,7 +995,7 @@ button:active,
 }
 .needs-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 8px;
 }
 .need-pill {
@@ -990,7 +1012,7 @@ button:active,
   color: var(--green);
 }
 .space-profile-regularity {
-  margin-top: 8px;
+  margin-top: 0;
   border-radius: var(--r);
   padding: 4px;
   display: flex;
@@ -1014,7 +1036,7 @@ button:active,
 }
 .regularity-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 12px;
 }
 .regularity-card {

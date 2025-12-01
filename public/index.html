@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.11.30.23" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.01" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.11.30.23" />
+  <link rel="stylesheet" href="style.css?v=2025.12.01" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.11.30.23" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.01" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -222,6 +222,13 @@
       </div>
       <div class="section">
         <div class="view active" id="sprofile">
+          <div class="profile-intention-row">
+            <label class="profile-intention-label" for="profileIntentionSelect">Intention du moment</label>
+            <div class="profile-intention-control">
+              <select id="profileIntentionSelect" class="select profile-intention-select"
+                aria-label="Mon intention du moment"></select>
+            </div>
+          </div>
           <div class="space-profile-visual">
             <div class="score-panel">
               <div class="score-title">Score hebdo</div>
@@ -235,39 +242,40 @@
               </div>
               <div class="score-note" id="scoreNote">Objectif : 30 </div>
             </div>
+            <div class="space-profile-regularity" aria-live="polite">
+              <div class="regularity-head">
+                <div class="regularity-title">Régularité</div>
+                <div class="regularity-subtitle">% de réalisés vs planifiés</div>
+              </div>
+              <div class="regularity-grid">
+                <div class="regularity-card">
+                  <div class="regularity-card__label">7 jours</div>
+                  <div class="regularity-visual">
+                    <div class="regularity-pie" id="regularityPie7" role="img"
+                      aria-label="Régularité sur 7 jours : 0 %">
+                    </div>
+                    <div class="regularity-pie-center">
+                      <span class="regularity-pie__value" id="regularityPercent7">-</span>
+                    </div>
+                  </div>
+                  <div class="regularity-delta neutral" id="regularityDelta7">0 pts vs période précédente</div>
+                </div>
+                <div class="regularity-card">
+                  <div class="regularity-card__label">28 jours</div>
+                  <div class="regularity-visual">
+                    <div class="regularity-pie" id="regularityPie28" role="img"
+                      aria-label="Régularité sur 28 jours glissants : 0 %"></div>
+                    <div class="regularity-pie-center">
+                      <span class="regularity-pie__value" id="regularityPercent28">-</span>
+                    </div>
+                  </div>
+                  <div class="regularity-delta neutral" id="regularityDelta28">0 pts vs période précédente</div>
+                </div>
+              </div>
+            </div>
             <div class="needs-panel">
               <div class="needs-title">Top des besoins</div>
               <div class="needs-list" id="needsList"></div>
-            </div>
-          </div>
-          <div class="space-profile-regularity" aria-live="polite">
-            <div class="regularity-head">
-              <div class="regularity-title">Régularité</div>
-              <div class="regularity-subtitle">% de réalisés vs planifiés</div>
-            </div>
-            <div class="regularity-grid">
-              <div class="regularity-card">
-                <div class="regularity-card__label">7 jours</div>
-                <div class="regularity-visual">
-                  <div class="regularity-pie" id="regularityPie7" role="img" aria-label="Régularité sur 7 jours : 0 %">
-                  </div>
-                  <div class="regularity-pie-center">
-                    <span class="regularity-pie__value" id="regularityPercent7">-</span>
-                  </div>
-                </div>
-                <div class="regularity-delta neutral" id="regularityDelta7">0 pts vs période précédente</div>
-              </div>
-              <div class="regularity-card">
-                <div class="regularity-card__label">28 jours</div>
-                <div class="regularity-visual">
-                  <div class="regularity-pie" id="regularityPie28" role="img"
-                    aria-label="Régularité sur 28 jours glissants : 0 %"></div>
-                  <div class="regularity-pie-center">
-                    <span class="regularity-pie__value" id="regularityPercent28">-</span>
-                  </div>
-                </div>
-                <div class="regularity-delta neutral" id="regularityDelta28">0 pts vs période précédente</div>
-              </div>
             </div>
           </div>
         </div>
@@ -499,10 +507,10 @@
             </select>
             <div class="subtitle" id="profileModeSetupHint"></div>
           </div>
-          <div class="field hide" id="profilePseudoField">
+          <div class="field" id="profilePseudoField">
             <label><b>Pseudo</b></label>
             <div class="rowInline">
-              <input id="profilePseudoInput" type="text" placeholder="doux-mousse-42" readonly />
+              <input id="profilePseudoInput" type="text" placeholder="doux-mousse-42" />
               <button type="button" class="btn mini refresh-btn" id="profilePseudoRefresh"
                 title="Générer un nouveau pseudo">
                 ⟲
@@ -548,9 +556,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.11.30.23"></script>
-  <script src="library.js?v=2025.11.30.23"></script>
-  <script src="tips.js?v=2025.11.30.23"></script>
+  <script src="names.js?v=2025.12.01"></script>
+  <script src="library.js?v=2025.12.01"></script>
+  <script src="tips.js?v=2025.12.01"></script>
   <script>
     /* ===== Données ===== */
 
@@ -624,7 +632,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.11.30.23';
+    const APP_VERSION = '2025.12.01';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1094,12 +1102,12 @@
       },
       {
         title: 'Tes réalisations du jour ✨',
-        body: 'Appuie sur une habitude pour valider sa réalisation ou fais un appui long pour accéder à d’autres actions',
+        body: 'Clique sur une habitude pour valider sa réalisation ou fais un clic long pour accéder à d’autres actions',
         focusSelector: '#cards .card.s0'
       },
       {
         title: 'Changer de jour ↔️',
-        body: 'Utilise les flèches ou glisse la liste pour voir les habitudes d’un jour suivant ou précédant',
+        body: 'Utilise les flèches ou glisse à gauche ou à droite pour passer un jour suivant ou précédant',
         focusSelector: '#daysWrap'
       },
       {
@@ -1109,7 +1117,7 @@
       },
       {
         title: 'Suivre ta performance ☀️',
-        body: 'Clique sur ton nom pour consulter ton profil, tes stats et suivre les autres.',
+        body: 'Clique sur ton nom pour consulter ton profil et tes stats',
         focusSelector: '#openSpace'
       }
     ];
@@ -2873,6 +2881,7 @@
       setSessionCookie();
       updateAddModalOptions();
       refreshSpaceHeaderControls();
+      refreshProfileIntentionControl();
     }
 
     function normalizeFavoriteGardeners(keys = []) {
@@ -3412,6 +3421,9 @@
         }
         if (profile.favoriteGardeners !== undefined) {
           payload.favoriteGardeners = normalizeFavoriteGardeners(profile.favoriteGardeners);
+        }
+        if (profile.intentionId !== undefined) {
+          payload.intentionId = profile.intentionId || '';
         }
       }
       if (payload.pseudo) {
@@ -4969,7 +4981,6 @@
         if (!needs.length) return;
         const planned = countScheduledOccurrencesInRange(habit, activeRange);
         const realized = realizedByHabit.get(String(habit.id)) || 0;
-        if (!planned && !realized) return;
         needs.forEach(need => {
           const normalized = normalizeTagKey(need);
           if (!normalized) return;
@@ -4983,16 +4994,16 @@
           needStats.set(normalized, stats);
         });
       });
-      const data = Array.from(needStats.values()).filter(item => item.planned > 0 || item.realized > 0);
+      const data = Array.from(needStats.values());
       if (!data.length) {
-        container.innerHTML = '<div class="miniInfo">Aucun besoin planifié pour l’instant.</div>';
+        container.innerHTML = '<div class="miniInfo">Aucun besoin associé à tes habitudes pour l’instant.</div>';
         return [];
       }
       data.sort((a, b) => {
         if (b.planned !== a.planned) return b.planned - a.planned;
         return a.label.localeCompare(b.label, 'fr');
       });
-      data.slice(0, 4).forEach(item => {
+      data.forEach(item => {
         const percentage = item.planned ? Math.round((item.realized / Math.max(1, item.planned)) * 100) : 0;
         const pill = document.createElement('div');
         pill.className = 'need-pill';
@@ -5000,7 +5011,7 @@
         item.percentage = percentage;
         container.appendChild(pill);
       });
-      return data.slice(0, 4);
+      return data;
     }
     function renderNeedsFromCache(needs = []) {
       const container = $("#needsList");
@@ -5016,6 +5027,74 @@
         pill.innerHTML = `<span class="need-emoji">${emoji}</span><span class="need-label">${label}</span><span class="need-percentage">${percentage}%</span>`;
         container.appendChild(pill);
       });
+    }
+    const PROFILE_INTENTION_PLACEHOLDER = 'Choisis une intention';
+    function getProfileIntentionsList() {
+      if (typeof window !== 'undefined' && Array.isArray(window.INTENTION_JSON_DATA)) {
+        return window.INTENTION_JSON_DATA;
+      }
+      if (typeof INTENTION_JSON_DATA !== 'undefined' && Array.isArray(INTENTION_JSON_DATA)) {
+        return INTENTION_JSON_DATA;
+      }
+      return [];
+    }
+    function renderProfileIntentionOptions(select) {
+      if (!select) return;
+      const intentions = getProfileIntentionsList();
+      select.innerHTML = '';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = PROFILE_INTENTION_PLACEHOLDER;
+      select.appendChild(placeholder);
+      intentions.forEach(intention => {
+        if (!intention) return;
+        const option = document.createElement('option');
+        option.value = String(intention.id ?? '');
+        option.textContent = intention.title || '';
+        select.appendChild(option);
+      });
+    }
+    function refreshProfileIntentionControl() {
+      const select = $("#profileIntentionSelect");
+      if (!select) return;
+      if (!select.dataset.optionsRendered) {
+        renderProfileIntentionOptions(select);
+        select.dataset.optionsRendered = '1';
+      }
+      const currentValue = currentProfile?.intentionId;
+      select.value = currentValue ? String(currentValue) : '';
+      select.disabled = !Boolean(currentProfile);
+    }
+    async function handleProfileIntentionChange(event) {
+      const select = event?.target;
+      if (!select) return;
+      const value = (select.value || '').trim();
+      if (!currentProfile) {
+        select.value = '';
+        return;
+      }
+      const updated = { ...currentProfile, intentionId: value };
+      persistProfile(updated);
+      refreshProfileIntentionControl();
+      if (!updated.uid) return;
+      await persistUserProfile({
+        uid: updated.uid,
+        email: updated.email,
+        name: updated.name,
+        pseudo: updated.pseudo,
+        profileMode: updated.profileMode,
+        intentionId: updated.intentionId || ''
+      }, { force: shouldWriteToFirestore(updated) });
+    }
+    function initProfileIntentionControl() {
+      const select = $("#profileIntentionSelect");
+      if (!select) return;
+      if (!select.dataset.optionsRendered) {
+        renderProfileIntentionOptions(select);
+        select.dataset.optionsRendered = '1';
+      }
+      select.addEventListener('change', handleProfileIntentionChange);
+      refreshProfileIntentionControl();
     }
     function applyProfileStatsCache(cache, fallbackTarget) {
       if (!cache) return;
@@ -5099,6 +5178,7 @@
     }
 
     function renderProfileStats() {
+      refreshProfileIntentionControl();
       const body = $("#spaceStatsBody");
       if (!body) return;
       body.innerHTML = '';
@@ -6976,8 +7056,7 @@
     function updateProfileSetupFields() {
       if (!profileModeSelector) return;
       const mode = profileModeSelector.value || getProfileMode();
-      const showExtras = mode === 'visible';
-      if (profilePseudoField) profilePseudoField.classList.toggle('hide', !showExtras);
+      if (profilePseudoField) profilePseudoField.classList.remove('hide');
       if (profileModeSetupHint) {
         const info = PROFILE_MODE_INFO[mode] || PROFILE_MODE_INFO[getProfileMode()];
         profileModeSetupHint.textContent = info?.summary || '';
@@ -8088,6 +8167,7 @@
     document.querySelectorAll('#detail .tabs [data-tab]').forEach(btn => { btn.addEventListener('click', () => switchViews(btn, 'data-tab', 'detail')) });
     document.querySelectorAll('#space .tabs [data-stab]').forEach(btn => { btn.addEventListener('click', () => switchViews(btn, 'data-stab', 'space')) });
     setupSpaceStatsSorting();
+    initProfileIntentionControl();
     let swRegistration = null;
     let updateRequestInProgress = false;
     async function ensureSwRegistration() {
