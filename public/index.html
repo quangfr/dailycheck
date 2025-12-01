@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.3" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.4" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.12.1.3" />
+  <link rel="stylesheet" href="style.css?v=2025.12.1.4" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.12.1.3" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.1.4" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -556,9 +556,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.3"></script>
-  <script src="library.js?v=2025.12.1.3"></script>
-  <script src="tips.js?v=2025.12.1.3"></script>
+  <script src="names.js?v=2025.12.1.4"></script>
+  <script src="library.js?v=2025.12.1.4"></script>
+  <script src="tips.js?v=2025.12.1.4"></script>
   <script>
     /* ===== Données ===== */
 
@@ -632,7 +632,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.12.1.3';
+    const APP_VERSION = '2025.12.1.4';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -1077,7 +1077,7 @@
     const DEFAULT_GARDENER_WINDOW_DAYS = 28;
     const DAY_VIEW_LOOKBACK_DAYS = 28;
     const DAY_VIEW_MIN_OFFSET = -(DAY_VIEW_LOOKBACK_DAYS - 1);
-    const STATS_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
+    const STATS_SYNC_INTERVAL_MS = 12 * 60 * 60 * 1000;
     const STATS_SYNC_STORAGE_KEY = 'habitu-last-stats-sync';
     const STATS_FETCH_STORAGE_KEY = 'habitu-last-stats-fetch';
     const HABIT_LIST_SNAPSHOT_CACHE_KEY = 'habitu-habit-list-snapshot';
@@ -1409,6 +1409,7 @@
 
     const STORAGE_MAGIC_LINK_EMAIL_KEY = 'habitu-magic-link-email';
     const STORAGE_CUSTOM_HABIT_NOTICE_KEY = 'habitu-custom-habit-notice';
+    const HABIT_STATS_CHANGE_KEY = 'habitu-habit-stats-change';
 
     function safeStorageGet(key) {
       try {
@@ -1417,17 +1418,20 @@
         return null;
       }
     }
-    const RECURRENCE_RESET_CONFIRM_KEY = 'habitu-recurrence-reset-confirmed';
     function safeStorageSet(key, value) {
       try {
         localStorage.setItem(key, value);
       } catch (e) { }
     }
-    function hasConfirmedRecurrenceReset() {
-      return safeStorageGet(RECURRENCE_RESET_CONFIRM_KEY) === '1';
+    function readHabitStatsChangeTimestamp() {
+      const raw = safeStorageGet(HABIT_STATS_CHANGE_KEY);
+      if (!raw) return null;
+      const candidate = Number(raw);
+      if (!Number.isFinite(candidate)) return null;
+      return candidate;
     }
-    function markRecurrenceResetConfirmed() {
-      safeStorageSet(RECURRENCE_RESET_CONFIRM_KEY, '1');
+    function markHabitStatsChanged() {
+      safeStorageSet(HABIT_STATS_CHANGE_KEY, String(Date.now()));
     }
     function persistMagicLinkEmail(email) {
       if (!email) return;
@@ -1499,6 +1503,9 @@
       if (!targetSpaceId) return false;
       const last = getStatsTimestamp(storageKey, targetSpaceId);
       if (!last) return true;
+      const changeTs = readHabitStatsChangeTimestamp();
+      if (!changeTs) return false;
+      if (changeTs <= last) return false;
       return Date.now() - last >= intervalMs;
     }
     let habitListSnapshot = { spaceId: '', ts: 0, habits: [] };
@@ -1540,7 +1547,6 @@
     const SPACE_SYNC_KEY = 'habitu-space-last-sync';
     const SPACE_CHANGE_KEY = 'habitu-space-last-change';
     const SPACE_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
-    const STATS_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
     const SPACE_HABITS_COLLECTION = 'spaceHabits';
     const SPACE_HABITS_SUBCOLL = 'habits';
     const HABIT_STATS_COLLECTION = 'habitStats';
@@ -1610,7 +1616,8 @@
       writeSpaceTimestamp(SPACE_CHANGE_KEY, Date.now());
       scheduleSpaceSync();
     }
-    function scheduleSpaceSync(delay = 4000) {
+    const SPACE_SYNC_BUFFER_MS = 30 * 1000;
+    function scheduleSpaceSync(delay = SPACE_SYNC_BUFFER_MS) {
       if (!shouldQueueSpaceSnapshot()) return;
       if (spaceSyncTimer) clearTimeout(spaceSyncTimer);
       spaceSyncTimer = setTimeout(() => {
@@ -1641,7 +1648,7 @@
         await persistSpaceDoc(spaceId, { scoreTarget: getWeeklyScoreTarget(spaceId) }, { force: true, suppressErrors: false });
         const habits = (space.ch || []).filter(habit => habit && !habit.deleted);
         await Promise.all(habits.map(habit => persistHabit(spaceId, habit, { force: true })));
-        await syncHabitStatsSnapshot(space);
+        await maybePushStatsSnapshot();
         if (currentProfile?.uid) {
           await persistUserProfile({
             uid: currentProfile.uid,
@@ -2076,6 +2083,7 @@
         if (ownerId && record.ownerId !== ownerId) return false;
         if (habitId && record.habitId !== habitId) return false;
         if (dayKey && record.dayKey !== dayKey) return false;
+        if (DELETED_HABITS.has(record.habitId)) return false;
         if (since) {
           const recorded = timestampToDate(record.recordedAt);
           if (!recorded || recorded < since) return false;
@@ -3552,9 +3560,10 @@
 
     function persistHabit(spaceId, habitData, { force = false } = {}) {
       if (!spaceId || !habitData?.id) return Promise.resolve();
+      markHabitStatsChanged();
+      markSpaceDirty();
       if (!shouldPersistSpaceData()) return Promise.resolve();
       if (!force) {
-        markSpaceDirty();
         markFirstHabitCreated();
         return Promise.resolve();
       }
@@ -3612,6 +3621,7 @@
       };
       let remoteCounts = null;
       if (payload.type === 'realization') {
+        markHabitStatsChanged();
         upsertLocalHabitActivity(localEvent);
         const counts = computeActorCountsForEvent(localEvent);
         localEvent.actor30DaysCount = counts.window;
@@ -5813,9 +5823,9 @@
         setStatsTimestamp(STATS_SYNC_STORAGE_KEY, spaceId);
       }
     }
-    async function maybeFetchStatsSnapshot({ force = false, intervalMs = STATS_SYNC_INTERVAL_MS } = {}) {
+    async function maybeFetchStatsSnapshot({ force = false } = {}) {
       if (!spaceId || !currentProfile || !HABITU_FIREBASE_DB) return;
-      if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId, intervalMs)) return;
+      if (!force && !canPerformStatsOperation(STATS_FETCH_STORAGE_KEY, spaceId)) return;
       if (isProfileModeVisible()) {
         await refreshAllHabitStatsFromServer({ force: true });
         return;
@@ -5827,7 +5837,7 @@
     function refreshStatsForVisibleProfile({ force = false } = {}) {
       if (!spaceId || !currentProfile) return Promise.resolve();
       if (!isProfileModeVisible()) return Promise.resolve();
-      return maybeFetchStatsSnapshot({ force, intervalMs: STATS_REFRESH_INTERVAL_MS });
+      return maybeFetchStatsSnapshot({ force });
     }
     function resolveProfileEmail(name) {
       const normalizedTarget = normalizeOwnerLabel(name);
@@ -6056,12 +6066,11 @@
           }
           const previousRecurrence = getHabitRepeatConfig(it);
           const recurrenceChanged = !areRecurrenceConfigsEqual(previousRecurrence, repeatConfigPayload);
-          if (recurrenceChanged && !hasConfirmedRecurrenceReset()) {
+          if (recurrenceChanged) {
             const confirmText = 'Changer la récurrence réinitialisera les statistiques de cette habitude. Continuer ?';
             if (!window.confirm(confirmText)) {
               return;
             }
-            markRecurrenceResetConfirmed();
           }
           const payload = {
             id: activeId,
@@ -7917,6 +7926,7 @@
     }
     function showLoaderOverlay() {
       if (!loaderOverlay) return;
+      maybeSyncSpaceSnapshot();
       loaderOverlay.classList.remove('hide');
       startLoaderAnimation();
       offlineController.schedule();

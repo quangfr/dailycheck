@@ -332,7 +332,7 @@ const HABIT_TIPS = [
   { "id": 28, "title": "Passe le fil comme un ninja discret" },
   { "id": 28, "title": "Souris à ton miroir, ça motive toujours" },
   { "id": 28, "title": "Change ta brosse avant qu’elle ne fasse grève" },
-  { "id": 28, "title": "Garde ta bouche fraîche comme un matin d’hiver" }
+  { "id": 28, "title": "Garde ta bouche fraîche comme un matin d’hiver" },
 
   // id 29 – Sortir du lit
   { "id": 29, "title": "Ouvre les rideaux, lumière booster" },
