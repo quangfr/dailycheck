@@ -5283,16 +5283,16 @@
       if (hasHabitId) {
         const habitKey = String(habitId);
         if (habitKey) {
-          const openGardenerTab = () => openDetail(habitId, null, 'gardeners');
+          const openEditionTab = () => openDetail(habitId, null, 'settings');
           row.dataset.habitId = habitKey;
           row.classList.add('clickable');
           row.tabIndex = 0;
           row.setAttribute('role', 'button');
-          row.addEventListener('click', openGardenerTab);
+          row.addEventListener('click', openEditionTab);
           row.addEventListener('keydown', event => {
             if (event.key === 'Enter' || event.key === ' ') {
               event.preventDefault();
-              openGardenerTab();
+              openEditionTab();
             }
           });
         }
