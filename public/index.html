@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f4f7fb" />
-  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.6" />
+  <link rel="manifest" href="/manifest.webmanifest?v=2025.12.1.7" />
   <title>Habitube — Les petites habitudes qui changent tout </title>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-auth-compat.js"></script>
@@ -33,7 +33,7 @@
     }
     window.HABITU_FIREBASE_DB = FIREBASE_NAMESPACE?.firestore ? FIREBASE_NAMESPACE.firestore() : null;
   </script>
-  <link rel="stylesheet" href="style.css?v=2025.12.1.6" />
+  <link rel="stylesheet" href="style.css?v=2025.12.1.7" />
 
 </head>
 
@@ -63,7 +63,7 @@
   </div>
   <div class="auth-overlay hide" id="authOverlay">
     <div class="auth-card">
-      <img src="icon-512.png?v=2025.12.1.6" alt="Logo Habitube" />
+      <img src="icon-512.png?v=2025.12.1.7" alt="Logo Habitube" />
       <div class="auth-message" id="authMessage">Connecte-toi pour retrouver tes habitudes</div>
       <div class="auth-space-desc" id="authSpaceDesc"></div>
       <div class="auth-forms">
@@ -556,9 +556,9 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.6"></script>
-  <script src="library.js?v=2025.12.1.6"></script>
-  <script src="tips.js?v=2025.12.1.6"></script>
+  <script src="names.js?v=2025.12.1.7"></script>
+  <script src="library.js?v=2025.12.1.7"></script>
+  <script src="tips.js?v=2025.12.1.7"></script>
   <script>
     /* ===== Données ===== */
 
@@ -632,7 +632,7 @@
     const REPEAT_CONFIGS = {};
 
     /* Utils */
-    const APP_VERSION = '2025.12.1.6';
+    const APP_VERSION = '2025.12.1.7';
     const NEED_EMOJIS = {
       affection: '❤️',
       joy: '😄',
@@ -2074,8 +2074,10 @@
     }
     function getOwnerActivityRecords(filters = {}) {
       const { spaceId, ownerId, since, habitId, dayKey } = filters;
+      const allowedHabitIds = getActiveHabitIdsBySpace(spaceId);
       return Object.values(ownerActivityStore).filter(record => {
         if (spaceId && record.spaceId !== spaceId) return false;
+        if (spaceId && allowedHabitIds.size && !allowedHabitIds.has(String(record.habitId))) return false;
         if (ownerId && record.ownerId !== ownerId) return false;
         if (habitId && record.habitId !== habitId) return false;
         if (dayKey && record.dayKey !== dayKey) return false;
@@ -4182,6 +4184,20 @@
     function getSpaceEvents(spaceId, since = null) {
       if (!spaceId) return [];
       return getOwnerActivityRecords({ spaceId, since });
+    }
+    function getActiveHabitIdsBySpace(spaceIdValue) {
+      if (!spaceIdValue) return new Set();
+      const sourceSpace = SPACES[spaceIdValue];
+      if (!sourceSpace) return new Set();
+      const ids = new Set();
+      (sourceSpace.ch || []).forEach(habit => {
+        if (!habit || habit.deleted) return;
+        const key = String(habit.id);
+        if (!key) return;
+        if (DELETED_HABITS.has(key)) return;
+        ids.add(key);
+      });
+      return ids;
     }
     function getHabitRecords(spaceId, habitId, since = null, ownerFilter = '__all__') {
       if (!spaceId || !habitId) return [];
