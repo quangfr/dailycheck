@@ -828,8 +828,11 @@ button:active,
   background: rgba(255, 235, 179, 0.5);
 }
 
-.habit-gardeners-table tbody tr.gardener-row--favorite .profile-link--gardener {
+.habit-gardeners-table tbody tr.gardener-row--favorite .profile-link {
   font-weight: 600;
+}
+.habit-gardeners-table tbody tr {
+  cursor: pointer;
 }
 
 .habit-gardeners-table tbody tr.self.gardener-row--favorite {
@@ -1136,7 +1139,7 @@ button:active,
 .space-stats-table table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 14px;
 }
 .space-stats-table th,
 .space-stats-table td {
