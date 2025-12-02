@@ -213,7 +213,7 @@
         <div class="detailTitle" id="spaceHeaderTitle"></div>
         <div class="spacer"></div>
         <button class="btn mini hide" id="gardenerFollowBtn" type="button">⭐ Suivre</button>
-        <button class="btn danger mini hide" id="spaceLogoutBtn" type="button">🔓</button>
+        <button class="btn danger mini" id="spaceLogoutBtn" type="button" title="Se déconnecter">🔓</button>
       </div>
       <div class="tabs">
         <button class="tab active" data-stab="sprofile">👤 Profil</button>
@@ -2421,11 +2421,15 @@
       dayInputs.forEach(input => {
         if (input.dataset.boundDay) return;
         input.addEventListener('change', () => {
-          if (getSelectedMode() === 'interval' && input.checked) {
+          const mode = getSelectedMode();
+          if (mode === 'interval' && input.checked) {
             dayInputs.forEach(other => {
               if (other === input) return;
               other.checked = false;
             });
+          }
+          if (!input.checked && !dayInputs.some(other => other.checked)) {
+            input.checked = true;
           }
         });
         input.dataset.boundDay = '1';
@@ -2600,10 +2604,11 @@
     let ownerActivityStore = readOwnerActivityStore();
     const LOCAL_SPACE_STATE_KEY = 'habitu-local-space-state';
     let allowedSpaces = [];
+    let currentProfile = null;
 
-    function readLocalSpaceState() {
+    function readLocalSpaceState(key = LOCAL_SPACE_STATE_KEY) {
       try {
-        const raw = safeStorageGet(LOCAL_SPACE_STATE_KEY);
+        const raw = safeStorageGet(key);
         if (!raw) return null;
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed !== 'object') return null;
@@ -2640,11 +2645,60 @@
       }
       return true;
     }
-    function persistLocalSpaceState({ clear = false } = {}) {
+    function getProfileSpaceStateKey(profile) {
+      if (!profile || profile.guest) return LOCAL_SPACE_STATE_KEY;
+      const normalized = normalizeMemberKey(profile.uid || profile.email || '');
+      if (!normalized) return LOCAL_SPACE_STATE_KEY;
+      return `${LOCAL_SPACE_STATE_KEY}:${normalized}`;
+    }
+    function readLocalSpaceStateForProfile(profile) {
+      const key = getProfileSpaceStateKey(profile);
+      const profileState = readLocalSpaceState(key);
+      if (profileState) return profileState;
+      if (key !== LOCAL_SPACE_STATE_KEY) {
+        return readLocalSpaceState(LOCAL_SPACE_STATE_KEY);
+      }
+      return null;
+    }
+
+    async function restoreSpacesFromLocalState(state, profile) {
+      if (!state) return false;
+      if (!applyLocalSpaceState(state)) return false;
+      const normalizedEmail = normalizeEmail(profile?.email);
+      const normalizedUid = normalizeMemberKey(profile?.uid || '') || normalizedEmail;
+      Object.values(SPACES).forEach(space => {
+        if (!space) return;
+        if (!space.ownerId) {
+          space.ownerId = normalizedUid;
+        }
+        if (normalizedEmail) {
+          space.members = Array.from(new Set([...(space.members || []), normalizedEmail]));
+        }
+      });
+      await Promise.all(allowedSpaces.map(id => ensureSpaceHasPseudo(id)));
+      if (!spaceId && allowedSpaces.length) {
+        setActiveSpace(allowedSpaces[0]);
+      }
+      if (spaceId && !allowedSpaces.includes(spaceId)) {
+        setActiveSpace(allowedSpaces[0] || null);
+      }
+      spacesInitialized = true;
+      maybeTogglePrivateAdd();
+      persistLocalSpaceState({ profile });
+      return true;
+    }
+
+    async function ensureStoredSpaceAfterLogin(profile) {
+      if (allowedSpaces.length) return true;
+      const fallbackState = readLocalSpaceStateForProfile(profile);
+      if (!fallbackState) return false;
+      return restoreSpacesFromLocalState(fallbackState, profile);
+    }
+    function persistLocalSpaceState({ clear = false, profile = currentProfile } = {}) {
       if (typeof window === 'undefined' || !window.localStorage) return;
       try {
         if (clear) {
-          window.localStorage.removeItem(LOCAL_SPACE_STATE_KEY);
+          window.localStorage.removeItem(getProfileSpaceStateKey(profile));
           return;
         }
         const storedAllowedSpaces = Array.isArray(allowedSpaces) ? Array.from(new Set(allowedSpaces)) : [];
@@ -2665,10 +2719,10 @@
         });
         const hasSpaces = Object.keys(payload.spaces).length > 0;
         if (!hasSpaces) {
-          window.localStorage.removeItem(LOCAL_SPACE_STATE_KEY);
+          window.localStorage.removeItem(getProfileSpaceStateKey(profile));
           return;
         }
-        safeStorageSet(LOCAL_SPACE_STATE_KEY, JSON.stringify(payload));
+        safeStorageSet(getProfileSpaceStateKey(profile), JSON.stringify(payload));
       } catch (err) {
       }
     }
@@ -2686,11 +2740,11 @@
       { emoji: '🏫', label: 'École / Classe', type: 'group', desc: 'Rituels pédagogiques simples.' },
       { emoji: '🏢', label: '🏢 Bureau', type: 'group', desc: 'Rituels collaboratifs pro.' }
     ];
-    const initialLocalSpaceState = readLocalSpaceState();
+    currentProfile = loadStoredProfile();
+    const initialLocalSpaceState = readLocalSpaceStateForProfile(currentProfile);
     if (initialLocalSpaceState) {
       applyLocalSpaceState(initialLocalSpaceState);
     }
-    let currentProfile = loadStoredProfile();
     let guestSpaces = loadGuestSpaces();
     let selectedGardenerKey = null;
     let selectedGardenerLabel = '';
@@ -3470,16 +3524,8 @@
       if (isGuest) {
         payload.pseudo = profile.pseudo || '';
       } else {
-        payload.name = profile.name;
         payload.email = profile.email;
         payload.pseudo = profile.pseudo || '';
-        payload.profileMode = profile.profileMode;
-        if (profile.tipsDisplayMode !== undefined) {
-          payload.tipsDisplayMode = normalizeTipsDisplayMode(profile.tipsDisplayMode);
-        }
-        if (profile.intentionId !== undefined) {
-          payload.intentionId = profile.intentionId || '';
-        }
       }
       if (payload.pseudo) {
         const normalizedPseudo = sanitizePseudo(payload.pseudo);
@@ -3617,10 +3663,42 @@
       if (!collection) return Promise.resolve();
       return collection.doc(habitId)
         .set({ ...habitData, id: habitId, spaceId, updatedAt: serverTimestampValue() }, { merge: true })
-        .then(() => {
+        .then(async () => {
           markFirstHabitCreated();
+          await persistCustomHabit(spaceId, habitData);
         })
         .catch(() => { });
+    }
+    function getSpaceCustomHabitsCollection(spaceId) {
+      if (!HABITU_FIREBASE_DB || !spaceId) return null;
+      return HABITU_FIREBASE_DB.collection('spaces').doc(spaceId).collection('customHabits');
+    }
+    function serializeCustomHabit(habit) {
+      if (!habit?.id) return null;
+      return {
+        id: String(habit.id),
+        titre: habit.titre || habit.title || '',
+        emoji: habit.emoji || '✨',
+        desc: habit.desc || habit.note || '',
+        frequency: habit.frequency || habit.baseMin || DEFAULT_DURATION,
+        repeatConfig: habit.repeatConfig ? { ...habit.repeatConfig } : null,
+        mode: habit.mode || { type: 'libre', n: 2 },
+        addedAt: habit.addedAt || getWeekStart(new Date())
+      };
+    }
+    function persistCustomHabit(spaceId, habitData) {
+      if (!spaceId || !habitData?.id) return Promise.resolve();
+      const habitId = String(habitData.id);
+      if (!habitId.startsWith('custom-')) return Promise.resolve();
+      const collection = getSpaceCustomHabitsCollection(spaceId);
+      if (!collection) return Promise.resolve();
+      const docRef = collection.doc(habitId);
+      if (habitData.deleted) {
+        return docRef.delete().catch(() => { });
+      }
+      const payload = serializeCustomHabit(habitData);
+      if (!payload) return Promise.resolve();
+      return docRef.set({ ...payload, updatedAt: serverTimestampValue() }, { merge: true }).catch(() => { });
     }
     function sendActivityToServer(payload) {
       if (!shouldSyncActivities()) {
@@ -3881,20 +3959,16 @@
       refreshLoader(getLoaderMinuteSeed());
     }
     async function resetFirestoreState(profile) {
-      const fallbackState = readLocalSpaceState();
+      const fallbackState = readLocalSpaceStateForProfile(profile);
       clearLocalState();
       const email = profile?.email;
       if (!email) { return; }
       await loadLibraryData();
       const spaces = await fetchSpacesForUser(profile);
-      if (!spaces.length && fallbackState && applyLocalSpaceState(fallbackState)) {
-        await Promise.all(allowedSpaces.map(id => ensureSpaceHasPseudo(id)));
-        if (!spaceId && allowedSpaces.length) { setActiveSpace(allowedSpaces[0]); }
-        if (spaceId && !allowedSpaces.includes(spaceId)) { setActiveSpace(allowedSpaces[0] || null); }
-        spacesInitialized = true;
-        maybeTogglePrivateAdd();
-        persistLocalSpaceState();
-        return;
+      if (!spaces.length && fallbackState) {
+        if (await restoreSpacesFromLocalState(fallbackState, profile)) {
+          return;
+        }
       }
       allowedSpaces = spaces.map(space => space.id);
       spaces.forEach(space => {
@@ -7536,8 +7610,7 @@
       heading.textContent = 'Choix des jours de la semaine';
       const dayWrapper = document.createElement('div');
       dayWrapper.className = 'habit-actions__days';
-      const defaultWeekDay = curDate().getDay();
-      const selectedWeekDays = new Set([defaultWeekDay]);
+      const selectedWeekDays = new Set(WEEKDAY_ORDER);
       WEEKDAY_ORDER.forEach(day => {
         const dayBtn = document.createElement('button');
         dayBtn.type = 'button';
@@ -7549,6 +7622,9 @@
         }
         dayBtn.addEventListener('click', () => {
           if (selectedWeekDays.has(day)) {
+            if (selectedWeekDays.size === 1) {
+              return;
+            }
             selectedWeekDays.delete(day);
             dayBtn.classList.remove('habit-actions__day--active');
           } else {
@@ -8103,14 +8179,6 @@
         hideAuthOverlay();
         showLoaderOverlay();
         try {
-          if (magicLinkSignInPending && hasLocalDataForImport()) {
-            const shouldImport = window.confirm('Tu as des données en local. Veux-tu les importer dans ce compte ?');
-            if (shouldImport) {
-              await maybeSyncSpaceSnapshot({ force: true });
-              await maybePushStatsSnapshot({ force: true });
-              clearLocalState();
-            }
-          }
           await resetFirestoreState(currentProfile);
         } finally {
           hideLoaderOverlay();
@@ -8120,7 +8188,14 @@
         userName = currentProfile?.name || name;
         setLastMemberName(userName);
         updateAddModalOptions();
-        if (allowedSpaces.length === 0) { await ensureProfileSetup(); await createPersonalSpace(); return; }
+        if (allowedSpaces.length === 0) {
+          const restored = await ensureStoredSpaceAfterLogin(currentProfile);
+          if (!restored) {
+            await ensureProfileSetup();
+            await createPersonalSpace();
+            return;
+          }
+        }
         updAll();
         showHome();
         triggerPersonalActivityRefresh();
@@ -8134,7 +8209,14 @@
         } finally {
           hideLoaderOverlay();
         }
-        if (allowedSpaces.length === 0) { await ensureProfileSetup(); await createPersonalSpace(); return; }
+        if (allowedSpaces.length === 0) {
+          const restored = await ensureStoredSpaceAfterLogin(currentProfile);
+          if (!restored) {
+            await ensureProfileSetup();
+            await createPersonalSpace();
+            return;
+          }
+        }
         updAll();
         showHome();
         triggerPersonalActivityRefresh();
