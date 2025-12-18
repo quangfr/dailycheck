@@ -7,7 +7,6 @@ const OFFLINE_URLS = Array.from(new Set([
   '/index.html',
   `/style.css${ASSET_QUERY}`,
   `/library.js${ASSET_QUERY}`,
-  `/names.js${ASSET_QUERY}`,
   `/tips.js${ASSET_QUERY}`,
   '/manifest.webmanifest',
   '/icon-192.png',

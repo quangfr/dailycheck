@@ -103,7 +103,7 @@ const LIBRARY_JSON_DATA = [
   { "id": 68, "emoji": "🕊️", "title": "Ramener de la sérénité", "needs": ["slowness", "participation"], "contexts": ["family", "school", "office", "social"] },
   { "id": 69, "emoji": "🫂", "title": "Prendre soin du groupe", "needs": ["inclusion", "cooperation"], "contexts": ["school", "office", "social"] },
   { "id": 70, "emoji": "🚿", "title": "Prendre une douche fraîche le matin", "needs": ["movement", "hygiene"], "contexts": ["home"] },
-  { "id": 71, "emoji": "💪", "title": "Faire 30 min d'exercice", "needs": ["movement", "comfort"], "contexts": ["outdoor", "home"] },
+  { "id": 71, "emoji": "💪", "title": "Faire 30 min d'exercice", "needs": ["movement", "health"], "contexts": ["outdoor", "home"] },
   { "id": 72, "emoji": "🙆‍♂️", "title": "Étirer le haut du corps", "needs": ["movement", "comfort"], "contexts": ["outdoor", "home"] },
   { "id": 73, "emoji": "👏", "title": "Applaudir une réussite", "needs": ["meaning", "participation"], "contexts": ["home", "office", "school", "social"] },
   { "id": 74, "emoji": "📸", "title": "Photographier un beau détail", "needs": ["nature", "expression"], "contexts": ["home", "outdoor"] },

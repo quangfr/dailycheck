@@ -297,7 +297,7 @@
             <div class="field hide" id="spacePseudoField">
               <label><b>Pseudo</b></label>
               <div class="rowInline">
-                <input id="paramSpacePseudo" type="text" readonly placeholder="AloeCalme" />
+                <input id="paramSpacePseudo" type="text" placeholder="Pseudo (lettres et chiffres)" />
               </div>
             </div>
             <div class="field" id="spaceLabelField"><label><b>Nom du jardin</b></label><input id="paramSpaceLabel"
@@ -495,11 +495,7 @@
           <div class="field" id="profilePseudoField">
             <label><b>Pseudo</b></label>
             <div class="rowInline">
-              <input id="profilePseudoInput" type="text" placeholder="doux-mousse-42" readonly />
-              <button type="button" class="btn mini refresh-btn" id="profilePseudoRefresh"
-                title="Générer un nouveau pseudo">
-                ⟲
-              </button>
+              <input id="profilePseudoInput" type="text" placeholder="Choisis un pseudo (lettres et chiffres)" />
             </div>
           </div>
           <div class="detail-actions">
@@ -541,7 +537,6 @@
 
   <div id="cardContextMenu" class="card-context-menu" role="menu"></div>
 
-  <script src="names.js?v=2025.12.1.14"></script>
   <script src="library.js?v=2025.12.1.14"></script>
   <script src="tips.js?v=2025.12.1.14"></script>
   <script>
@@ -560,55 +555,6 @@
     const LIBRARY_HABITS = [];
     const LIBRARY_CONTEXTS = [];
     const LIBRARY_NEEDS = [];
-    const DEFAULT_PSEUDO_LIBRARY = {
-      nouns: [
-        'graine', 'feuille', 'tige', 'brin', 'mousse', 'sève', 'rosée', 'herbe', 'fleur', 'brume',
-        'vent', 'nuage', 'roche', 'galet', 'sable', 'terre', 'bosse', 'lande', 'liège', 'pin',
-        'orme', 'tille', 'saule', 'lierre', 'buis', 'jonc', 'roseau', 'trèfle', 'lotus', 'iris',
-        'noyer', 'chêne', 'érable', 'ormeau', 'plume', 'foin', 'givre', 'écume', 'onde', 'ruisseau',
-        'source', 'bruit', 'buisson', 'sillon', 'branche', 'caillou', 'terreau', 'ronce', 'nene', 'ember'
-      ],
-      adjectives: [
-        'doux', 'calme', 'pur', 'clair', 'pale', 'vif', 'sobre', 'simple', 'sage', 'léger', 'frais',
-        'souple', 'subtil', 'brut', 'tendre', 'serein', 'vaporeux', 'fluide', 'dense', 'humble',
-        'noble', 'lent', 'rapide', 'fort', 'fin', 'neuf', 'ancien', 'neutre', 'sec', 'moelleux',
-        'brumeux', 'radieux', 'vibrant', 'épais', 'aérien', 'neigeux', 'marin', 'forestier', 'mince',
-        'large', 'court', 'rond', 'ferme'
-      ],
-      locations: [
-        'Forêt', 'Prairie', 'Clairière', 'Vallée', 'Rivière', 'Ruisseau', 'Marécage', 'Dune', 'Plage',
-        'Colline', 'Plateau', 'Grotte', 'Sentier', 'Lagon', 'Baie', 'Crique', 'Oasis', 'Bosquet',
-        'Haie', 'Sousbois', 'Mare', 'Marais', 'Archipel', 'Îlot', 'Lagune', 'Récif', 'Toundra',
-        'Steppe', 'Taiga', 'Canyon', 'Desert', 'Falaises', 'Cascade', 'Versant', 'Source', 'Embouchure',
-        'Delta', 'Promontoire', 'Sapinier', 'Pineraie', 'Bambouseraie', 'Rivage', 'Littoral', 'Lande',
-        'Tourbière', 'Belvédère', 'Corniche'
-      ]
-    };
-    const PSEUDO_LIBRARY = {
-      nouns: [...DEFAULT_PSEUDO_LIBRARY.nouns],
-      adjectives: [...DEFAULT_PSEUDO_LIBRARY.adjectives],
-      locations: [...DEFAULT_PSEUDO_LIBRARY.locations]
-    };
-    async function loadPseudoLibrary() {
-      try {
-        const source = (typeof window !== 'undefined' ? window.NAMES_LIBRARY_DATA : null) || null;
-        const nouns = Array.isArray(source?.pseudoNouns) ? source.pseudoNouns : [];
-        const adjectives = Array.isArray(source?.pseudoAdjectives) ? source.pseudoAdjectives : [];
-        const locations = Array.isArray(source?.pseudoLocations) ? source.pseudoLocations : [];
-        if (nouns.length) {
-          PSEUDO_LIBRARY.nouns = nouns;
-        }
-        if (adjectives.length) {
-          PSEUDO_LIBRARY.adjectives = adjectives;
-        }
-        if (locations.length) {
-          PSEUDO_LIBRARY.locations = locations;
-        }
-      } catch (err) {
-      }
-      return PSEUDO_LIBRARY;
-    }
-    const PSEUDO_LIBRARY_READY = loadPseudoLibrary();
 
     /* États / stock */
     const HABIT_DESC = {}, HABIT_TITLE_CUSTOM = {}, SPACE_DESC_TXT = {};
@@ -916,7 +862,6 @@
       libre: { label: 'Individuel', shortLabel: 'Moi 👤', emoji: '👤', target: 'individual' },
       commun: { label: 'Partagé', shortLabel: 'Tout le monde 👥', emoji: '👥', target: 'group' }
     };
-    const PSEUDO_LIBRARY_MAX_ATTEMPTS = 6;
     function sanitizePseudo(value) {
       const input = (value || '').toString();
       const normalized = input.normalize ? input.normalize('NFD') : input;
@@ -924,23 +869,6 @@
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-zA-Z0-9]+/g, '')
         .trim();
-    }
-    function titleCase(word) {
-      const base = (word || '').toString().trim();
-      if (!base) return '';
-      const normalized = base.normalize ? base.normalize('NFD') : base;
-      const clean = normalized.replace(/[\u0300-\u036f]/g, '').toLowerCase();
-      return clean.charAt(0).toUpperCase() + clean.slice(1);
-    }
-    function buildUserPseudo(adjective, noun) {
-      const n = titleCase(noun);
-      const adj = titleCase(adjective);
-      return `${n}${adj}`.trim();
-    }
-    function buildGardenPseudo(location, suffix = '') {
-      const loc = titleCase(location);
-      const numeric = suffix ? String(suffix).padStart(2, '0').slice(-2) : '';
-      return `${loc}${numeric}`;
     }
     function normalizeSpacePseudo(value) {
       const raw = sanitizePseudo(value);
@@ -983,54 +911,42 @@
         return false;
       }
     }
-    async function generateUniquePseudo(attempt = 0) {
-      await PSEUDO_LIBRARY_READY;
-      const nouns = PSEUDO_LIBRARY.nouns.length ? PSEUDO_LIBRARY.nouns : DEFAULT_PSEUDO_LIBRARY.nouns;
-      const adjectives = PSEUDO_LIBRARY.adjectives.length ? PSEUDO_LIBRARY.adjectives : DEFAULT_PSEUDO_LIBRARY.adjectives;
-      const pick = (arr) => arr[Math.floor(Math.random() * arr.length)] || '';
-      const candidateRaw = buildUserPseudo(pick(adjectives), pick(nouns));
-      const candidate = sanitizePseudo(candidateRaw);
-      if (!candidate) return '';
-      if (await isPseudoTaken(candidate) || await isSpacePseudoTaken(candidate)) {
-        if (attempt >= PSEUDO_LIBRARY_MAX_ATTEMPTS) {
-          return sanitizePseudo(`${candidate}${String(attempt).padStart(2, '0')}`);
+    async function validatePseudoAvailability(rawPseudo, { checkSpaces = true, checkUsers = true, excludeSpaceId = null, showFeedback = true } = {}) {
+      const normalized = sanitizePseudo(rawPseudo);
+      if (!normalized) {
+        if (showFeedback) {
+          showToast('Choisis un pseudo avec uniquement des lettres et des chiffres.', { type: 'error' });
         }
-        return generateUniquePseudo(attempt + 1);
+        return null;
       }
-      return candidate;
-    }
-    async function generateUniqueGardenPseudo(attempt = 0) {
-      await PSEUDO_LIBRARY_READY;
-      const locations = PSEUDO_LIBRARY.locations.length ? PSEUDO_LIBRARY.locations : DEFAULT_PSEUDO_LIBRARY.locations;
-      const pick = (arr) => arr[Math.floor(Math.random() * arr.length)] || '';
-      const suffix = String(Math.floor(Math.random() * 100)).padStart(2, '0');
-      const candidateRaw = buildGardenPseudo(pick(locations), suffix);
-      const candidate = sanitizePseudo(candidateRaw);
-      if (!candidate) return '';
-      if (await isSpacePseudoTaken(candidate)) {
-        if (attempt >= PSEUDO_LIBRARY_MAX_ATTEMPTS) {
-          return sanitizePseudo(`${candidate}${String(Math.floor(Math.random() * 90) + 10)}`);
-        }
-        return generateUniqueGardenPseudo(attempt + 1);
+      if (checkUsers && await isPseudoTaken(normalized)) {
+        if (showFeedback) showToast('Ce pseudo est déjà utilisé.', { type: 'error' });
+        return null;
       }
-      return candidate;
+      if (checkSpaces && await isSpacePseudoTaken(normalized, excludeSpaceId)) {
+        if (showFeedback) showToast('Ce pseudo est déjà utilisé.', { type: 'error' });
+        return null;
+      }
+      return normalized;
     }
     async function ensureSpaceHasPseudo(targetSpaceId) {
       if (!targetSpaceId) return null;
       const space = SPACES[targetSpaceId];
       if (!space) return null;
-      const current = space.pseudo || '';
-      if (current) {
-        space.pseudo = current;
-        space.pseudoNormalized = normalizeSpacePseudo(current);
-        return current;
+      const preferred = sanitizePseudo(space.pseudo || currentProfile?.pseudo || space.label || '');
+      if (preferred && !await isSpacePseudoTaken(preferred, targetSpaceId)) {
+        space.pseudo = preferred;
+        space.pseudoNormalized = normalizeSpacePseudo(preferred);
+        return preferred;
       }
-      const candidate = await generateUniqueGardenPseudo();
-      if (!candidate) return null;
-      space.pseudo = candidate;
-      space.pseudoNormalized = normalizeSpacePseudo(candidate);
-      await persistSpaceDoc(targetSpaceId, { pseudo: candidate });
-      return candidate;
+      const fallback = sanitizePseudo(`${currentProfile?.name || 'Jardin'}${String(Date.now()).slice(-4)}`);
+      if (!fallback || await isSpacePseudoTaken(fallback, targetSpaceId)) {
+        return null;
+      }
+      space.pseudo = fallback;
+      space.pseudoNormalized = normalizeSpacePseudo(fallback);
+      await persistSpaceDoc(targetSpaceId, { pseudo: fallback });
+      return fallback;
     }
     const CONTEXT_EMOJIS = {
       family: '👨‍👩‍👧‍👦',
@@ -1461,7 +1377,7 @@
     function showCustomHabitNotice() {
       if (safeStorageGet(STORAGE_CUSTOM_HABIT_NOTICE_KEY)) return;
       safeStorageSet(STORAGE_CUSTOM_HABIT_NOTICE_KEY, '1');
-      window.confirm('Une habitude personnalisée n’est pas visible par les autres. Il est recommandé de renommer une habitude partagée proche.');
+      window.confirm('Une habitude personnalisée n’est pas visible par les autres ou dans le top des besoins.');
     }
     const HABIT_GARDENERS_LOCAL_KEY = 'habitu-habit-gardeners-cache';
     const HABIT_GARDENERS_CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
@@ -5786,15 +5702,15 @@
     function hydrateHabitCachesFromStorage() {
       const gardeners = readExpiringCache(HABIT_GARDENERS_LOCAL_KEY, HABIT_GARDENERS_CACHE_MAX_AGE);
       if (gardeners && typeof gardeners === 'object') {
-      Object.entries(gardeners).forEach(([habitId, list]) => {
-        if (!Array.isArray(list)) return;
-        const normalized = list.map(entry => ({
-          ...entry,
-          userEmails: ensureSet(entry.userEmails),
-          userIds: ensureSet(entry.userIds)
-        }));
-        habitGardenerSnapshotCache.set(habitId, normalized);
-      });
+        Object.entries(gardeners).forEach(([habitId, list]) => {
+          if (!Array.isArray(list)) return;
+          const normalized = list.map(entry => ({
+            ...entry,
+            userEmails: ensureSet(entry.userEmails),
+            userIds: ensureSet(entry.userIds)
+          }));
+          habitGardenerSnapshotCache.set(habitId, normalized);
+        });
       }
       const counts = readExpiringCache(HABIT_STREAK_COUNTS_LOCAL_KEY, HABIT_STREAK_COUNTS_CACHE_MAX_AGE);
       if (counts && typeof counts === 'object') {
@@ -6342,6 +6258,18 @@
           pseudoInput.value = '';
         }
       }
+      if (pseudoInput && !pseudoInput.dataset.bound) {
+        pseudoInput.addEventListener('input', () => {
+          const normalized = sanitizePseudo(pseudoInput.value);
+          if (normalized !== pseudoInput.value) {
+            pseudoInput.value = normalized;
+          }
+        });
+        pseudoInput.addEventListener('change', () => {
+          pendingSpacePseudo = sanitizePseudo(pseudoInput.value);
+        });
+        pseudoInput.dataset.bound = '1';
+      }
       if (profileModeField) {
         const profileModeButtons = Array.from(profileModeField.querySelectorAll('.profile-mode-option'));
         const refreshProfileModeHint = (mode) => {
@@ -6401,13 +6329,29 @@
         saveSettingsBtn.onclick = async () => {
           if (!spaceId) return;
           const sp = getSpace();
+          if (!sp) return;
+          const rawPseudoInput = pseudoInput ? sanitizePseudo(pseudoInput.value) : '';
           let candidatePseudo = null;
-          if (pendingSpacePseudo && sp) {
-            candidatePseudo = pendingSpacePseudo;
-            sp.pseudo = pendingSpacePseudo;
-            sp.pseudoNormalized = normalizeSpacePseudo(pendingSpacePseudo);
-            sp.label = pendingSpacePseudo;
+          if ((isPersonal || isGroupSpace) && rawPseudoInput) {
+            const validatedPseudo = await validatePseudoAvailability(rawPseudoInput, {
+              excludeSpaceId: spaceId,
+              checkUsers: isPersonal
+            });
+            if (!validatedPseudo) {
+              return;
+            }
+            candidatePseudo = validatedPseudo;
+            if (sp) {
+              sp.pseudo = validatedPseudo;
+              sp.pseudoNormalized = normalizeSpacePseudo(validatedPseudo);
+              if (isPersonal) {
+                sp.label = validatedPseudo;
+              }
+            }
             pendingSpacePseudo = null;
+          } else if (isPersonal || isGroupSpace) {
+            showToast('Choisis un pseudo avant de sauvegarder.', { type: 'error' });
+            return;
           }
           const shouldPush = Boolean(shouldWriteToFirestore());
           await persistSpaceDoc(spaceId);
@@ -6415,7 +6359,7 @@
             pseudoInput.value = sp?.pseudo || '';
           }
           showToast('Réglages sauvegardés.', { type: 'success' });
-          if (candidatePseudo) {
+          if (candidatePseudo && isPersonal) {
             await updateUserPseudo(candidatePseudo);
           }
           if (shouldPush && sp) {
@@ -7032,20 +6976,17 @@
         closeAddBtnLocal.classList.toggle('hide', locked);
       }
     }
-    async function regenerateProfilePseudo({ showNotification = true } = {}) {
-      if (!currentProfile) return null;
-      const candidate = await generateUniquePseudo();
-      if (!candidate) return null;
-      await updateUserPseudo(candidate);
-      if (showNotification) {
-        showToast('Pseudo régénéré.', { type: 'success' });
-      }
-      return candidate;
-    }
     async function ensureProfilePseudo() {
       if (!currentProfile) return null;
-      if (currentProfile.pseudo) return currentProfile.pseudo;
-      return regenerateProfilePseudo({ showNotification: false });
+      const normalized = sanitizePseudo(currentProfile.pseudo || '');
+      if (normalized) {
+        if (normalized !== currentProfile.pseudo) {
+          await updateUserPseudo(normalized);
+        }
+        return normalized;
+      }
+      await ensureProfileSetup();
+      return sanitizePseudo(currentProfile?.pseudo || '');
     }
     function getLibraryHabitByIdBeforeLoad(id) {
       if (LIBRARY_HABITS.length) {
@@ -7097,7 +7038,11 @@
       const normalizedEmail = normalizeEmail(currentProfile.email);
       const ownerId = currentProfile.uid || '';
       const ownerLabel = (currentProfile.name || userName || 'Moi').trim() || 'Moi';
-      const pseudo = currentProfile.pseudo || ownerLabel;
+      const pseudo = sanitizePseudo(currentProfile.pseudo || '');
+      if (!pseudo) {
+        showToast('Choisis un pseudo pour créer ton jardin.', { type: 'error' });
+        return;
+      }
       if (ownerId) {
         const existingSpace = await fetchPersonalSpaceForOwner(ownerId);
         if (existingSpace) {
@@ -7166,7 +7111,8 @@
 
     function shouldPromptProfileSetup() {
       const seen = safeStorageGet(STORAGE_PROFILE_SETUP_KEY);
-      return seen !== '1';
+      const missingPseudo = !sanitizePseudo(currentProfile?.pseudo || '');
+      return missingPseudo || seen !== '1';
     }
     function markProfileSetupDone() {
       safeStorageSet(STORAGE_PROFILE_SETUP_KEY, '1');
@@ -7189,16 +7135,11 @@
     }
     async function ensureProfilePseudoInput(force = false) {
       if (!profilePseudoInput) return '';
-      let candidate = '';
-      if (!force) {
-        candidate = (profilePseudoInput.value || '').trim() || (currentProfile?.pseudo || '').trim();
-      }
-      if (!candidate || force) {
-        candidate = await generateUniquePseudo();
-      }
-      if (candidate) {
-        profilePseudoInput.value = candidate;
-      }
+      const source = force
+        ? (profilePseudoInput.value || '').trim()
+        : ((profilePseudoInput.value || '').trim() || (currentProfile?.pseudo || currentProfile?.name || '').trim());
+      const candidate = sanitizePseudo(source);
+      profilePseudoInput.value = candidate;
       return candidate;
     }
     async function openProfileSetupModal() {
@@ -7372,18 +7313,14 @@
       profileModeSelector.addEventListener('change', updateProfileSetupFields);
       profileModeSelector.dataset.bound = '1';
     }
-    if (profilePseudoRefresh) {
-      profilePseudoRefresh.addEventListener('click', async () => {
-        profilePseudoRefresh.disabled = true;
-        try {
-          const candidate = await ensureProfilePseudoInput(true);
-          if (candidate) {
-            persistProfile({ pseudo: candidate });
-          }
-        } finally {
-          profilePseudoRefresh.disabled = false;
+    if (profilePseudoInput && !profilePseudoInput.dataset.bound) {
+      profilePseudoInput.addEventListener('input', () => {
+        const normalized = sanitizePseudo(profilePseudoInput.value);
+        if (normalized !== profilePseudoInput.value) {
+          profilePseudoInput.value = normalized;
         }
       });
+      profilePseudoInput.dataset.bound = '1';
     }
     if (profileSetupContinue) {
       profileSetupContinue.addEventListener('click', async () => {
@@ -7391,17 +7328,9 @@
         const selectedMode = profileModeSelector.value || DEFAULT_PROFILE_MODE;
         const pseudoValue = (profilePseudoField ? (profilePseudoInput?.value || '').trim() : '');
         try {
-          let actualPseudo = pseudoValue;
-          if (!actualPseudo) {
-            actualPseudo = await ensureProfilePseudoInput(true);
-          }
-          if (actualPseudo) {
-            if (selectedMode === 'visible') {
-              await updateUserPseudo(actualPseudo);
-            } else {
-              persistProfile({ pseudo: actualPseudo });
-            }
-          }
+          const validatedPseudo = await validatePseudoAvailability(pseudoValue, { excludeSpaceId: spaceId });
+          if (!validatedPseudo) return;
+          await updateUserPseudo(validatedPseudo);
           await updateProfileMode(selectedMode);
           finalizeProfileSetup();
         } catch (err) {
